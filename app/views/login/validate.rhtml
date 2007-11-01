@@ -1,12 +1,28 @@
 <h1>Validate Token</h1>
 
-<p> Got Username <%= @username %> and token <%= @token %></p>
-
-
-<p> Username: '<%= @username %>'
-<br/> BZid: '<%= @bzid %>'
-<br/>Groups: '<%= @groups.join('|') %>'
-</p>
 <p>
 <%= flash[:notice] %>
 </p>
+
+<p> Got the following response:</p>
+<% for line in @response %>
+<br/><%= line %>
+<% end %>
+</p>
+<table>
+  <tr>
+    <th>Username</th>
+    <th>BZid</th>
+    <th>Groups</th>
+  </tr>
+  <tr>
+    <td><%= session[:username] %></td>
+    <td><%= session[:bzid] %></td>
+    <td><%= session[:groups][0] %></td>
+  </tr>
+  <% 1.upto(session[:groups].length) do |i| %>
+  <tr>
+    <td></td><td></td><td><%= session[:groups][i] %></td>
+  </tr>
+  <% end %>
+</table>
