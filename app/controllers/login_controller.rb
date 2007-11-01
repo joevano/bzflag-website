@@ -30,7 +30,10 @@ class LoginController < ApplicationController
         if line.index('TOKGOOD: ')
           data = line.split(' ',2)[1]
           session[:username] = data.split(':',2)[0]
-          session[:groups] = data.split(':',2)[1].split(':')
+          groups = data.split(':',2)[1]
+          if groups
+            session[:groups] = groups.split(':')
+          end
         elsif line.index('BZID: ')
           session[:bzid] = line.split(' ')[1]
         end
