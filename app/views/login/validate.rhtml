@@ -4,11 +4,15 @@
 <%= flash[:notice] %>
 </p>
 
+<% if session[:debug] %>
 <p> Got the following response:
 <% for line in @response %>
 <br/><%= line %>
 <% end %>
 </p>
+<% end %>
+
+<% if session[:username] %>
 <table>
   <tr>
     <th>Username</th>
@@ -26,3 +30,4 @@
   </tr>
   <% end %>
 </table>
+<% end %>

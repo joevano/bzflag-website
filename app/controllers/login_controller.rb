@@ -28,6 +28,7 @@ class LoginController < ApplicationController
     session[:username] = nil
     session[:bzid] = nil
     session[:groups] = nil
+    session[:debug] = nil
     if @response.index('TOKGOOD: ')
       for line in @response
         if line.index('TOKGOOD: ')
