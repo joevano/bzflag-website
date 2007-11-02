@@ -6,6 +6,9 @@ class LoginController < ApplicationController
   end
 
   def logout
+    session[:username] = nil
+    session[:bzid] = nil
+    session[:groups] = nil
   end
 
   def validate
@@ -24,7 +27,7 @@ class LoginController < ApplicationController
 
     session[:username] = nil
     session[:bzid] = nil
-    session[:groups] = []
+    session[:groups] = nil
     if @response.index('TOKGOOD: ')
       for line in @response
         if line.index('TOKGOOD: ')

@@ -4,7 +4,7 @@
 <%= flash[:notice] %>
 </p>
 
-<p> Got the following response:</p>
+<p> Got the following response:
 <% for line in @response %>
 <br/><%= line %>
 <% end %>
@@ -18,9 +18,9 @@
   <tr>
     <td><%= session[:username] %></td>
     <td><%= session[:bzid] %></td>
-    <td><%= session[:groups][0] %></td>
+    <td><%= session[:groups] && session[:groups][0] %></td>
   </tr>
-  <% 1.upto(session[:groups].length) do |i| %>
+  <% session[:groups] && 1.upto(session[:groups].length) do |i| %>
   <tr>
     <td></td><td></td><td><%= session[:groups][i] %></td>
   </tr>
