@@ -29,7 +29,7 @@ class LoginController < ApplicationController
     session[:username] = nil
     session[:bzid] = nil
     session[:groups] = nil
-    session[:debug] = true
+    session[:debug] = nil
     session[:ip] = nil
     if @response.index('TOKGOOD: ')
       session[:ip] = request.remote_ip
