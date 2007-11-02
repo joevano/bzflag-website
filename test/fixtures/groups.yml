@@ -1,0 +1,22 @@
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+none:
+  id: 1
+  name: None
+  access_level: 1
+jradmin:
+  id: 2
+  name: Junior Admin
+  access_level: 2
+sradmin:
+  id: 3
+  name: Senior Admin
+  access_level: 3
+tradmin:
+  id: 4
+  name: Trusted Admin
+  access_level: 4
+hidden_admin:
+  id: 5
+  name: Hidden Admin
+  access_level: 5
+
