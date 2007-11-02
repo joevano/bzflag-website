@@ -9,6 +9,7 @@ class LoginController < ApplicationController
     session[:username] = nil
     session[:bzid] = nil
     session[:groups] = nil
+    session[:ip] = nil
   end
 
   def validate
@@ -28,8 +29,10 @@ class LoginController < ApplicationController
     session[:username] = nil
     session[:bzid] = nil
     session[:groups] = nil
-    session[:debug] = nil
+    session[:debug] = true
+    session[:ip] = nil
     if @response.index('TOKGOOD: ')
+      session[:ip] = request.remote_ip
       for line in @response
         if line.index('TOKGOOD: ')
           data = line.split(' ',2)[1]
