@@ -37,6 +37,24 @@
       <%= link_to "Home", :controller => 'bzflag', :action => 'index' %>
       <br />
       <%= link_to "Servers", :controller => 'bzflag', :action => 'servers' %>
+      <% if @admin %>
+      <br />
+      <%= link_to "Reports", :controller => 'bzflag', :action => 'reports' %>
+      <br />
+      <%= link_to "Bans", :controller => 'bzflag', :action => 'bans' %>
+      <br />
+      <%= link_to "Recordings", :controller => 'bzflag', :action => 'recordings' %>
+    </p>
+    <p>
+      <%= link_to "Admins", :controller => 'bzflag', :action => 'admins' %>
+      <br />
+      <%= link_to "Mailing List", :controller => 'bzflag', :action => 'mailing_list' %>
+      <br />
+      <%= link_to "Players", :controller => 'bzflag', :action => 'players' %>
+    </p>
+    <p>
+      <%= link_to "Help", :controller => 'bzflag', :action => 'help' %>
+      <% end %>
     </p>
     <p>
       <%= link_to "Forum", "http://my.bzflag.org/bb" %>
