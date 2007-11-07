@@ -4,6 +4,9 @@ class BzflagController < ApplicationController
   def index
   end
 
+  def servers
+  end
+
   private
 
   def get_user
