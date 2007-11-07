@@ -10,13 +10,19 @@
 </head>
 <body id="bzflag">
 <div id="banner">
-  <%= image_tag("logo.png") %>
-  <p>
-    <%= @page_title || "BZFlag Servers" %>
-  </p>
-  <p id="callsign">
-  <%= @username %>
-  </p>
+  <table>
+    <tr>
+      <td>
+	<%= image_tag("logo.png") %>
+      </td>
+      <td>
+	<%= @page_title || "BZFlag Servers" %>
+      </td>
+      <td id="callsign">
+	<%= @username %>
+      </td>
+    </tr>
+  </table>
 </div>
 <div id="columns">
   <div id="side">
@@ -28,9 +34,9 @@
       <% end %>
     </p>
     <p>
-      <%= link_to "Home", :controller => 'bzflag', :action => 'list' %>
+      <%= link_to "Home", :controller => 'bzflag', :action => 'index' %>
       <br />
-      <%= link_to "Servers", :controller => 'bzflag', :action => 'list' %>
+      <%= link_to "Servers", :controller => 'bzflag', :action => 'servers' %>
     </p>
     <p>
       <%= link_to "Forum", "http://my.bzflag.org/bb" %>
@@ -45,14 +51,14 @@
     <%= yield :layout %>
   </div>
 </div>
-<table width="100%" id="footer">
+<table id="footer">
   <tr>
     <td align="left" valign="top">
       &copy; 2005 - 2007 <a href="mailto:webmaster@norang.ca">Norang Consulting</a>
     </td>
     <td align="right" valign="top">
-      <a href="http://validator.w3.org/check?uri=referer"><img style="border:0" src="/valid-xhtml10.png" alt="Valid XHTML 1.0!" height="31" width="88" /></a>
-      <a href="http://jigsaw.w3.org/css-validator/"><img style="border:0;width:88px;height:31px" src="/vcss.gif" alt="Valid CSS!" /></a>
+      <a href="http://validator.w3.org/check?uri=referer"><img style="border:0" src="/images/valid-xhtml10.png" alt="Valid XHTML 1.0!" height="31" width="88" /></a>
+      <a href="http://jigsaw.w3.org/css-validator/"><img style="border:0;width:88px;height:31px" src="/images/vcss.gif" alt="Valid CSS!" /></a>
     </td>
   </tr>
 </table>
