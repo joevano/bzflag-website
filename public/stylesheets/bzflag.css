@@ -42,27 +42,37 @@
 /* Styles for main page */
 
 #banner {
-  background: #9c9;
+  background: #fff;
   padding-top: 10px;
   padding-bottom: 10px;
   border-bottom: 2px solid;
+  border-color: #999;
   font: small-caps 40px/40px "Times New Roman", serif;
-  color: #282;
+  color: #00b;
   text-align: center;
+  line-height: 2px;
 }
 
 #banner img {
   float: left;
 }
 
+#callsign {
+  float: right;
+  font: 15px/15px "Times New Roman", serif;
+  color: #b00;
+  text-align: center;
+  padding-right: 2em;
+}
+
 #columns {
-  background: #141;
+  background: #fff;
 }
 
 #main {
-  margin-left: 15em;
-  padding-top: 4ex;
-  padding-left: 2em;
+  margin-left: 0px;
+  padding-top: 1px;
+  padding-left: 0px;
   background: white;
 }
 
@@ -71,19 +81,21 @@
   padding-top: 1em;
   padding-left: 1em;
   padding-bottom: 1em;
-  width: 14em;
-  background: #141;
+  width: 5em;
+  background: #fff;
+  color: #999;
+  border-right: 2px solid;
 }
 
 #side a {
-  color: #bfb;
+  color: #00b;
   font-size: small;
 }
 
 h1 {
   font:  150% sans-serif;
-  color: #226;
-  border-bottom: 3px dotted #77d;
+  color: #00b;
+  border-bottom: 3px dotted #999;
 }
 
 /* An entry in the content catalog */
@@ -140,7 +152,7 @@ h1 {
 
 .bzflag-form legend {
   color: #dfd;
-  background: #141;
+  background: #fff;
   font-family: sans-serif;
   padding: 0.2em 1em;
 }
