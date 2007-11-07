@@ -15,13 +15,17 @@
     <%= @page_title || "BZFlag Servers" %>
   </p>
   <p id="callsign">
-  <%= @callsign %>
+  <%= @username %>
   </p>
 </div>
 <div id="columns">
   <div id="side">
     <p>
+      <% if @username %>
+      <%= link_to "Logout", :controller => 'login', :action => 'logout' %>
+      <% else %>
       <%= link_to "Login", :controller => 'login', :action => 'login' %>
+      <% end %>
     </p>
     <p>
       <%= link_to "Home", :controller => 'bzflag', :action => 'list' %>

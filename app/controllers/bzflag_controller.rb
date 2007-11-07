@@ -8,7 +8,7 @@ class BzflagController < ApplicationController
 
   def get_user
     @userid = session[:bzid]
-    @callsign = session[:callsign]
+    @username = session[:username]
   end
 
 end
