@@ -66,6 +66,13 @@
   padding-right: 2em;
 }
 
+#footnote {
+  border-top:2px solid #999999;
+  font-size:75%;
+  padding:1px;
+  text-align:left;
+}
+
 #columns {
   background: #fff;
 }
@@ -81,7 +88,7 @@
   float: left;
   padding-top: 1em;
   padding-left: 1em;
-  padding-bottom: 20em;
+  padding-bottom: 1em;
   width: 5em;
   background: #fff;
   color: #999;
