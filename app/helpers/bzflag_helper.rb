@@ -1,0 +1,2 @@
+module BzflagHelper
+end
