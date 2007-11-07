@@ -54,23 +54,35 @@
   line-height: 2px;
 }
 
+#banner table {
+  width: 100%;
+}
+
+#banner table td:first-child {
+  width: 10%;
+}
+
+#banner table td:last-child {
+  width: 10%;
+}
+
 #banner img {
   float: left;
 }
 
 #callsign {
-  float: right;
   font: 15px/15px "Times New Roman", serif;
   color: #b00;
-  text-align: center;
+  text-align: right;
   padding-right: 2em;
 }
 
-#footnote {
+#footer {
   border-top:2px solid #999999;
   font-size:75%;
   padding:1px;
   text-align:left;
+  width: 100%;
 }
 
 #columns {
