@@ -2,6 +2,8 @@ require 'net/http'
 
 class LoginController < ApplicationController
 
+  layout "bzflag"
+
   def login
   end
 
@@ -10,6 +12,7 @@ class LoginController < ApplicationController
     session[:bzid] = nil
     session[:groups] = nil
     session[:ip] = nil
+    redirect_to "/bzflag/index"
   end
 
   def validate
@@ -45,10 +48,7 @@ class LoginController < ApplicationController
           session[:bzid] = line.split(' ')[1]
         end
       end
-      flash[:notice] = "Login successful!"
-    else
-      flash[:notice] = "Login failed - bad token"
     end
-
+    redirect_to "/bzflag/index"
   end
 end
