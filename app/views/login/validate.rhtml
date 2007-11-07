@@ -4,14 +4,12 @@
 <%= flash[:notice] %>
 </p>
 
-<% if session[:debug] %>
   <p> Got the following response:
     <% for line in @response %>
     <br/><%= line %>
     <% end %>
   </p>
   <p>IP is <%= session[:ip] %></p>
-<% end %>
 
 <% if session[:username] %>
 <table>
