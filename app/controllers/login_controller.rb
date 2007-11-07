@@ -12,12 +12,13 @@ class LoginController < ApplicationController
     session[:bzid] = nil
     session[:groups] = nil
     session[:ip] = nil
+    session[:admin] = nil
     redirect_to "/bzflag/index"
   end
 
   def validate
-    @username = params[:username]
-    @token = params[:token]
+    username = params[:username]
+    token = params[:token]
 
     groups = ['NORANG.HIDE',
               'NORANG.RECORD',
@@ -26,7 +27,7 @@ class LoginController < ApplicationController
               'NORANG.SRADMIN',
               'NORANG.TRADMIN',
               'DEVELOPERS']
-    checktoken = "/db/?action=CHECKTOKENS&checktokens=#{@username}%3D#{@token}&groups=" + groups.join('%0D%0A')
+    checktoken = "/db/?action=CHECKTOKENS&checktokens=#{username}%3D#{token}&groups=" + groups.join('%0D%0A')
     @response = Net::HTTP.get('my.bzflag.org', checktoken)
 
     session[:username] = nil
@@ -34,6 +35,7 @@ class LoginController < ApplicationController
     session[:groups] = nil
     session[:debug] = nil
     session[:ip] = nil
+    session[:admin] = nil
     if @response.index('TOKGOOD: ')
       session[:ip] = request.remote_ip
       for line in @response
@@ -47,6 +49,18 @@ class LoginController < ApplicationController
         elsif line.index('BZID: ')
           session[:bzid] = line.split(' ')[1]
         end
+      end
+    end
+    if session[:groups]
+      g = session[:groups]
+      if g.index("NORANG.HIDE")
+        session[:admin] = true
+      elsif g.index("NORANG.JRADMIN")
+        session[:admin] = true
+      elsif g.index("NORANG.SRADMIN")
+        session[:admin] = true
+      elsif g.index("NORANG.TRADMIN")
+        session[:admin] = true
       end
     end
     redirect_to "/bzflag/index"
