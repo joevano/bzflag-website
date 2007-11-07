@@ -44,8 +44,6 @@
 
 #banner {
   background: #fff;
-  padding-top: 10px;
-  padding-bottom: 10px;
   border-bottom: 2px solid;
   border-color: #999;
   font: small-caps 40px/40px "Times New Roman", serif;
@@ -56,6 +54,7 @@
 
 #banner table {
   width: 100%;
+  background: #9cc;
 }
 
 #banner table td:first-child {
@@ -68,10 +67,11 @@
 
 #banner img {
   float: left;
+  border-color: #9cc;
 }
 
 #callsign {
-  font: 15px/15px "Times New Roman", serif;
+  font: 20px/20px "Times New Roman", serif;
   color: #b00;
   text-align: right;
   padding-right: 2em;
@@ -101,8 +101,8 @@
   padding-top: 1em;
   padding-left: 1em;
   padding-bottom: 1em;
-  width: 5em;
-  background: #fff;
+  width: 86px;
+  background: #9cc;
   color: #999;
   border-right: 2px solid;
 }
@@ -167,11 +167,12 @@ h1 {
 /* Styles for order form */
 
 .bzflag-form fieldset {
-  background: #efe;
+  background: #9cc;
+  color: #00b;
 }
 
 .bzflag-form legend {
-  color: #dfd;
+  color: #009;
   background: #fff;
   font-family: sans-serif;
   padding: 0.2em 1em;
