@@ -4,6 +4,7 @@
 #notice {
   border: 2px solid red;
   padding: 1em;
+  margin-left: 99px;
   margin-bottom: 2em;
   background-color: #f0f0f0;
   font: bold smaller sans-serif;
@@ -80,7 +81,7 @@
   float: left;
   padding-top: 1em;
   padding-left: 1em;
-  padding-bottom: 1em;
+  padding-bottom: 20em;
   width: 5em;
   background: #fff;
   color: #999;
