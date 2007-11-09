@@ -33,9 +33,20 @@ class BzflagController < ApplicationController
   def get_user
     @bzid = session[:bzid]
     @username = session[:username]
-    @admin = session[:admin]
+    @admin = is_admin()
     @groups = session[:groups]
     @ip = session[:ip]
   end
 
+  def is_admin
+    admin = false
+    if not session[:groups].nil?
+      ["NORANG.HIDE","NORANG.JRADMIN","NORANG.SRADMIN","NORANG.TRADMIN"].each do |grp|
+        if session[:groups].index(grp)
+          admin = true
+        end
+      end
+    end
+    admin
+  end
 end

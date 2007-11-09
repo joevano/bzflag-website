@@ -1,27 +1,18 @@
 <h1>Validate Token</h1>
 
-<p>
-<%= flash[:notice] %>
-</p>
-
-  <p> Got the following response:
-    <% for line in @response %>
-    <br/><%= line %>
-    <% end %>
-  </p>
-  <p>IP is <%= session[:ip] %></p>
-
 <% if session[:username] %>
 <table>
   <tr>
     <th>Username</th>
     <th>BZid</th>
     <th>Groups</th>
+    <th>Not Admin</th>
   </tr>
   <tr>
     <td><%= session[:username] %></td>
     <td><%= session[:bzid] %></td>
     <td><%= session[:groups] && session[:groups][0] %></td>
+    <td><%= session[:admin].nil? %></td>
   </tr>
   <% session[:groups] && 1.upto(session[:groups].length) do |i| %>
   <tr>

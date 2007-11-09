@@ -20,7 +20,6 @@ class LoginController < ApplicationController
     session[:bzid] = nil
     session[:groups] = nil
     session[:ip] = nil
-    session[:admin] = nil
     redirect_to "/bzflag/index"
   end
 
@@ -42,10 +41,10 @@ class LoginController < ApplicationController
     session[:bzid] = nil
     session[:groups] = nil
     session[:ip] = nil
-    session[:admin] = nil
     if response.index('TOKGOOD: ')
       session[:ip] = request.remote_ip
       for line in response
+        line.chomp!
         if line.index('TOKGOOD: ')
           data = line.split(' ',2)[1]
           session[:username] = data.split(':',2)[0]
@@ -56,18 +55,6 @@ class LoginController < ApplicationController
         elsif line.index('BZID: ')
           session[:bzid] = line.split(' ')[1]
         end
-      end
-    end
-    if session[:groups]
-      g = session[:groups]
-      if g.index("NORANG.HIDE")
-        session[:admin] = true
-      elsif g.index("NORANG.JRADMIN")
-        session[:admin] = true
-      elsif g.index("NORANG.SRADMIN")
-        session[:admin] = true
-      elsif g.index("NORANG.TRADMIN")
-        session[:admin] = true
       end
     end
     redirect_to "/bzflag/index"
