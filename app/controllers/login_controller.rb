@@ -36,17 +36,16 @@ class LoginController < ApplicationController
               'NORANG.TRADMIN',
               'DEVELOPERS']
     checktoken = "/db/?action=CHECKTOKENS&checktokens=#{username}%3D#{token}&groups=" + groups.join('%0D%0A')
-    @response = Net::HTTP.get('my.bzflag.org', checktoken)
+    response = Net::HTTP.get('my.bzflag.org', checktoken)
 
     session[:username] = nil
     session[:bzid] = nil
     session[:groups] = nil
-    session[:debug] = nil
     session[:ip] = nil
     session[:admin] = nil
-    if @response.index('TOKGOOD: ')
+    if response.index('TOKGOOD: ')
       session[:ip] = request.remote_ip
-      for line in @response
+      for line in response
         if line.index('TOKGOOD: ')
           data = line.split(' ',2)[1]
           session[:username] = data.split(':',2)[0]

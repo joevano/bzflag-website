@@ -1,5 +1,13 @@
 <h1>Home</h1>
 <p>Home page data goes here</p>
 <p>Username = <%= @username %> </p>
-<p>Admin = <%= @admin %>
- </p>
+<p>Admin = <%= @admin %> </p>
+<p>You are in the following groups</p>
+<table>
+  <% @groups and for x in @groups do %>
+  <tr>
+    <td><%= x %></td>
+  </tr>
+  <% end %>
+</table>
+<p> IP = <%= @ip %> </p>

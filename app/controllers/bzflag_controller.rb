@@ -34,6 +34,8 @@ class BzflagController < ApplicationController
     @userid = session[:bzid]
     @username = session[:username]
     @admin = session[:admin]
+    @groups = session[:groups]
+    @ip = session[:ip]
   end
 
 end
