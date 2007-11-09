@@ -4,6 +4,9 @@
 <p>Admin = <%= @admin %> </p>
 <p>You are in the following groups</p>
 <table>
+  <tr>
+    <th>Group Name</th>
+  </tr>
   <% @groups and for x in @groups do %>
   <tr>
     <td><%= x %></td>
