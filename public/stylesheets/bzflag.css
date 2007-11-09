@@ -61,10 +61,6 @@
   width: 10%;
 }
 
-#banner table td:last-child {
-  width: 10%;
-}
-
 #banner img {
   float: left;
   border-color: #9cc;
@@ -75,6 +71,7 @@
   color: #b00;
   text-align: right;
   padding-right: 2em;
+  width: 10%;
 }
 
 #footer {
