@@ -1,0 +1,9 @@
+<h1>Access Levels</h1>
+<table>
+  <tr>
+    <th>Name</th>
+  </tr>
+  <%= render(:partial => "access_level", :collection => @access_levels) %>
+</table>
+
+<p><%= button_to "Add", :action => :access_level_add %></p>
