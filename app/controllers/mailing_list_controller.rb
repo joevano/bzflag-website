@@ -5,6 +5,7 @@ class MailingListController < ApplicationController
 
   def index
     @action = "threads"
+    @xhtml_invalid = true
     render :template => "mailing_list/article"
   end
 
@@ -17,6 +18,7 @@ class MailingListController < ApplicationController
       @content = @content.sub(/^.*<body>/im, '')
       # Strip off the trailer
       @content = @content.sub(/<\/body>.*$/im, '')
+      @xhtml_invalid = true
     rescue
       flash[:notice] = "Can't find article"
     end
