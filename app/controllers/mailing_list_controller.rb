@@ -10,11 +10,15 @@ class MailingListController < ApplicationController
   def method_missing(action)
     @action = action
     file = "mailing_list/#{action}.html"
-    @content = IO.read(file)
-    # Strip off the header
-    @content = @content.sub(/^.*<body>/im, '')
-    # Strip off the trailer
-    @content = @content.sub(/<\/body>.*$/im, '')
+    begin
+      @content = IO.read(file)
+      # Strip off the header
+      @content = @content.sub(/^.*<body>/im, '')
+      # Strip off the trailer
+      @content = @content.sub(/<\/body>.*$/im, '')
+    rescue
+      @content = "<p>Can't find article</p>"
+    end
     render :template => "mailing_list/article", :layout => "bzflag"
   end
 end
