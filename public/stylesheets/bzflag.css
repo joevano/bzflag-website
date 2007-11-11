@@ -42,9 +42,9 @@
 /* Styles for main page */
 
 #banner {
-  background: #9cc;
+  background: #369;
   border-bottom: 2px solid #999;
-  color: #00b;
+  color: #fff;
   font: small-caps 40px/40px "Times New Roman", serif;
   text-align: center;
   overflow: auto;
@@ -58,7 +58,7 @@
 
 #callsign {
   font: 20px/20px "Times New Roman", serif;
-  color: #b00;
+  color: #ff0;
   text-align: right;
   float:right;
   padding-right: 2em;
@@ -79,10 +79,14 @@
 }
 
 #main {
-  margin-left: 0px;
   padding-top: 1px;
   padding-left: 5px;
   background: white;
+}
+
+
+#main {
+  margin-left: 100px;
 }
 
 #side {
@@ -91,13 +95,13 @@
   padding-left: 1em;
   padding-bottom: 1em;
   width: 84px;
-  background: #9cc;
-  color: #999;
+  background: #369;
+  color: #fff;
   border-right: 2px solid;
 }
 
 #side a {
-  color: #00b;
+  color: #fff;
   font-size: small;
 }
 
