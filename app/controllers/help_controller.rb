@@ -17,7 +17,7 @@ class HelpController < ApplicationController
       # Strip off the trailer
       @content = @content.sub(/<\/body>.*$/im, '')
     rescue
-      flash[:notice] = "Can't find help page: #{action}"
+      flash.now[:notice] = "Can't find help page: #{action}"
     end
     render :template => "mailing_list/article", :layout => "bzflag"
   end

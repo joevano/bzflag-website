@@ -18,7 +18,7 @@ class MailingListController < ApplicationController
       @content = @content.sub(/<\/body>.*$/im, '')
       @xhtml_invalid = true
     rescue
-      flash[:notice] = "Can't find article"
+      flash.now[:notice] = "Can't find article"
     end
     render :template => "mailing_list/article", :layout => "bzflag"
   end
