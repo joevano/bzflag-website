@@ -3,13 +3,11 @@ require 'fileutils'
 class MailingListController < ApplicationController
   before_filter :get_user
 
-  def index
-    @action = "threads"
-    @xhtml_invalid = true
-    render :template => "mailing_list/article"
-  end
-
   def method_missing(action)
+    if action = "index"
+      action = "threads"
+    end
+
     @action = action
     file = "mailing_list/#{action}.html"
     begin
