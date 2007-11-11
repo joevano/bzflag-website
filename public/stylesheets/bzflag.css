@@ -74,6 +74,10 @@
   clear: both;
 }
 
+#footer td {
+  border: 0
+}
+
 #columns {
   background: #fff;
 }
@@ -225,4 +229,91 @@ h1 {
 #errorExplanation ul li {
   font-size: 12px;
   list-style: square;
+}
+
+/* Crock stuff */
+body {
+	margin: 1em;
+	padding: 0;
+	color: #000;
+	font-family: "Bitstream Vera Sans", Verdana, sans-serif;
+	font-size: 85%;
+}
+
+div#contents {
+	background: #fff;
+	margin: 0;
+	padding: 0;
+}
+
+li a {
+     color: #139;
+     text-decoration: none;
+}
+
+li > p { 
+	padding: 0;
+	margin: 0;
+}
+
+div.title {
+	font-size: 220%;
+	font-weight: bold;
+	background: #eee;
+	padding: .25em .5em;
+	margin: 0;
+	border-top: 2px solid #000;
+	border-bottom: 2px solid #000;
+}
+
+h1 {
+	font-size: 180%;
+	border-bottom: 2px solid #ccc;
+}
+
+h2 {
+	font-size: 120%;
+	background: #eee;
+	padding: .2em;
+}
+
+h3 {
+	font-size: 110%;
+	text-decoration: underline;
+}
+
+tt {
+	color: #00f;
+}
+
+pre {
+	border: 1px solid #ccc;
+	background: #eee;
+	padding: .5em;
+	overflow: auto;
+}
+
+.notice {
+	text-align: right;
+	color: #888;
+}
+
+table {
+      font-size: 100%;
+      border-collapse: collapse;
+}
+
+td {
+   border: 1px solid #777;
+   padding: .3em;
+   margin: 2px;
+}
+
+span.underline {
+  text-decoration: underline;
+}
+
+.fixme {
+	background: #ff0;
+	font-weight: bold;
 }
