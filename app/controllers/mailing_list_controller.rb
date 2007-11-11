@@ -4,7 +4,7 @@ class MailingListController < ApplicationController
   before_filter :get_user
 
   def method_missing(action)
-    if action = "index"
+    if action == "index"
       action = "threads"
     end
 
