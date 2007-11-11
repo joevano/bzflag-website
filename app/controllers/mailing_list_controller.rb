@@ -1,5 +1,3 @@
-require 'fileutils'
-
 class MailingListController < ApplicationController
   before_filter :get_user
 
@@ -11,11 +9,7 @@ class MailingListController < ApplicationController
     @action = action
     file = "mailing_list/#{action}.html"
     begin
-      @content = IO.read(file)
-      # Strip off the header
-      @content = @content.sub(/^.*<body>/im, '')
-      # Strip off the trailer
-      @content = @content.sub(/<\/body>.*$/im, '')
+      @content = read_html_and_strip_to_body_content(file)
       @xhtml_invalid = true
     rescue
       flash.now[:notice] = "Can't find article"

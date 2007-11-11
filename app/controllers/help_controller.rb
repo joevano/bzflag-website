@@ -1,5 +1,3 @@
-require 'fileutils'
-
 class HelpController < ApplicationController
   before_filter :get_user
 
@@ -11,11 +9,7 @@ class HelpController < ApplicationController
     @action = action
     file = "help/#{action}.html"
     begin
-      @content = IO.read(file)
-      # Strip off the header
-      @content = @content.sub(/^.*<body class="crock">/im, '')
-      # Strip off the trailer
-      @content = @content.sub(/<\/body>.*$/im, '')
+      @content = read_html_and_strip_to_body_content(file)
     rescue
       flash.now[:notice] = "Can't find help page: #{action}"
     end
