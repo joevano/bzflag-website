@@ -9,8 +9,6 @@ config.common.update(env_config) unless env_config.nil?
 
 class LoginController < ApplicationController
 
-  layout "bzflag"
-
   def login
     @host = AppConfig.root_url
   end

@@ -1,5 +1,4 @@
 class MailingListController < ApplicationController
-  before_filter :get_user
 
   def method_missing(action)
     if action == "index"
@@ -14,6 +13,6 @@ class MailingListController < ApplicationController
     rescue
       flash.now[:notice] = "Can't find article"
     end
-    render :template => "mailing_list/article", :layout => "bzflag"
+    render :template => "mailing_list/article"
   end
 end

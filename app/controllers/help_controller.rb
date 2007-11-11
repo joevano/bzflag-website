@@ -1,5 +1,4 @@
 class HelpController < ApplicationController
-  before_filter :get_user
 
   def method_missing(action)
     if action == "index"
@@ -13,6 +12,6 @@ class HelpController < ApplicationController
     rescue
       flash.now[:notice] = "Can't find help page: #{action}"
     end
-    render :template => "mailing_list/article", :layout => "bzflag"
+    render :template => "mailing_list/article"
   end
 end

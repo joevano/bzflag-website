@@ -7,6 +7,10 @@ class ApplicationController < ActionController::Base
   # Pick a unique cookie name to distinguish our session data from others'
   session :session_key => '_bzflag.norang.ca_session_id'
 
+  before_filter :get_user
+
+  layout "bzflag"
+
   private
 
   def get_user
