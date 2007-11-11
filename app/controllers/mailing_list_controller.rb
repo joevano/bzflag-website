@@ -1,6 +1,7 @@
 require 'fileutils'
 
 class MailingListController < ApplicationController
+  before_filter :get_user
 
   def index
     @action = "threads"
