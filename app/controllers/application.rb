@@ -16,21 +16,29 @@ class ApplicationController < ActionController::Base
   def get_user
     @bzid = session[:bzid]
     @username = session[:username]
-    @admin = is_admin()
+    @jradmin = is_jradmin()
+    @sradmin = is_sradmin()
+    @tradmin = is_tradmin()
+    @hideadmin = is_hideadmin()
+    @admin = @jradmin or @sradmin or @tradmin or @hideadmin
     @groups = session[:groups]
     @ip = session[:ip]
   end
 
-  def is_admin
-    admin = false
-    if not session[:groups].nil?
-      ["NORANG.HIDE","NORANG.JRADMIN","NORANG.SRADMIN","NORANG.TRADMIN"].each do |grp|
-        if session[:groups].index(grp)
-          admin = true
-        end
-      end
-    end
-    admin
+  def is_hideadmin
+    session[:groups] and session[:groups].index("NORANG.HIDE")
+  end
+
+  def is_jradmin
+    session[:groups] and session[:groups].index("NORANG.JRADMIN")
+  end
+
+  def is_sradmin
+    session[:groups] and session[:groups].index("NORANG.SRADMIN")
+  end
+
+  def is_tradmin
+    session[:groups] and session[:groups].index("NORANG.TRADMIN")
   end
 
   def read_html_and_strip_to_body_content(file)
