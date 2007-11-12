@@ -1,2 +1,11 @@
 <h1>Servers</h1>
-<p>Server list goes here</p>
+<table>
+  <tr>
+    <th>Host</th>
+    <th>Port</th>
+    <th>Map Name</th>
+    <th>Chat</th>
+    <th>Filtered Chat</th>
+  </tr>
+  <%= render(:partial => "bz_server", :collection => @bz_servers) %>
+</table>

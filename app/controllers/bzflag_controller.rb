@@ -4,6 +4,7 @@ class BzflagController < ApplicationController
   end
 
   def servers
+    @bz_servers = BzServer.find(:all, :order => "server_host_id, port")
   end
 
   def help
