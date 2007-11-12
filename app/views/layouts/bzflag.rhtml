@@ -51,6 +51,11 @@
       <br />
       <%= link_to "Wiki", "http://my.bzflag.org/w" %>
    </p>
+   <% if @tradmin %>
+   <p>
+     <%= link_to "Configuration", :controller => 'config', :action => 'index' %>
+   </p>
+   <% end %>
   </div>
   <div id="main">
     <% if flash[:notice] -%>
