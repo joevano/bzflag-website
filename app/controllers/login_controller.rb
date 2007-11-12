@@ -18,6 +18,7 @@ class LoginController < ApplicationController
     session[:bzid] = nil
     session[:groups] = nil
     session[:ip] = nil
+    flash[:notice] = "Logged out."
     redirect_to "/bzflag/index"
   end
 
@@ -54,6 +55,9 @@ class LoginController < ApplicationController
           session[:bzid] = line.split(' ')[1]
         end
       end
+      flash[:notice] = "Login successful.  Welcome #{session[:username]}!"
+    else
+      flash[:notice] = "Login failed."
     end
     redirect_to "/bzflag/index"
   end
