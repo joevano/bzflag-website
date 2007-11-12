@@ -21,9 +21,26 @@ class ConfigController < ApplicationController
   end
 
   def access_level_del
+    if request.post?
+      access_level = AccessLevel.find(params[:id])
+      begin
+        access_level.destroy
+        flash[:notice] = "Access level #{access_level.name} deleted"
+      rescue Exception => e
+        flash[:notice] = e.message
+      end
+    end
+    redirect_to(:action => :access_level_list)
   end
 
   def access_level_edit
+    @access_level = AccessLevel.find(params[:id])
+    if request.post?
+      if @access_level.update_attributes(params[:access_level])
+        flash[:notice] = "Access level saved"
+        redirect_to :action=> :access_level_list
+      end
+    end
   end
 
   def server_host_add
