@@ -1,5 +1,4 @@
 class ConfigController < ApplicationController
-
   layout "bzflag"
 
   def index
@@ -10,6 +9,15 @@ class ConfigController < ApplicationController
   end
 
   def access_level_add
+    if request.post?
+      @access_level = AccessLevel.new(params[:access_level])
+      if @access_level.save
+        flash[:notice] = 'Access level was successfully created.'
+        redirect_to :action => 'access_level_list'
+      else
+        @access_level = AccessLevel.new()
+      end
+    end
   end
 
   def access_level_del

@@ -1,2 +1,9 @@
-<h1>Config#access_level_add</h1>
-<p>Find me in app/views/config/access_level_add.html.erb</p>
+<h1>Add Access Level</h1>
+<%= error_messages_for :access_level %>
+
+<% form_for :access_level do |form| %>
+  <p>Access Level Name: <%= form.text_field :name, :size => 30 %></p>
+  <p><%= submit_tag %> </p>
+<% end %>
+
+<%= link_to "Return to List", :action => :access_level_list %>
