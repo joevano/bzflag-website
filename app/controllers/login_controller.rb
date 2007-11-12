@@ -35,6 +35,7 @@ class LoginController < ApplicationController
               'DEVELOPERS']
     checktoken = "/db/?action=CHECKTOKENS&checktokens=#{username}%3D#{token}&groups=" + groups.join('%0D%0A')
     response = Net::HTTP.get('my.bzflag.org', checktoken)
+    logger.info('Token validation reponse for ' + username + ':' + response)
 
     session[:username] = nil
     session[:bzid] = nil
