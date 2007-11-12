@@ -1,2 +1,10 @@
-<h1>Config#group_list</h1>
-<p>Find me in app/views/config/group_list.html.erb</p>
+<h1>Groups</h1>
+<table>
+  <tr>
+    <th>Name</th>
+  </tr>
+  <%= render(:partial => "group", :collection => @groups) %>
+</table>
+
+<p><%= link_to "Add group", :action => :group_add %></p>
+<p><%= link_to "Configuration", :action => :index %></p>

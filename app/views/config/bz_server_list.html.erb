@@ -1,0 +1,10 @@
+<h1>BZFlag Servers</h1>
+<table>
+  <tr>
+    <th>Name</th><th>Port</th><th>Actions</th>
+  </tr>
+  <%= render(:partial => "bz_server", :collection => @bz_servers) %>
+</table>
+
+<p><%= link_to "Add BZFlag server", :action => :bz_server_add %></p>
+<p><%= link_to "Configuration", :action => :index %></p>

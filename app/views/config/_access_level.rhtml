@@ -1,5 +1,5 @@
 <tr>
   <td><%= access_level.name %></td>
   <td><%= link_to "Edit", :action => :access_level_edit, :id => access_level %></td>
-  <td><%= link_to "Delete", :action => :access_level_del, :id => access_level %></td>
+  <td><%= link_to "Delete", { :action => :access_level_del, :id => access_level }, :method => :post %></td>
 </tr>

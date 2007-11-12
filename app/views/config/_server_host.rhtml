@@ -1,0 +1,6 @@
+<tr>
+  <td><%= server_host.hostname %></td>
+  <td><%= server_host.owner %></td>
+  <td><%= link_to "Edit", :action => :server_host_edit, :id => server_host %></td>
+  <td><%= link_to "Delete", { :action => :server_host_del, :id => server_host }, :method => :post %></td>
+</tr>

@@ -1,0 +1,6 @@
+<tr>
+  <td><%= bz_server.server_host.hostname %></td>
+  <td><%= bz_server.port %></td>
+  <td><%= link_to "Edit", :action => :bz_server_edit, :id => bz_server %>
+      <%= link_to "Delete", { :action => :bz_server_del, :id => bz_server }, :method => :post %></td>
+</tr>
