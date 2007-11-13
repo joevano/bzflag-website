@@ -1,6 +1,7 @@
 require 'net/http'
 require 'ostruct'
 require 'yaml'
+require 'cgi'
 
 config = OpenStruct.new(YAML.load_file("#{RAILS_ROOT}/config/config.yml"))
 env_config = config.send(RAILS_ENV)
@@ -23,8 +24,8 @@ class LoginController < ApplicationController
   end
 
   def validate
-    username = params[:username]
-    token = params[:token]
+    username = CGI::escape(params[:username])
+    token = CGI::escape(params[:token])
 
     groups = ['NORANG.HIDE',
               'NORANG.RECORD',
@@ -34,6 +35,7 @@ class LoginController < ApplicationController
               'NORANG.TRADMIN',
               'DEVELOPERS']
     checktoken = "/db/?action=CHECKTOKENS&checktokens=#{username}%3D#{token}&groups=" + groups.join('%0D%0A')
+    logger.info(checktoken)
     response = Net::HTTP.get('my.bzflag.org', checktoken)
     logger.info('Token validation reponse for ' + username + ':' + response)
 
