@@ -58,7 +58,6 @@ class LoginController < ApplicationController
           session[:bzid] = line.split(' ')[1]
         end
       end
-      flash[:notice] = "Login successful.  Welcome #{session[:username]}!"
     else
       flash[:notice] = "Login failed."
     end
