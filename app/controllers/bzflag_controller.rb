@@ -23,6 +23,10 @@ class BzflagController < ApplicationController
   end
 
   def admins
+    @jradmins = Group.find_by_name("NORANG.JRADMIN").users.collect { |u| u.callsign }
+    @sradmins = Group.find_by_name("NORANG.JRADMIN").users.collect { |u| u.callsign }
+    @tradmins = Group.find_by_name("NORANG.JRADMIN").users.collect { |u| u.callsign }
+    @developers = Group.find_by_name("NORANG.JRADMIN").users.collect { |u| u.callsign }
   end
 
   def mailing_list

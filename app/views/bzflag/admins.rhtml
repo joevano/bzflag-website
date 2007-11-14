@@ -1,1 +1,28 @@
-<h1>Admins</h1>
+<h1>Administrator List</h1>
+<p>
+This list is populated as people visit and is probably not up to date with the global group lists.
+</p>
+<h2>Junior Admins</h2>
+<p>
+<% @jradmins.each do |x| %>
+<%= x %>
+<% end %>
+</p>
+<h2>Senior Admins</h2>
+<p>
+<% @sradmins.each do |x| %>
+<%= x %>
+<% end %>
+</p>
+<h2>Trusted Admins</h2>
+<p>
+<% @tradmins.each do |x| %>
+<%= x %>
+<% end %>
+</p>
+<h2>Developers</h2>
+<p>
+<% @developers.each do |x| %>
+<%= x %>
+<% end %>
+</p>
