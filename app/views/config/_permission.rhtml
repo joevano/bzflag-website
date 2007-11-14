@@ -1,0 +1,5 @@
+<tr>
+  <td><%= permission.name %></td>
+  <td><%= link_to "Edit", :action => :permission_edit, :id => permission %></td>
+  <td><%= link_to "Delete", { :action => :permission_del, :id => permission }, :method => :post %></td>
+</tr>

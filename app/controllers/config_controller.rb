@@ -4,39 +4,39 @@ class ConfigController < ApplicationController
   def index
   end
 
-  def access_level_list
-    @access_levels = AccessLevel.find(:all, :order => "name")
+  def permission_list
+    @permissions = Permission.find(:all, :order => "name")
   end
 
-  def access_level_add
+  def permission_add
     if request.post?
-      @access_level = AccessLevel.new(params[:access_level])
-      if @access_level.save
-        flash[:notice] = 'Access level was successfully created.'
-        redirect_to :action => 'access_level_list'
+      @permission = Permission.new(params[:permission])
+      if @permission.save
+        flash[:notice] = 'Permission was successfully created.'
+        redirect_to :action => 'permission_list'
       end
     end
   end
 
-  def access_level_del
+  def permission_del
     if request.post?
-      access_level = AccessLevel.find(params[:id])
+      permission = Permission.find(params[:id])
       begin
-        access_level.destroy
-        flash[:notice] = "Access level #{access_level.name} deleted"
+        permission.destroy
+        flash[:notice] = "Permission #{permission.name} deleted"
       rescue Exception => e
         flash[:notice] = e.message
       end
     end
-    redirect_to(:action => :access_level_list)
+    redirect_to(:action => :permission_list)
   end
 
-  def access_level_edit
-    @access_level = AccessLevel.find(params[:id])
+  def permission_edit
+    @permission = Permission.find(params[:id])
     if request.post?
-      if @access_level.update_attributes(params[:access_level])
-        flash[:notice] = "Access level saved"
-        redirect_to :action=> :access_level_list
+      if @permission.update_attributes(params[:permission])
+        flash[:notice] = "Permission saved"
+        redirect_to :action=> :permission_list
       end
     end
   end

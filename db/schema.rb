@@ -9,13 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 11) do
-
-  create_table "access_levels", :force => true do |t|
-    t.string   "name"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
+ActiveRecord::Schema.define(:version => 14) do
 
   create_table "bz_servers", :force => true do |t|
     t.datetime "created_at"
@@ -29,14 +23,25 @@ ActiveRecord::Schema.define(:version => 11) do
 
   create_table "groups", :force => true do |t|
     t.string   "name"
-    t.integer  "access_level_id"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "permission_id"
+  end
+
+  create_table "groups_permissions", :id => false, :force => true do |t|
+    t.integer "group_id"
+    t.integer "permission_id"
   end
 
   create_table "groups_users", :id => false, :force => true do |t|
     t.integer "group_id"
     t.integer "user_id"
+  end
+
+  create_table "permissions", :force => true do |t|
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "name"
   end
 
   create_table "server_hosts", :force => true do |t|

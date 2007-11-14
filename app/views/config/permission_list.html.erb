@@ -1,0 +1,10 @@
+<h1>Permissions</h1>
+<table>
+  <tr>
+    <th>Name</th>
+  </tr>
+  <%= render(:partial => "permission", :collection => @permissions) %>
+</table>
+
+<p><%= link_to "Add", :action => :permission_add %></p>
+<p><%= link_to "Configuration", :action => :index %></p>

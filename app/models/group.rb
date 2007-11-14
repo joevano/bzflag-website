@@ -1,6 +1,6 @@
 class Group < ActiveRecord::Base
   validates_uniqueness_of :name
   validates_presence_of :name
-  has_one :access_level
+  has_and_belongs_to_many :permissions
   has_and_belongs_to_many :users
 end

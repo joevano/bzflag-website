@@ -1,8 +1,0 @@
-<%= error_messages_for :access_level %>
-
-<% form_for :access_level do |form| %>
-  <p>Access Level Name: <%= form.text_field :name, :size => 30 %></p>
-  <p><%= submit_tag %> </p>
-<% end %>
-
-<%= link_to "Return to List", :action => :access_level_list %>
