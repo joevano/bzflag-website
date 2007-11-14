@@ -1,16 +1,2 @@
 <h1>Home</h1>
 <p>Home page data goes here</p>
-<p>Username = <%= @user && @user.callsign %> 
-<br /> Your BZid is <%= @user && @user.bzid %> </p>
-<p>You are in the following groups</p>
-<table>
-  <tr>
-    <th>Group Name</th>
-  </tr>
-  <% @groups && @groups.each do |x| %>
-  <tr>
-    <td><%= x %></td>
-  </tr>
-  <% end %>
-</table>
-<p>IP = <%= @user && @user.ip %></p>
