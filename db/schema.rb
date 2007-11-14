@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 14) do
+ActiveRecord::Schema.define(:version => 15) do
 
   create_table "bz_servers", :force => true do |t|
     t.datetime "created_at"
@@ -25,7 +25,6 @@ ActiveRecord::Schema.define(:version => 14) do
     t.string   "name"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "permission_id"
   end
 
   create_table "groups_permissions", :id => false, :force => true do |t|

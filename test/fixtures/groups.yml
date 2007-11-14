@@ -2,21 +2,16 @@
 none:
   id: 1
   name: None
-  access_level_id: 1
 jradmin:
   id: 2
   name: Junior Admin
-  access_level_id: 2
 sradmin:
   id: 3
   name: Senior Admin
-  access_level_id: 3
 tradmin:
   id: 4
   name: Trusted Admin
-  access_level_id: 4
 hidden_admin:
   id: 5
   name: Hidden Admin
-  access_level_id: 5
 
