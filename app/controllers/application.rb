@@ -14,31 +14,9 @@ class ApplicationController < ActionController::Base
   private
 
   def get_user
-    @bzid = session[:bzid]
-    @username = session[:username]
-    @jradmin = is_jradmin()
-    @sradmin = is_sradmin()
-    @tradmin = is_tradmin()
-    @hideadmin = is_hideadmin()
-    @admin = @jradmin || @sradmin || @tradmin || @hideadmin
-    @groups = session[:groups]
-    @ip = session[:ip]
-  end
-
-  def is_hideadmin
-    session[:groups] and !session[:groups].index("NORANG.HIDE").nil?
-  end
-
-  def is_jradmin
-    session[:groups] and !session[:groups].index("NORANG.JRADMIN").nil?
-  end
-
-  def is_sradmin
-    session[:groups] and !session[:groups].index("NORANG.SRADMIN").nil?
-  end
-
-  def is_tradmin
-    session[:groups] and !session[:groups].index("NORANG.TRADMIN").nil?
+    @user = session[:user_id] && User.find(session[:user_id]) || User.new
+    @groups = @user.groups.collect { |g| g.name } || []
+    @admin = @groups.length > 0
   end
 
   def read_html_and_strip_to_body_content(file)

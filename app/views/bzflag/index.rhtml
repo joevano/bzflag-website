@@ -1,21 +1,16 @@
 <h1>Home</h1>
 <p>Home page data goes here</p>
-<p>Username = <%= @username %> 
-<br /> Your BZid is <%= @bzid %> </p>
-<p>Admin = <%= @admin %> </p>
-<p>Junior Admin = <%= @jradmin %> </p>
-<p>Senior Admin = <%= @sradmin %> </p>
-<p>Trusted Admin = <%= @tradmin %> </p>
-<p>Hidden Admin = <%= @hideadmin %> </p>
+<p>Username = <%= @user && @user.callsign %> 
+<br /> Your BZid is <%= @user && @user.bzid %> </p>
 <p>You are in the following groups</p>
 <table>
   <tr>
     <th>Group Name</th>
   </tr>
-  <% @groups and for x in @groups do %>
+  <% @groups && @groups.each do |x| %>
   <tr>
     <td><%= x %></td>
   </tr>
   <% end %>
 </table>
-<p>IP = <%= @ip %></p>
+<p>IP = <%= @user && @user.ip %></p>

@@ -15,10 +15,7 @@ class LoginController < ApplicationController
   end
 
   def logout
-    session[:username] = nil
-    session[:bzid] = nil
-    session[:groups] = nil
-    session[:ip] = nil
+    session[:user_id] = nil
     flash[:notice] = "Logged out."
     redirect_to "/bzflag/index"
   end
@@ -27,37 +24,38 @@ class LoginController < ApplicationController
     username = CGI::escape(params[:username])
     token = CGI::escape(params[:token])
 
-    groups = ['NORANG.HIDE',
-              'NORANG.RECORD',
-              'NORANG.REPLAY',
-              'NORANG.JRADMIN',
-              'NORANG.SRADMIN',
-              'NORANG.TRADMIN',
-              'DEVELOPERS']
-    checktoken = "/db/?action=CHECKTOKENS&checktokens=#{username}%3D#{token}&groups=" + groups.join('%0D%0A')
+    all_groups = Group.find(:all).collect { |grp| grp.name }
+
+    checktoken = "/db/?action=CHECKTOKENS&checktokens=#{username}%3D#{token}&groups=" + all_groups.join('%0D%0A')
     logger.info(checktoken)
     response = Net::HTTP.get('my.bzflag.org', checktoken)
     logger.info('Token validation reponse for ' + username + ':' + response)
 
-    session[:username] = nil
-    session[:bzid] = nil
-    session[:groups] = nil
-    session[:ip] = nil
+    session[:user_id] = ip = bzid = groups = nil
     if response.index('TOKGOOD: ')
-      session[:ip] = request.remote_ip
+      ip = request.remote_ip
       for line in response
         line.chomp!
         if line.index('TOKGOOD: ')
           data = line.split(' ',2)[1]
-          session[:username] = data.split(':',2)[0]
           groups = data.split(':',2)[1]
-          if groups
-            session[:groups] = groups.split(':')
-          end
+          groups = groups && groups.split(':')
         elsif line.index('BZID: ')
-          session[:bzid] = line.split(' ')[1]
+          bzid = line.split(' ')[1]
         end
       end
+      # Find or create the user
+      u = User.find_by_bzid(bzid) || User.new
+      u.bzid = bzid
+      u.callsign = username
+      u.ip = request.remote_ip
+      u.save
+      session[:user_id] = u.id
+
+      # Update the groups this user is associated with
+      groups = groups || []
+      newgroups = groups.collect { |g| Group.find_by_name(g) }
+      u.groups.replace(newgroups)
     else
       flash[:notice] = "Login failed."
     end

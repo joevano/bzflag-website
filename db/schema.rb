@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 9) do
+ActiveRecord::Schema.define(:version => 11) do
 
   create_table "access_levels", :force => true do |t|
     t.string   "name"
@@ -34,6 +34,11 @@ ActiveRecord::Schema.define(:version => 9) do
     t.datetime "updated_at"
   end
 
+  create_table "groups_users", :id => false, :force => true do |t|
+    t.integer "group_id"
+    t.integer "user_id"
+  end
+
   create_table "server_hosts", :force => true do |t|
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -55,6 +60,7 @@ ActiveRecord::Schema.define(:version => 9) do
     t.string   "callsign"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "ip"
   end
 
 end
