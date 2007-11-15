@@ -21,12 +21,12 @@ class LoginController < ApplicationController
   end
 
   def validate
-    username = CGI::escape(params[:username])
-    token = CGI::escape(params[:token])
+    username = params[:username]
+    token = params[:token]
 
     all_groups = Group.find(:all).collect { |grp| grp.name }
 
-    checktoken = "/db/?action=CHECKTOKENS&checktokens=#{username}%3D#{token}&groups=" + all_groups.join('%0D%0A')
+    checktoken = "/db/?action=CHECKTOKENS&checktokens=#{CGI::escape(username)}%3D#{CGI::escape(token)}&groups=" + all_groups.join('%0D%0A')
     logger.info(checktoken)
     response = Net::HTTP.get('my.bzflag.org', checktoken)
     logger.info('Token validation reponse for ' + username + ':' + response)
