@@ -9,8 +9,6 @@ class ApplicationController < ActionController::Base
 
   before_filter :get_user
 
-  layout "bzflag"
-
   private
 
   def get_user

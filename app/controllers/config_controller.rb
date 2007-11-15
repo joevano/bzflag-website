@@ -1,5 +1,4 @@
 class ConfigController < ApplicationController
-  layout "bzflag"
 
   def index
   end
