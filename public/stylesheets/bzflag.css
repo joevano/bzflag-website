@@ -42,7 +42,6 @@
 
 #banner {
   background: #369;
-  border-bottom: 2px solid #999;
   color: #fff;
   font: small-caps 40px/40px "Times New Roman", serif;
   text-align: center;
@@ -52,7 +51,7 @@
 
 #banner img {
   float: left;
-  border-right: 2px solid #999;
+  border: 2px solid #369;
 }
 
 #callsign {
@@ -88,7 +87,7 @@
 }
 
 #main {
-  margin-left: 100px;
+  margin-left: 105px;
 }
 
 #side {
@@ -96,10 +95,9 @@
   padding-top: 1em;
   padding-left: 1em;
   padding-bottom: 1em;
-  width: 87px;
+  width: 90px;
   background: #369;
   color: #fff;
-  border-right: 2px solid #999;
 }
 
 #side a {
