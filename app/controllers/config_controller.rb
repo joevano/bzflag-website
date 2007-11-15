@@ -4,6 +4,7 @@ class ConfigController < ApplicationController
   end
 
   def permission_list
+    @groups = Group.find(:all, :order => "name")
     @permissions = Permission.find(:all, :order => "name")
   end
 
