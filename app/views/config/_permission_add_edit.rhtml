@@ -1,8 +1,0 @@
-<%= error_messages_for :permission %>
-
-<% form_for :permission do |form| %>
-  <p>Permission Name: <%= form.text_field :name, :size => 30 %></p>
-  <p><%= submit_tag %> </p>
-<% end %>
-
-<%= link_to "Return to List", :action => :permission_list %>

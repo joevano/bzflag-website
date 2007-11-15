@@ -7,39 +7,6 @@ class ConfigController < ApplicationController
     @permissions = Permission.find(:all, :order => "name")
   end
 
-  def permission_add
-    if request.post?
-      @permission = Permission.new(params[:permission])
-      if @permission.save
-        flash[:notice] = 'Permission was successfully created.'
-        redirect_to :action => 'permission_list'
-      end
-    end
-  end
-
-  def permission_del
-    if request.post?
-      permission = Permission.find(params[:id])
-      begin
-        permission.destroy
-        flash[:notice] = "Permission #{permission.name} deleted"
-      rescue Exception => e
-        flash[:notice] = e.message
-      end
-    end
-    redirect_to(:action => :permission_list)
-  end
-
-  def permission_edit
-    @permission = Permission.find(params[:id])
-    if request.post?
-      if @permission.update_attributes(params[:permission])
-        flash[:notice] = "Permission saved"
-        redirect_to :action=> :permission_list
-      end
-    end
-  end
-
   def server_host_add
     if request.post?
       @server_host = ServerHost.new(params[:server_host])
