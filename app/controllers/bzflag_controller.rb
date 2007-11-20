@@ -5,6 +5,10 @@ class BzflagController < ApplicationController
 
   def servers
     @bz_servers = BzServer.find(:all, :order => "server_host_id, port")
+    respond_to do |format|
+      format.html
+      format.xml { render :xml => @bz_servers.to_xml() }
+    end
   end
 
   def help
