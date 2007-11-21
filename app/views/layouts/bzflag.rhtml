@@ -10,19 +10,9 @@
 </head>
 <body id="bzflag">
 <div id="banner">
-  <table>
-    <tr>
-      <td>
-	<%= image_tag("logo.png") %>
-      </td>
-      <td>
-	<%= @page_title || "BZFlag Servers" %>
-      </td>
-      <td id="callsign">
-	<%= @username %>
-      </td>
-    </tr>
-  </table>
+  <%= image_tag("logo.png") %>
+  <span id="callsign"><%= @username %></span>
+  <%= @page_title || "BZFlag Servers" %>
 </div>
 <div id="columns">
   <div id="side">

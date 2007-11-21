@@ -31,7 +31,7 @@ class BzflagController < ApplicationController
   private
 
   def get_user
-    @userid = session[:bzid]
+    @bzid = session[:bzid]
     @username = session[:username]
     @admin = session[:admin]
     @groups = session[:groups]
