@@ -6,7 +6,6 @@ xml.server_list() do
       xml.map_name(s.map_name)
       xml.last_chat_at(s.last_chat_at)
       xml.last_filtered_chat_at(s.last_filtered_chat_at)
-      xml.special_test_field_just_for_tanner()
     end
   end
 end
