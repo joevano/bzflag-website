@@ -18,7 +18,7 @@ class MailingListController < ApplicationController
       # Strip off the trailer
       @content = @content.sub(/<\/body>.*$/im, '')
     rescue
-      @content = "<p>Can't find article</p>"
+      flash[:notice] = "Can't find article"
     end
     render :template => "mailing_list/article", :layout => "bzflag"
   end
