@@ -14,7 +14,7 @@ class ApplicationController < ActionController::Base
   def get_user
     @user = session[:user_id] && User.find(session[:user_id]) || User.new
     @groups = @user.groups.collect { |g| g.name } || []
-    @admin = @groups.length > 0
+    @admin = @groups.length > 0 || (User.count == 1 && @user.id)
   end
 
   def read_html_and_strip_to_body_content(file)
