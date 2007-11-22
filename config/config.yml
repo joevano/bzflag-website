@@ -1,0 +1,8 @@
+common:
+  support_email: you@yourdomain.com
+  root_url: websitevhost.yourdomain.com
+
+production:
+
+development:
+  root_url: localhost:3000
