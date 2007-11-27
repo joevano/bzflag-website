@@ -20,7 +20,7 @@
       <%= link_to "Home", :controller => 'bzflag', :action => 'index' %>
       <br />
       <%= link_to "Servers", :controller => 'bzflag', :action => 'servers' %>
-      <% if @admin %>
+      <% if @admin_menu %>
       <br />
       <%= link_to "Reports", :controller => 'bzflag', :action => 'reports' %>
       <br />
@@ -37,7 +37,7 @@
       <%= link_to "Help", :controller => 'help', :action => 'index' %>
       <% end %>
     </p>
-   <% if @admin %>
+   <% if @configuration_menu %>
    <p>
      <%= link_to "Configuration", :controller => 'config', :action => 'index' %>
    </p>

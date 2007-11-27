@@ -13,8 +13,10 @@ class ApplicationController < ActionController::Base
 
   def get_user
     @user = session[:user_id] && User.find(session[:user_id]) || User.new
-    @groups = @user.groups.collect { |g| g.name } || []
-    @admin = @groups.length > 0 || (User.count == 1 && @user.id)
+    admin_menu_permission = Permission.find_by_name("Admin Menu")
+    configuration_menu_permission = Permission.find_by_name("Configuration Menu") || (User.count == 1 && @user.id)
+    @admin_menu = @user.permissions.index(admin_menu_permission)
+    @configuration_menu = @user.permissions.index(configuration_menu_permission)
   end
 
   def read_html_and_strip_to_body_content(file)
