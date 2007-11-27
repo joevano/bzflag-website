@@ -10,11 +10,15 @@
   <tr>
     <td><%= grp.name %></td>
     <% @permissions.each do |p| -%>
-    <td><%= check_box_tag "grp[#{grp.id}][#{p.name}]" %> </td>
-    <% end -%>
+      <% if grp.permissions.index(p) %>
+        <td><%= check_box_tag("grp[#{grp.id}][#{p.name}]", 1, checked=true) %></td>
+      <% else -%>
+        <td><%= check_box_tag("grp[#{grp.id}][#{p.name}]", 0 ) %> </td>
+      <% end -%>
+    <% end %>
   </tr>
   <% end -%>
 </table>
 
-<%= button_to :Save %>
+<%= button_to :save %>
 <% end %>
