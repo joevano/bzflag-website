@@ -6,6 +6,20 @@ class ConfigController < ApplicationController
   def permission_list
     @groups = Group.find(:all, :order => "name")
     @permissions = Permission.find(:all, :order => "name")
+
+    # Replace the permissions with whatever is checked
+    if request.post?
+      @groups.each do |g|
+        newperms = []
+        @permissions.each do |p|
+          if params["g#{g.id}p#{p.id}"]
+            newperms << p
+          end
+        end
+        g.permissions.replace(newperms)
+      end
+      flash.now[:notice] = "Permissions updated"
+    end
   end
 
   def server_host_add

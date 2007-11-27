@@ -313,3 +313,7 @@ span.underline {
 	background: #ff0;
 	font-weight: bold;
 }
+
+table.permissions td {
+  text-align: center;
+}
