@@ -1,4 +1,5 @@
 class BzflagController < ApplicationController
+  before_filter :authorize, :except => [ :index, :servers ]
 
   def index
   end
@@ -24,5 +25,14 @@ class BzflagController < ApplicationController
   end
 
   def mailing_list
+  end
+
+  private
+
+  def authorize
+    unless @admin_menu_perm
+      flash[:notice] = "Access Denied."
+      redirect_to(:controller => "bzflag", :action => "index")
+    end
   end
 end

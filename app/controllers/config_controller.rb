@@ -1,4 +1,5 @@
 class ConfigController < ApplicationController
+  before_filter :authorize
 
   def index
   end
@@ -132,6 +133,15 @@ class ConfigController < ApplicationController
         flash[:notice] = "BZFlag Server saved"
         redirect_to :action=> :bz_server_list
       end
+    end
+  end
+
+  private
+
+  def authorize
+    unless @configuration_menu_perm
+      flash[:notice] = "Access Denied."
+      redirect_to(:controller => "bzflag", :action => "index")
     end
   end
 end
