@@ -5,8 +5,8 @@ class ConfigController < ApplicationController
   end
 
   def permission_list
-    @groups = Group.find(:all, :order => "name")
-    @permissions = Permission.find(:all, :order => "name")
+    @groups = Group.find(:all, :order => "id")
+    @permissions = Permission.find(:all, :order => "id")
 
     # Replace the permissions with whatever is checked
     if request.post?
@@ -61,7 +61,7 @@ class ConfigController < ApplicationController
   end
 
   def group_list
-    @groups = Group.find(:all, :order => "name")
+    @groups = Group.find(:all, :order => "id")
   end
 
   def group_add
@@ -141,7 +141,7 @@ class ConfigController < ApplicationController
   def authorize
     unless @configuration_menu_perm
       flash[:notice] = "Access Denied."
-      redirect_to(:controller => "bzflag", :action => "index")
+      redirect_to(:controller => "bzflag", :action => "id")
     end
   end
 end

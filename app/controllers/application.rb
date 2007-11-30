@@ -25,7 +25,13 @@ class ApplicationController < ActionController::Base
     @user = (session[:user_id] && User.find(session[:user_id])) || User.new
     permissions = @user.permissions
     @admin_menu_perm = permissions.index(Permission.find_by_name(ADMIN_MENU_PERM))
-    @configuration_menu_perm = permissions.index(Permission.find_by_name(CONFIGURATION_MENU_PERM)) || (User.count == 1 && @user.id)
+    cfg_menu_p = Permission.find_by_name(CONFIGURATION_MENU_PERM)
+    @configuration_menu_perm = permissions.index(cfg_menu_p)
+    if cfg_menu_p.groups.count == 0
+      @configuration_menu_perm = true
+      flash[:notice] = "<strong>Configuration Menu unrestricted - anyone can edit permissions</strong>"
+      flash[:notice] += "<br>Add the 'Configuration Menu' to at least one group"
+    end
     @ban_perm = permissions.index(Permission.find_by_name(BAN_PERM))
     @logs_perm = permissions.index(Permission.find_by_name(LOGS_PERM))
     @map_upload_perm = permissions.index(Permission.find_by_name(MAP_UPLOAD_PERM))
