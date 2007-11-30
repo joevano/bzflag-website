@@ -1,11 +1,11 @@
 <h1>Servers</h1>
 <table>
   <tr>
-    <th>Host</th>
-    <th>Port</th>
-    <th>Map Name</th>
-    <th>Chat</th>
-    <th>Filtered Chat</th>
+    <th><%= link_to "Host", :action => "servers", :sort => "host" %></th>
+    <th><%= link_to "Port", :action => "servers", :sort => "port" %></th>
+    <th><%= link_to "Map Name", :action => "servers", :sort => "map_name" %></th>
+    <th><%= link_to "Chat", :action => "servers", :sort => "chat" %></th>
+    <th><%= link_to "Filtered Chat", :action => "servers", :sort => "filtered_chat" %></th>
   </tr>
   <%= render(:partial => "bz_server", :collection => @bz_servers) %>
 </table>
