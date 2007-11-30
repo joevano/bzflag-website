@@ -127,7 +127,7 @@ class ConfigController < ApplicationController
 
   def bz_server_edit
     @bz_server = BzServer.find(params[:id])
-    @server_hosts = ServerHosts.find(:all, :order => "hostname")
+    @server_hosts = ServerHost.find(:all, :order => "hostname")
     if request.post?
       if @bz_server.update_attributes(params[:bz_server])
         flash[:notice] = "BZFlag Server saved"
