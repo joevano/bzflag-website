@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 16) do
+ActiveRecord::Schema.define(:version => 18) do
 
   create_table "bz_servers", :force => true do |t|
     t.datetime "created_at"
@@ -35,6 +35,12 @@ ActiveRecord::Schema.define(:version => 16) do
   create_table "groups_users", :id => false, :force => true do |t|
     t.integer "group_id"
     t.integer "user_id"
+  end
+
+  create_table "log_types", :force => true do |t|
+    t.string   "token"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "permissions", :force => true do |t|
