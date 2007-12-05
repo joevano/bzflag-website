@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 19) do
+ActiveRecord::Schema.define(:version => 22) do
 
   create_table "bz_servers", :force => true do |t|
     t.datetime "created_at"
@@ -19,6 +19,23 @@ ActiveRecord::Schema.define(:version => 19) do
     t.string   "map_name"
     t.datetime "last_chat_at"
     t.datetime "last_filtered_chat_at"
+    t.integer  "current_player_count"
+  end
+
+  create_table "callsigns", :force => true do |t|
+    t.string   "callsign"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "current_players", :force => true do |t|
+    t.integer  "bz_server_id"
+    t.boolean  "is_verified"
+    t.boolean  "is_admin"
+    t.integer  "callsign_id"
+    t.string   "email"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "groups", :force => true do |t|
