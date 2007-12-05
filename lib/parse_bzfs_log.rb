@@ -6,6 +6,34 @@ def usage
   exit 1
 end
 
+def get_callsign(msg, skip=2)
+  begin
+    colon = msg.index(":")
+    length = msg[0..colon-1].to_i
+    callsign = msg[colon+1..colon+length]
+    msg = msg[colon+skip+length..-1]
+  rescue
+    callsign = "UNKNOWN"
+  end
+  return callsign , msg
+end
+
+def parse_player_email(data)
+  # Parse player data that looks like this:
+  #
+  # [+]9:Bad Sushi() [+]10:spatialgur(15:spatialguru.com) [@]12:drunk driver()
+  data =~ /\[(.)\]([^\(]*)\(([^\)]*\)) ?(.*)/
+  v, callsign, email, data = "#$1", "#$2", "#$3", "#$4"
+  callsign, junk = get_callsign(callsign)
+  email, junk = get_callsign(email)
+  if email == 'UNKNOWN'
+    email = ''
+  else
+    email = '(' + email + ')'
+  end
+  return v, callsign, email, data
+end
+
 # Initialization
 #
 # Get the server host and BZFlag server record ids
@@ -59,27 +87,46 @@ log_types = {
 STDIN.each do |line|
   date, log_type, detail = line.chomp.split(' ', 3)
   log_type_id = log_types[log_type]
-  if log_type_id
-    log = Log.new(:logged_at => date, :log_type_id => log_type_id)
+  log = Log.new(:logged_at => date, :log_type_id => log_type_id)
 
-    case log_type
-    when PLAYER_JOIN
-    when PLAYER_PART
-    when PLAYER_AUTH
-    when SERVER_STATUS
-      log.message = detail
-    when MSG_BROADCAST
-    when MSG_FILTERED
-    when MSG_DIRECT
-    when MSG_TEAM
-    when MSG_REPORT 
-    when MSG_COMMAND
-    when MSG_ADMINS
-    when PLAYERS
+  case log_type
+  when PLAYER_JOIN
+  when PLAYER_PART
+  when PLAYER_AUTH
+  when SERVER_STATUS
+    log.message = detail
+  when MSG_BROADCAST
+  when MSG_FILTERED
+  when MSG_DIRECT
+  when MSG_TEAM
+  when MSG_REPORT
+  when MSG_COMMAND
+  when MSG_ADMINS
+  when PLAYERS
+    log.log_type_id = nil
+    count, callsigns = detail.split(" ", 2)
+    count = count.slice(1..-2).to_i
+    bz_server.current_player_count = count
+    bz_server.save!
+    bz_server.current_players.destroy_all
+    1.upto(count) do
+      verified, callsign, email, detail = parse_player_email(detail)
+      cs = Callsign.locate(callsign)
+      cp = CurrentPlayer.new(:bz_server_id => bz_server.id, :callsign_id => cs.id, :email => email)
+
+      case verified
+      when "+"
+        cp.is_verified = true
+      when "@"
+        cp.is_verified = true
+        cp.is_admin = true
+      end
+      cp.save!
+      bz_server.current_players << cp
     end
+  end
 
+  if log.log_type_id
     log.save!
-
-    puts "#{server_host.id}-#{bz_server.id} date = #{date}, log_type = #{log_type_id}, detail = #{detail}"
   end
 end
