@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 22) do
+ActiveRecord::Schema.define(:version => 25) do
 
   create_table "bz_servers", :force => true do |t|
     t.datetime "created_at"
@@ -28,11 +28,7 @@ ActiveRecord::Schema.define(:version => 22) do
     t.datetime "updated_at"
   end
 
-  create_table "current_players", :force => true do |t|
-    t.integer  "bz_server_id"
-    t.boolean  "is_verified"
-    t.boolean  "is_admin"
-    t.integer  "callsign_id"
+  create_table "emails", :force => true do |t|
     t.string   "email"
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -52,6 +48,13 @@ ActiveRecord::Schema.define(:version => 22) do
   create_table "groups_users", :id => false, :force => true do |t|
     t.integer "group_id"
     t.integer "user_id"
+  end
+
+  create_table "ips", :force => true do |t|
+    t.string   "ip"
+    t.string   "hostname"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "log_types", :force => true do |t|
@@ -75,6 +78,21 @@ ActiveRecord::Schema.define(:version => 22) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "name"
+  end
+
+  create_table "player_connections", :force => true do |t|
+    t.integer  "bz_server_id"
+    t.integer  "callsign_id"
+    t.boolean  "is_verified"
+    t.boolean  "is_admin"
+    t.integer  "email_id"
+    t.boolean  "website_access"
+    t.integer  "bzid"
+    t.integer  "ip_id"
+    t.datetime "join_at"
+    t.datetime "part_at"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "server_hosts", :force => true do |t|
