@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
 require 'config/environment'
+require 'time'
 
 def usage
   puts "usage: parse_bzfs_log.rb HOST:PORT"
@@ -91,7 +92,43 @@ STDIN.each do |line|
 
   case log_type
   when PLAYER_JOIN
+    callsign, detail = get_callsign(detail)
+    cs = Callsign.locate(callsign)
+    slot, detail = detail.split(' ', 2)
+    slot = slot[1..-1]
+    bzid = nil
+    if detail =~ /^BZid:/
+      bzid, detail = detail.split(' ', 2)
+      bzid = bzid[5..-1]
+    end
+    team, detail = detail.split(' ', 2)
+    t = Team.locate(team)
+    ip, detail = detail.split(' ', 2)
+    if ip =~ /^IP:/
+      ip = ip[3..-1]
+    end
+    ip = Ip.locate(ip)
+
+    is_verified = detail =~ /VERIFIED/
+    is_globaluser = detail =~ /GLOBALUSER/
+    is_admin = detail =~ /ADMIN/
+
+    pc = PlayerConnection.create!(:bz_server => bz_server,
+                                  :join_at => date,
+                                  :ip => ip,
+                                  :callsign => cs,
+                                  :is_verified => is_verified,
+                                  :is_admin => is_admin,
+                                  :bzid => bzid,
+                                  :team => t)
+
   when PLAYER_PART
+    begin
+      pc = PlayerConnection.find(:first, :conditions => "bz_server_id = #{bz_server.id} and part_at is null")
+      pc.part_at = date
+      pc.save!
+    rescue
+    end
   when PLAYER_AUTH
   when SERVER_STATUS
     log.message = detail
@@ -108,21 +145,12 @@ STDIN.each do |line|
     count = count.slice(1..-2).to_i
     bz_server.current_player_count = count
     bz_server.save!
-    bz_server.current_players.destroy_all
-    1.upto(count) do
-      verified, callsign, email, detail = parse_player_email(detail)
-      cs = Callsign.locate(callsign)
-      cp = CurrentPlayer.new(:bz_server_id => bz_server.id, :callsign_id => cs.id, :email => email)
-
-      case verified
-      when "+"
-        cp.is_verified = true
-      when "@"
-        cp.is_verified = true
-        cp.is_admin = true
+    if count == 0
+      # Close out all player connections for this server
+      PlayerConnection.find(:all, :conditions => "bz_server_id = #{bz_server.id} and part_at is null").each do |pc|
+        pc.part_at = date
+        pc.save!
       end
-      cp.save!
-      bz_server.current_players << cp
     end
   end
 
