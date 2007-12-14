@@ -1,6 +1,6 @@
 class PlayerConnection < ActiveRecord::Base
-  has_one :email
-  has_one :bz_server
-  has_one :callsign
-  has_one :ip
+  belongs_to :email
+  belongs_to :bz_server
+  belongs_to :callsign
+  belongs_to :ip
 end
