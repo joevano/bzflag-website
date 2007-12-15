@@ -103,7 +103,7 @@ STDIN.each do |line|
   case log_type
 
   when PLAYER_JOIN
-    cs, detail = get_callsign(detail)
+    callsign, detail = get_callsign(detail)
     slot, detail = detail.split(' ', 2)
     slot = slot[1..-1]
     bzid = nil
@@ -125,48 +125,48 @@ STDIN.each do |line|
     pc = PlayerConnection.create!(:bz_server => bz_server,
                                   :join_at => date,
                                   :ip => ip,
-                                  :callsign => cs,
+                                  :callsign => callsign,
                                   :is_verified => is_verified,
                                   :is_admin => is_admin,
                                   :bzid => bzid,
-                                  :team => team)
+                                  :team => team,
+                                  :slot => slot)
 
-    log.callsign_id = cs.id
+    log.callsign_id = callsign.id
     log.bzid = bzid
 
   when PLAYER_PART
-    cs, detail = get_callsign(detail)
-    begin
-      pc = PlayerConnection.find(:first, :conditions => "bz_server_id = #{bz_server.object_id} and part_at is null and callsign_id = #{callsign.object_id}")
+    callsign, detail = get_callsign(detail)
+    pc = PlayerConnection.find(:first, :conditions => "bz_server_id = #{bz_server.id} and part_at is null and callsign_id = #{callsign.id}")
+    if pc
       pc.part_at = date
       pc.save!
-    rescue
     end
 
-    log.callsign_id = cs.id
+    log.callsign_id = callsign.id
 
   when PLAYER_AUTH
-    cs, detail = get_callsign(detail)
+    callsign, detail = get_callsign(detail)
     begin
       pc = PlayerConnection.find(:first, :conditions => "bz_server_id = #{bz_server.id} and part_at is null and callsign_id = #{callsign.id}")
       pc.is_verified = true
       pc.save!
     rescue
     end
-    log.callsign_id = cs.id
+    log.callsign_id = callsign.id
 
   when SERVER_STATUS
     log.message = detail
 
   when MSG_BROADCAST, MSG_FILTERED, MSG_DIRECT, MSG_REPORT, MSG_COMMAND, MSG_ADMINS
-    cs, detail = get_callsign(detail)
-    log.callsign_id = cs.id
+    callsign, detail = get_callsign(detail)
+    log.callsign_id = callsign.id
     log.message = detail
 
   when MSG_TEAM
-    cs, detail = get_callsign(detail)
+    callsign, detail = get_callsign(detail)
     team, detail = get_team(detail)
-    log.callsign_id = cs.id
+    log.callsign_id = callsign.id
     log.message = detail
     log.team_id = team.id
 
