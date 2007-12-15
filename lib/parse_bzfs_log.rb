@@ -64,8 +64,6 @@ if server_host.nil? || bz_server.nil?
   exit 1
 end
 
-puts("Server Host: #{server_host.id}, Bz Server = #{bz_server.id}")
-
 # Log Type Constants
 PLAYER_JOIN = 'PLAYER-JOIN'
 PLAYER_PART = 'PLAYER-PART'
@@ -103,6 +101,7 @@ STDIN.each do |line|
   log = Log.new(:logged_at => date, :log_type_id => log_type_id)
 
   case log_type
+
   when PLAYER_JOIN
     cs, detail = get_callsign(detail)
     slot, detail = detail.split(' ', 2)
@@ -154,7 +153,6 @@ STDIN.each do |line|
       pc.save!
     rescue
     end
-
     log.callsign_id = cs.id
 
   when SERVER_STATUS
@@ -168,7 +166,6 @@ STDIN.each do |line|
   when MSG_TEAM
     cs, detail = get_callsign(detail)
     team, detail = get_team(detail)
-
     log.callsign_id = cs.id
     log.message = detail
     log.team_id = team.id
