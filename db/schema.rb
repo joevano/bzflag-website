@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 31) do
+ActiveRecord::Schema.define(:version => 33) do
 
   create_table "bz_servers", :force => true do |t|
     t.datetime "created_at"
@@ -67,12 +67,18 @@ ActiveRecord::Schema.define(:version => 31) do
     t.integer  "log_type_id"
     t.integer  "callsign_id"
     t.integer  "to_callsign_id"
-    t.string   "message"
     t.datetime "logged_at"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "bzid"
     t.integer  "team_id"
+    t.integer  "message_id"
+  end
+
+  create_table "messages", :force => true do |t|
+    t.string   "text"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "permissions", :force => true do |t|
