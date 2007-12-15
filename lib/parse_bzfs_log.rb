@@ -13,6 +13,10 @@ def get_callsign(detail)
   return cs, detail
 end
 
+def get_message(message)
+  msg = Message.locate(message)
+end
+
 def get_team(detail)
   team, detail = detail.split(' ', 2)
   t = Team.locate(team)
@@ -57,7 +61,9 @@ end
 hostname, port = ARGV[0].split(':')
 
 server_host = ServerHost.find_by_hostname(hostname)
-bz_server = BzServer.find_by_server_host_id_and_port(server_host.id, port)
+if server_host
+  bz_server = BzServer.find_by_server_host_id_and_port(server_host.id, port)
+end
 
 if server_host.nil? || bz_server.nil?
   puts "Can't find server #{hostname}:#{port}"
@@ -156,18 +162,25 @@ STDIN.each do |line|
     log.callsign_id = callsign.id
 
   when SERVER_STATUS
-    log.message = detail
+    log.message = get_message(detail)
 
-  when MSG_BROADCAST, MSG_FILTERED, MSG_DIRECT, MSG_REPORT, MSG_COMMAND, MSG_ADMINS
+  when MSG_BROADCAST, MSG_FILTERED, MSG_REPORT, MSG_COMMAND, MSG_ADMINS
     callsign, detail = get_callsign(detail)
     log.callsign_id = callsign.id
-    log.message = detail
+    log.message = get_message(detail)
+
+  when MSG_DIRECT
+    callsign, detail = get_callsign(detail)
+    to_callsign, detail = get_callsign(detail)
+    log.callsign_id = callsign.id
+    log.to_callsign_id = to_callsign.id
+    log.message = get_message(detail)
 
   when MSG_TEAM
     callsign, detail = get_callsign(detail)
     team, detail = get_team(detail)
     log.callsign_id = callsign.id
-    log.message = detail
+    log.message = get_message(detail)
     log.team_id = team.id
 
   when PLAYERS
