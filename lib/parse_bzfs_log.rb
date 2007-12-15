@@ -122,23 +122,91 @@ STDIN.each do |line|
                                   :bzid => bzid,
                                   :team => t)
 
+    log.callsign_id = cs.id
+    log.bzid = bzid
+
   when PLAYER_PART
+    callsign, detail = get_callsign(detail)
+    cs = Callsign.locate(callsign)
+
     begin
-      pc = PlayerConnection.find(:first, :conditions => "bz_server_id = #{bz_server.id} and part_at is null")
+      pc = PlayerConnection.find(:first, :conditions => "bz_server_id = #{bz_server.object_id} and part_at is null and callsign_id = #{callsign.object_id}")
       pc.part_at = date
       pc.save!
     rescue
     end
+
+    log.callsign_id = cs.id
+
   when PLAYER_AUTH
+    callsign, detail = get_callsign(detail)
+    cs = Callsign.locate(callsign)
+
+    begin
+      pc = PlayerConnection.find(:first, :conditions => "bz_server_id = #{bz_server.id} and part_at is null and callsign_id = #{callsign.id}")
+      pc.is_verified = true
+      pc.save!
+    rescue
+    end
+
+    log.callsign_id = cs.id
+
   when SERVER_STATUS
     log.message = detail
+
   when MSG_BROADCAST
+    callsign, detail = get_callsign(detail)
+    cs = Callsign.locate(callsign)
+
+    log.callsign_id = cs.id
+    log.message = detail
+
   when MSG_FILTERED
+    callsign, detail = get_callsign(detail)
+    cs = Callsign.locate(callsign)
+
+    log.callsign_id = cs.id
+    log.message = detail
+
   when MSG_DIRECT
+    callsign, detail = get_callsign(detail)
+    cs = Callsign.locate(callsign)
+
+    log.callsign_id = cs.id
+    log.message = detail
+
   when MSG_TEAM
+    callsign, detail = get_callsign(detail)
+    cs = Callsign.locate(callsign)
+
+    team, detail = detail.split(' ', 2)
+    t = Team.locate(team)
+    
+    log.callsign_id = cs.id
+    log.message = detail
+    log.team_id = t.id
+
   when MSG_REPORT
+    callsign, detail = get_callsign(detail)
+    cs = Callsign.locate(callsign)
+
+    log.callsign_id = cs.id
+    log.message = detail
+
   when MSG_COMMAND
+    callsign, detail = get_callsign(detail)
+    cs = Callsign.locate(callsign)
+
+    log.callsign_id = cs.id
+    log.message = detail
+
   when MSG_ADMINS
+    callsign, detail = get_callsign(detail)
+    cs = Callsign.locate(callsign)
+
+    log.callsign_id = cs.id
+    log.message = detail
+
   when PLAYERS
     log.log_type_id = nil
     count, callsigns = detail.split(" ", 2)
