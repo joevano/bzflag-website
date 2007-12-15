@@ -13,6 +13,12 @@ def get_callsign(detail)
   return cs, detail
 end
 
+def get_team(detail)
+  team, detail = detail.split(' ', 2)
+  t = Team.locate(team)
+  return t, detail
+end
+
 def parse_callsign(msg, skip=2)
   begin
     colon = msg.index(":")
@@ -106,8 +112,7 @@ STDIN.each do |line|
       bzid, detail = detail.split(' ', 2)
       bzid = bzid[5..-1]
     end
-    team, detail = detail.split(' ', 2)
-    t = Team.locate(team)
+    team, detail = get_team(detail)
     ip, detail = detail.split(' ', 2)
     if ip =~ /^IP:/
       ip = ip[3..-1]
@@ -125,7 +130,7 @@ STDIN.each do |line|
                                   :is_verified => is_verified,
                                   :is_admin => is_admin,
                                   :bzid => bzid,
-                                  :team => t)
+                                  :team => team)
 
     log.callsign_id = cs.id
     log.bzid = bzid
@@ -155,45 +160,18 @@ STDIN.each do |line|
   when SERVER_STATUS
     log.message = detail
 
-  when MSG_BROADCAST
-    cs, detail = get_callsign(detail)
-    log.callsign_id = cs.id
-    log.message = detail
-
-  when MSG_FILTERED
-    cs, detail = get_callsign(detail)
-    log.callsign_id = cs.id
-    log.message = detail
-
-  when MSG_DIRECT
+  when MSG_BROADCAST, MSG_FILTERED, MSG_DIRECT, MSG_REPORT, MSG_COMMAND, MSG_ADMINS
     cs, detail = get_callsign(detail)
     log.callsign_id = cs.id
     log.message = detail
 
   when MSG_TEAM
     cs, detail = get_callsign(detail)
-    team, detail = detail.split(' ', 2)
-    t = Team.locate(team)
+    team, detail = get_team(detail)
 
     log.callsign_id = cs.id
     log.message = detail
-    log.team_id = t.id
-
-  when MSG_REPORT
-    cs, detail = get_callsign(detail)
-    log.callsign_id = cs.id
-    log.message = detail
-
-  when MSG_COMMAND, MSG_ADMINS
-    cs, detail = get_callsign(detail)
-    log.callsign_id = cs.id
-    log.message = detail
-
-  when MSG_ADMINS
-    cs, detail = get_callsign(detail)
-
-    log.callsign_id = cs.id
-    log.message = detail
+    log.team_id = team.id
 
   when PLAYERS
     log.log_type_id = nil
