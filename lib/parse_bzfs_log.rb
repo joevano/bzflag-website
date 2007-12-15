@@ -138,53 +138,45 @@ STDIN.each do |line|
                                   :team => team,
                                   :slot => slot)
 
-    log.callsign_id = callsign.id
+    log.callsign = callsign
     log.bzid = bzid
 
   when PLAYER_PART
-    callsign, detail = get_callsign(detail)
-    pc = PlayerConnection.find(:first, :conditions => "bz_server_id = #{bz_server.id} and part_at is null and callsign_id = #{callsign.id}")
+    log.callsign, detail = get_callsign(detail)
+    pc = PlayerConnection.find(:first, :conditions => "bz_server_id = #{bz_server.id} and part_at is null and callsign_id = #{log.callsign.id}")
     if pc
       pc.part_at = date
       pc.save!
     end
 
-    log.callsign_id = callsign.id
-
   when PLAYER_AUTH
-    callsign, detail = get_callsign(detail)
+    log.callsign, detail = get_callsign(detail)
     begin
-      pc = PlayerConnection.find(:first, :conditions => "bz_server_id = #{bz_server.id} and part_at is null and callsign_id = #{callsign.id}")
+      pc = PlayerConnection.find(:first, :conditions => "bz_server_id = #{bz_server.id} and part_at is null and callsign_id = #{log.callsign.id}")
       pc.is_verified = true
       pc.save!
     rescue
     end
-    log.callsign_id = callsign.id
 
   when SERVER_STATUS
     log.message = get_message(detail)
 
   when MSG_BROADCAST, MSG_FILTERED, MSG_REPORT, MSG_COMMAND, MSG_ADMINS
-    callsign, detail = get_callsign(detail)
-    log.callsign_id = callsign.id
+    log.callsign, detail = get_callsign(detail)
     log.message = get_message(detail)
 
   when MSG_DIRECT
-    callsign, detail = get_callsign(detail)
-    to_callsign, detail = get_callsign(detail)
-    log.callsign_id = callsign.id
-    log.to_callsign_id = to_callsign.id
+    log.callsign, detail = get_callsign(detail)
+    log.to_callsign, detail = get_callsign(detail)
     log.message = get_message(detail)
 
   when MSG_TEAM
-    callsign, detail = get_callsign(detail)
-    team, detail = get_team(detail)
-    log.callsign_id = callsign.id
+    log.callsign, detail = get_callsign(detail)
+    log.team, detail = get_team(detail)
     log.message = get_message(detail)
-    log.team_id = team.id
 
   when PLAYERS
-    log.log_type_id = nil
+    log.log_type_id = nil    # We don't save PLAYERS data in the log
     count, callsigns = detail.split(" ", 2)
     count = count.slice(1..-2).to_i
     bz_server.current_player_count = count
@@ -198,7 +190,6 @@ STDIN.each do |line|
     end
   end
 
-  if log.log_type_id
-    log.save!
-  end
+  # Save the log if it has a valid id
+  log.log_type_id && log.save!
 end
