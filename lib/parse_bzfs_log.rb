@@ -7,7 +7,13 @@ def usage
   exit 1
 end
 
-def get_callsign(msg, skip=2)
+def get_callsign(detail)
+  callsign, detail = parse_callsign(detail)
+  cs = Callsign.locate(callsign)
+  return cs, detail
+end
+
+def parse_callsign(msg, skip=2)
   begin
     colon = msg.index(":")
     length = msg[0..colon-1].to_i
@@ -25,8 +31,8 @@ def parse_player_email(data)
   # [+]9:Bad Sushi() [+]10:spatialgur(15:spatialguru.com) [@]12:drunk driver()
   data =~ /\[(.)\]([^\(]*)\(([^\)]*\)) ?(.*)/
   v, callsign, email, data = "#$1", "#$2", "#$3", "#$4"
-  callsign, junk = get_callsign(callsign)
-  email, junk = get_callsign(email)
+  callsign, junk = parse_callsign(callsign)
+  email, junk = parse_callsign(email)
   if email == 'UNKNOWN'
     email = ''
   else
@@ -92,8 +98,7 @@ STDIN.each do |line|
 
   case log_type
   when PLAYER_JOIN
-    callsign, detail = get_callsign(detail)
-    cs = Callsign.locate(callsign)
+    cs, detail = get_callsign(detail)
     slot, detail = detail.split(' ', 2)
     slot = slot[1..-1]
     bzid = nil
@@ -126,9 +131,7 @@ STDIN.each do |line|
     log.bzid = bzid
 
   when PLAYER_PART
-    callsign, detail = get_callsign(detail)
-    cs = Callsign.locate(callsign)
-
+    cs, detail = get_callsign(detail)
     begin
       pc = PlayerConnection.find(:first, :conditions => "bz_server_id = #{bz_server.object_id} and part_at is null and callsign_id = #{callsign.object_id}")
       pc.part_at = date
@@ -139,9 +142,7 @@ STDIN.each do |line|
     log.callsign_id = cs.id
 
   when PLAYER_AUTH
-    callsign, detail = get_callsign(detail)
-    cs = Callsign.locate(callsign)
-
+    cs, detail = get_callsign(detail)
     begin
       pc = PlayerConnection.find(:first, :conditions => "bz_server_id = #{bz_server.id} and part_at is null and callsign_id = #{callsign.id}")
       pc.is_verified = true
@@ -155,54 +156,41 @@ STDIN.each do |line|
     log.message = detail
 
   when MSG_BROADCAST
-    callsign, detail = get_callsign(detail)
-    cs = Callsign.locate(callsign)
-
+    cs, detail = get_callsign(detail)
     log.callsign_id = cs.id
     log.message = detail
 
   when MSG_FILTERED
-    callsign, detail = get_callsign(detail)
-    cs = Callsign.locate(callsign)
-
+    cs, detail = get_callsign(detail)
     log.callsign_id = cs.id
     log.message = detail
 
   when MSG_DIRECT
-    callsign, detail = get_callsign(detail)
-    cs = Callsign.locate(callsign)
-
+    cs, detail = get_callsign(detail)
     log.callsign_id = cs.id
     log.message = detail
 
   when MSG_TEAM
-    callsign, detail = get_callsign(detail)
-    cs = Callsign.locate(callsign)
-
+    cs, detail = get_callsign(detail)
     team, detail = detail.split(' ', 2)
     t = Team.locate(team)
-    
+
     log.callsign_id = cs.id
     log.message = detail
     log.team_id = t.id
 
   when MSG_REPORT
-    callsign, detail = get_callsign(detail)
-    cs = Callsign.locate(callsign)
-
+    cs, detail = get_callsign(detail)
     log.callsign_id = cs.id
     log.message = detail
 
-  when MSG_COMMAND
-    callsign, detail = get_callsign(detail)
-    cs = Callsign.locate(callsign)
-
+  when MSG_COMMAND, MSG_ADMINS
+    cs, detail = get_callsign(detail)
     log.callsign_id = cs.id
     log.message = detail
 
   when MSG_ADMINS
-    callsign, detail = get_callsign(detail)
-    cs = Callsign.locate(callsign)
+    cs, detail = get_callsign(detail)
 
     log.callsign_id = cs.id
     log.message = detail
