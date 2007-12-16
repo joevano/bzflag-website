@@ -6,6 +6,9 @@ class Callsign < ActiveRecord::Base
   has_many :logs
 
   def self.locate(name)
+    if name == ''
+      name = 'UNKNOWN'
+    end
     Callsign.find_by_name(name) || Callsign.create!(:name => name)
   end
 end
