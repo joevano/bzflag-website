@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 34) do
+ActiveRecord::Schema.define(:version => 38) do
 
   create_table "bz_servers", :force => true do |t|
     t.datetime "created_at"
@@ -27,6 +27,8 @@ ActiveRecord::Schema.define(:version => 34) do
     t.datetime "updated_at"
     t.string   "name"
   end
+
+  add_index "callsigns", ["name"], :name => "index_callsigns_on_name"
 
   create_table "emails", :force => true do |t|
     t.string   "email"
@@ -57,6 +59,8 @@ ActiveRecord::Schema.define(:version => 34) do
     t.datetime "updated_at"
   end
 
+  add_index "ips", ["ip"], :name => "index_ips_on_ip"
+
   create_table "log_types", :force => true do |t|
     t.string   "token"
     t.datetime "created_at"
@@ -81,6 +85,8 @@ ActiveRecord::Schema.define(:version => 34) do
     t.datetime "updated_at"
   end
 
+  add_index "messages", ["text"], :name => "index_messages_on_text"
+
   create_table "permissions", :force => true do |t|
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -103,6 +109,8 @@ ActiveRecord::Schema.define(:version => 34) do
     t.integer  "team_id"
     t.integer  "slot"
   end
+
+  add_index "player_connections", ["bz_server_id", "part_at", "callsign_id"], :name => "index_player_connections"
 
   create_table "server_hosts", :force => true do |t|
     t.datetime "created_at"
