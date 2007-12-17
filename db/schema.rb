@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 38) do
+ActiveRecord::Schema.define(:version => 39) do
 
   create_table "bz_servers", :force => true do |t|
     t.datetime "created_at"
@@ -77,6 +77,7 @@ ActiveRecord::Schema.define(:version => 38) do
     t.integer  "bzid"
     t.integer  "team_id"
     t.integer  "message_id"
+    t.integer  "bz_server_id"
   end
 
   create_table "messages", :force => true do |t|

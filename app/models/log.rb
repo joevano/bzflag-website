@@ -4,4 +4,5 @@ class Log < ActiveRecord::Base
   belongs_to :to_callsign, :class_name => "Callsign", :foreign_key => "to_callsign_id"
   belongs_to :team
   belongs_to :message
+  belongs_to :bz_server
 end
