@@ -35,6 +35,15 @@ def parse_callsign(msg, skip=2)
   return callsign , msg
 end
 
+def parse_bzid(detail)
+  bzid = nil
+  if detail =~ /^BZid:/
+    bzid, detail = detail.split(' ', 2)
+    bzid = bzid[5..-1]
+  end
+  return bzid, detail
+end
+
 def parse_player_email(data)
   # Parse player data that looks like this:
   #
@@ -104,7 +113,7 @@ log_types = {
 STDIN.each do |line|
   date, log_type, detail = line.chomp.split(' ', 3)
   log_type_id = log_types[log_type]
-  log = Log.new(:logged_at => date, :log_type_id => log_type_id)
+  log = Log.new(:bz_server => bz_server, :logged_at => date, :log_type_id => log_type_id)
 
   case log_type
 
@@ -112,11 +121,7 @@ STDIN.each do |line|
     callsign, detail = get_callsign(detail)
     slot, detail = detail.split(' ', 2)
     slot = slot[1..-1]
-    bzid = nil
-    if detail =~ /^BZid:/
-      bzid, detail = detail.split(' ', 2)
-      bzid = bzid[5..-1]
-    end
+    bzid, detail = parse_bzid(detail)
     team, detail = get_team(detail)
     ip, detail = detail.split(' ', 2)
     if ip =~ /^IP:/
@@ -148,6 +153,10 @@ STDIN.each do |line|
       pc.part_at = date
       pc.save!
     end
+    slot, detail = detail.split(' ', 2)
+    slot = slot[1..-1]
+    bzid, detail = parse_bzid(detail)
+    log.message = get_message(detail)
 
   when PLAYER_AUTH
     log.callsign, detail = get_callsign(detail)
