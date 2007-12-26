@@ -1,28 +1,43 @@
 #!/usr/bin/env ruby
+# Parse BZFlag server log file data from the logDetail plugin
+#
+# Create database records from the log for use with the bzflag_website
 require 'config/environment'
 require 'time'
 
+# Display format of command line usage
 def usage
   puts "usage: parse_bzfs_log.rb HOST:PORT"
   exit 1
 end
 
+# Get a callsign from a string
+#
+# Returns the callsign object that matches the parsed counted string callsign
+# New callsign objects are created if necessary
 def get_callsign(detail)
   callsign, detail = parse_callsign(detail)
   cs = Callsign.locate(callsign)
   return cs, detail
 end
 
+# Find or create a Message object for a string
 def get_message(message)
   msg = Message.locate(message)
 end
 
+# Find or create a Team object for a string
 def get_team(detail)
   team, detail = detail.split(' ', 2)
   t = Team.locate(team)
   return t, detail
 end
 
+# Parse a counted callsign from a string
+# Returns the callsign and the remainder of the string
+#
+# 	e.g. 7:Thumper
+# 	returns 'Thumper' as the callsign and the remainder of the string
 def parse_callsign(msg, skip=2)
   begin
     colon = msg.index(":")
@@ -35,6 +50,10 @@ def parse_callsign(msg, skip=2)
   return callsign , msg
 end
 
+# Retrieve an optional bzid from the log line
+#
+# Finds a bzid of the format BZid:nnnn as the next token on the log line
+# and returns the bzid value if one is found.
 def parse_bzid(detail)
   bzid = nil
   if detail =~ /^BZid:/
@@ -44,10 +63,10 @@ def parse_bzid(detail)
   return bzid, detail
 end
 
+# Parse player data that looks like this:
+#
+# [+]9:Bad Sushi() [+]10:spatialgur(15:spatialguru.com) [@]12:drunk driver()
 def parse_player_email(data)
-  # Parse player data that looks like this:
-  #
-  # [+]9:Bad Sushi() [+]10:spatialgur(15:spatialguru.com) [@]12:drunk driver()
   data =~ /\[(.)\]([^\(]*)\(([^\)]*\)) ?(.*)/
   v, callsign, email, data = "#$1", "#$2", "#$3", "#$4"
   callsign, junk = parse_callsign(callsign)
