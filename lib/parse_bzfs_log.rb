@@ -218,6 +218,23 @@ STDIN.each do |line|
     end
   end
 
+  # Update chat times
+  case log_type
+
+  when MSG_FILTERED
+    if (log.logged_at > bz_server.last_filtered_chat_at)
+      bz_server.last_filtered_chat_at = log.logged_at
+      bz_server.save!
+    end
+
+  when MSG_BROADCAST, MSG_ADMINS, MSG_DIRECT, MSG_TEAM
+    if (log.logged_at > bz_server.last_chat_at)
+      bz_server.last_chat_at = log.logged_at
+      bz_server.save!
+    end
+
+  end
+
   # Save the log if it has a valid id
   log.log_type_id && log.save!
 end
