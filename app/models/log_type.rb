@@ -3,6 +3,10 @@ class LogType < ActiveRecord::Base
   belongs_to :log_messages
 
   def self.ids(tokens)
-    tokens.collect{|l| LogType.find_by_token(l).id}.join(",")
+    t = tokens.collect do |l| 
+      lt = LogType.find_by_token(l)
+      lt and lt.id
+    end
+    t.join(",")
   end
 end
