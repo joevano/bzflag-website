@@ -6,21 +6,23 @@ class BzServer < ActiveRecord::Base
 
   validates_uniqueness_of :port, :scope => :server_host_id
 
+  # Log Type Constants
+  MSG_BROADCAST = 'MSG-BROADCAST'
+  MSG_FILTERED = 'MSG-FILTERED'
+  MSG_DIRECT = 'MSG-DIRECT'
+  MSG_TEAM = 'MSG-TEAM'
+  MSG_ADMINS = 'MSG-ADMINS'
+
   def last_chat_at
-    log_types = log_ids(["MSG-DIRECT","MSG-BROADCAST","MSG-TEAM","MSG-ADMINS"])
+    log_types = LogType.ids([MSG_DIRECT, MSG_BROADCAST, MSG_TEAM, MSG_ADMINS])
     lm = LogMessage.find(:first, :order => "logged_at desc", :conditions => "bz_server_id = #{id} and log_type_id in (#{log_types})")
     lm && lm.logged_at
   end
 
   def last_filtered_chat_at
-    lt = log_ids(["MSG-FILTERED"])
+    lt = LogType.ids([MSG_FILTERED])
     lm = LogMessage.find(:first, :order => "logged_at desc", :conditions => "bz_server_id = #{id} and log_type_id = #{lt}")
     lm && lm.logged_at
   end
 
-  private
-
-  def log_ids(tokens)
-    tokens.collect{|l| LogType.find_by_token(l).id}.join(",")
-  end
 end
