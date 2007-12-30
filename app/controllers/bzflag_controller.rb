@@ -9,8 +9,6 @@ class BzflagController < ApplicationController
     when 'host' then @bz_servers = BzServer.find(:all, :order => "server_host_id, port")
     when 'port' then @bz_servers = BzServer.find(:all, :order => "port, server_host_id")
     when 'map_name' then @bz_servers = BzServer.find(:all, :order => "map_name, server_host_id, port")
-    when 'chat' then @bz_servers = BzServer.find(:all, :order => "last_chat_at, server_host_id, port")
-    when 'filtered_chat' then @bz_servers = BzServer.find(:all, :order => "last_filtered_chat_at, server_host_id, port")
     else  @bz_servers = BzServer.find(:all, :order => "server_host_id, port")
     end
   end
@@ -19,6 +17,8 @@ class BzflagController < ApplicationController
   end
 
   def reports
+    msg_report_id = LogType.find_by_token("MSG-REPORT").id
+    @reports = LogMessage.find(:all, :conditions => "log_type_id = #{msg_report_id}", :order => "logged_at")
   end
 
   def players
