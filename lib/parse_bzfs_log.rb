@@ -98,45 +98,15 @@ if server_host.nil? || bz_server.nil?
   exit 1
 end
 
-# Log Type Constants
-PLAYER_JOIN = 'PLAYER-JOIN'
-PLAYER_PART = 'PLAYER-PART'
-PLAYER_AUTH = 'PLAYER-AUTH'
-SERVER_STATUS = 'SERVER-STATUS'
-MSG_BROADCAST = 'MSG-BROADCAST'
-MSG_FILTERED = 'MSG-FILTERED'
-MSG_DIRECT = 'MSG-DIRECT'
-MSG_TEAM = 'MSG-TEAM'
-MSG_REPORT  = 'MSG-REPORT'
-MSG_COMMAND = 'MSG-COMMAND'
-MSG_ADMINS = 'MSG-ADMINS'
-PLAYERS = 'PLAYERS'
-
-# Get Log Type ids
-log_types = {
-  PLAYER_JOIN   => LogType.find_by_token(PLAYER_JOIN).id,
-  PLAYER_PART   => LogType.find_by_token(PLAYER_PART).id,
-  PLAYER_AUTH   => LogType.find_by_token(PLAYER_AUTH).id,
-  SERVER_STATUS => LogType.find_by_token(SERVER_STATUS).id,
-  MSG_BROADCAST => LogType.find_by_token(MSG_BROADCAST).id,
-  MSG_FILTERED  => LogType.find_by_token(MSG_FILTERED).id,
-  MSG_DIRECT    => LogType.find_by_token(MSG_DIRECT).id,
-  MSG_TEAM      => LogType.find_by_token(MSG_TEAM).id,
-  MSG_REPORT    => LogType.find_by_token(MSG_REPORT).id,
-  MSG_COMMAND   => LogType.find_by_token(MSG_COMMAND).id,
-  MSG_ADMINS    => LogType.find_by_token(MSG_ADMINS).id,
-  PLAYERS       => LogType.find_by_token(PLAYERS).id
-}
-
 # Process the Log Messages
 STDIN.each do |line|
   date, log_type, detail = line.chomp.split(' ', 3)
-  log_type_id = log_types[log_type]
+  log_type_id = LogType.ids([log_type])
   lm = LogMessage.new(:bz_server => bz_server, :logged_at => date, :log_type_id => log_type_id)
 
   case log_type
 
-  when PLAYER_JOIN
+  when 'PLAYER-JOIN'
     callsign, detail = get_callsign(detail)
     slot, detail = detail.split(' ', 2)
     slot = slot[1..-1]
@@ -165,7 +135,7 @@ STDIN.each do |line|
     lm.callsign = callsign
     lm.bzid = bzid
 
-  when PLAYER_PART
+  when 'PLAYER-PART'
     lm.callsign, detail = get_callsign(detail)
     pc = PlayerConnection.find(:first, :conditions => "bz_server_id = #{bz_server.id} and part_at is null and callsign_id = #{lm.callsign.id}")
     if pc
@@ -177,7 +147,7 @@ STDIN.each do |line|
     bzid, detail = parse_bzid(detail)
     lm.message = get_message(detail)
 
-  when PLAYER_AUTH
+  when 'PLAYER-AUTH'
     lm.callsign, detail = get_callsign(detail)
     begin
       pc = PlayerConnection.find(:first, :conditions => "bz_server_id = #{bz_server.id} and part_at is null and callsign_id = #{lm.callsign.id}")
@@ -186,24 +156,24 @@ STDIN.each do |line|
     rescue
     end
 
-  when SERVER_STATUS
+  when 'SERVER-STATUS'
     lm.message = get_message(detail)
 
-  when MSG_BROADCAST, MSG_FILTERED, MSG_REPORT, MSG_COMMAND, MSG_ADMINS
+  when 'MSG-BROADCAST', 'MSG-FILTERED', 'MSG-REPORT', 'MSG-COMMAND', 'MSG-ADMINS'
     lm.callsign, detail = get_callsign(detail)
     lm.message = get_message(detail)
 
-  when MSG_DIRECT
+  when 'MSG-DIRECT'
     lm.callsign, detail = get_callsign(detail)
     lm.to_callsign, detail = get_callsign(detail)
     lm.message = get_message(detail)
 
-  when MSG_TEAM
+  when 'MSG-TEAM'
     lm.callsign, detail = get_callsign(detail)
     lm.team, detail = get_team(detail)
     lm.message = get_message(detail)
 
-  when PLAYERS
+  when 'PLAYERS'
     lm.log_type_id = nil    # We don't save PLAYERS data in the log
     count, callsigns = detail.split(" ", 2)
     count = count.slice(1..-2).to_i
