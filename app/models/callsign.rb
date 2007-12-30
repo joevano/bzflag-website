@@ -3,7 +3,7 @@ class Callsign < ActiveRecord::Base
   has_many :player_connections
   has_many :ips, :through => :player_connections
   has_many :teams, :through => :player_connections
-  has_many :logs
+  has_many :log_messages
 
   def self.locate(name)
     if name == ''

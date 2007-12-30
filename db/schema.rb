@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 39) do
+ActiveRecord::Schema.define(:version => 41) do
 
   create_table "bz_servers", :force => true do |t|
     t.datetime "created_at"
@@ -17,8 +17,6 @@ ActiveRecord::Schema.define(:version => 39) do
     t.integer  "port"
     t.integer  "server_host_id"
     t.string   "map_name"
-    t.datetime "last_chat_at"
-    t.datetime "last_filtered_chat_at"
     t.integer  "current_player_count"
   end
 
@@ -60,6 +58,19 @@ ActiveRecord::Schema.define(:version => 39) do
   end
 
   add_index "ips", ["ip"], :name => "index_ips_on_ip"
+
+  create_table "log_messages", :force => true do |t|
+    t.integer  "log_type_id"
+    t.integer  "callsign_id"
+    t.integer  "to_callsign_id"
+    t.datetime "logged_at"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "bzid"
+    t.integer  "team_id"
+    t.integer  "message_id"
+    t.integer  "bz_server_id"
+  end
 
   create_table "log_types", :force => true do |t|
     t.string   "token"
