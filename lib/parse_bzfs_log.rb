@@ -128,11 +128,11 @@ log_types = {
   PLAYERS       => LogType.find_by_token(PLAYERS).id
 }
 
-# Process the Log
+# Process the Log Messages
 STDIN.each do |line|
   date, log_type, detail = line.chomp.split(' ', 3)
   log_type_id = log_types[log_type]
-  log = Log.new(:bz_server => bz_server, :logged_at => date, :log_type_id => log_type_id)
+  lm = LogMessage.new(:bz_server => bz_server, :logged_at => date, :log_type_id => log_type_id)
 
   case log_type
 
@@ -162,12 +162,12 @@ STDIN.each do |line|
                                   :team => team,
                                   :slot => slot)
 
-    log.callsign = callsign
-    log.bzid = bzid
+    lm.callsign = callsign
+    lm.bzid = bzid
 
   when PLAYER_PART
-    log.callsign, detail = get_callsign(detail)
-    pc = PlayerConnection.find(:first, :conditions => "bz_server_id = #{bz_server.id} and part_at is null and callsign_id = #{log.callsign.id}")
+    lm.callsign, detail = get_callsign(detail)
+    pc = PlayerConnection.find(:first, :conditions => "bz_server_id = #{bz_server.id} and part_at is null and callsign_id = #{lm.callsign.id}")
     if pc
       pc.part_at = date
       pc.save!
@@ -175,36 +175,36 @@ STDIN.each do |line|
     slot, detail = detail.split(' ', 2)
     slot = slot[1..-1]
     bzid, detail = parse_bzid(detail)
-    log.message = get_message(detail)
+    lm.message = get_message(detail)
 
   when PLAYER_AUTH
-    log.callsign, detail = get_callsign(detail)
+    lm.callsign, detail = get_callsign(detail)
     begin
-      pc = PlayerConnection.find(:first, :conditions => "bz_server_id = #{bz_server.id} and part_at is null and callsign_id = #{log.callsign.id}")
+      pc = PlayerConnection.find(:first, :conditions => "bz_server_id = #{bz_server.id} and part_at is null and callsign_id = #{lm.callsign.id}")
       pc.is_verified = true
       pc.save!
     rescue
     end
 
   when SERVER_STATUS
-    log.message = get_message(detail)
+    lm.message = get_message(detail)
 
   when MSG_BROADCAST, MSG_FILTERED, MSG_REPORT, MSG_COMMAND, MSG_ADMINS
-    log.callsign, detail = get_callsign(detail)
-    log.message = get_message(detail)
+    lm.callsign, detail = get_callsign(detail)
+    lm.message = get_message(detail)
 
   when MSG_DIRECT
-    log.callsign, detail = get_callsign(detail)
-    log.to_callsign, detail = get_callsign(detail)
-    log.message = get_message(detail)
+    lm.callsign, detail = get_callsign(detail)
+    lm.to_callsign, detail = get_callsign(detail)
+    lm.message = get_message(detail)
 
   when MSG_TEAM
-    log.callsign, detail = get_callsign(detail)
-    log.team, detail = get_team(detail)
-    log.message = get_message(detail)
+    lm.callsign, detail = get_callsign(detail)
+    lm.team, detail = get_team(detail)
+    lm.message = get_message(detail)
 
   when PLAYERS
-    log.log_type_id = nil    # We don't save PLAYERS data in the log
+    lm.log_type_id = nil    # We don't save PLAYERS data in the log
     count, callsigns = detail.split(" ", 2)
     count = count.slice(1..-2).to_i
     bz_server.current_player_count = count
@@ -218,23 +218,6 @@ STDIN.each do |line|
     end
   end
 
-  # Update chat times
-  case log_type
-
-  when MSG_FILTERED
-    if (log.logged_at > bz_server.last_filtered_chat_at)
-      bz_server.last_filtered_chat_at = log.logged_at
-      bz_server.save!
-    end
-
-  when MSG_BROADCAST, MSG_ADMINS, MSG_DIRECT, MSG_TEAM
-    if (log.logged_at > bz_server.last_chat_at)
-      bz_server.last_chat_at = log.logged_at
-      bz_server.save!
-    end
-
-  end
-
   # Save the log if it has a valid id
-  log.log_type_id && log.save!
+  lm.log_type_id && lm.save!
 end
