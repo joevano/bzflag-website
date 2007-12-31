@@ -161,8 +161,6 @@ class LogParser
       lm.log_type_id = nil    # We don't save PLAYERS data in the log
       count, callsigns = detail.split(" ", 2)
       count = count.slice(1..-2).to_i
-      bz_server.current_player_count = count
-      bz_server.save!
       if count == 0
         # Close out all player connections for this server
         PlayerConnection.find(:all, :conditions => "bz_server_id = #{bz_server.id} and part_at is null").each do |pc|

@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 42) do
+ActiveRecord::Schema.define(:version => 43) do
 
   create_table "bz_servers", :force => true do |t|
     t.datetime "created_at"
@@ -17,7 +17,6 @@ ActiveRecord::Schema.define(:version => 42) do
     t.integer  "port"
     t.integer  "server_host_id"
     t.string   "map_name"
-    t.integer  "current_player_count"
   end
 
   create_table "callsigns", :force => true do |t|
