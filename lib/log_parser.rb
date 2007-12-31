@@ -143,7 +143,7 @@ class LogParser
     when 'SERVER-STATUS'
       lm.message = get_message(detail)
 
-    when 'MSG-BROADCAST', 'MSG-FILTERED', 'MSG-REPORT', 'MSG-COMMAND', 'MSG-ADMINS'
+    when 'MSG-BROADCAST', 'MSG-FILTERED', 'MSG-REPORT', 'MSG-COMMAND', 'MSG-ADMIN'
       lm.callsign, detail = get_callsign(detail)
       lm.message = get_message(detail)
 
