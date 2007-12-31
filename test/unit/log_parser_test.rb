@@ -2,10 +2,11 @@ require File.dirname(__FILE__) + '/../test_helper'
 require File.dirname(__FILE__) + '/../../lib/log_parser'
 
 class LogParserTest < Test::Unit::TestCase
+  fixtures :server_hosts, :bz_servers, :callsigns, :log_types
 
-  # Replace this with your real tests.
-  def test_truth
-    assert true
+  def setup
+    @server_host = ServerHost.find(1)
+    @bz_server = BzServer.find(1)
   end
 
   def test_get_callsign
@@ -127,5 +128,295 @@ class LogParserTest < Test::Unit::TestCase
     assert_equal('drunk driver', callsign)
     assert_equal('', email)
     assert_equal('', rest)
+  end
+
+  def test_player_join_anon
+    line = '2007-12-29T00:00:04Z PLAYER-JOIN 7:widgets #2 RED  IP:1.2.4.7'
+    LogParser.process_line(@server_host, @bz_server, line)
+    pc = PlayerConnection.find(:first)
+    assert_equal(Callsign.find_by_name("widgets").id, pc.callsign_id)
+    assert_equal(2, pc.slot)
+    assert_nil(pc.bzid)
+    assert_equal(Team.find_by_name("RED").id, pc.team_id)
+    assert_equal(Ip.find_by_ip("1.2.4.7").id, pc.ip_id)
+    assert_equal('2007-12-29T00:00:04Z', pc.join_at.strftime('%Y-%m-%dT%H:%M:%SZ'))
+    lm = LogMessage.find(:first)
+    assert_equal(pc.join_at, lm.logged_at)
+    assert_equal(LogType.find_by_token("PLAYER-JOIN").id, lm.log_type_id)
+    assert_equal(pc.callsign_id, lm.callsign_id)
+    assert_nil(lm.to_callsign_id)
+    assert_nil(lm.bzid)
+    assert_equal(pc.team_id, lm.team_id)
+    assert_equal(false, pc.is_verified)
+    assert_equal(false, pc.is_admin)
+    assert_equal(false, pc.is_globaluser)
+    assert_nil(lm.message_id)
+    assert_equal(@bz_server.id, lm.bz_server_id)
+  end
+
+  def test_player_join_bzid
+    line = '2007-12-29T00:03:57Z PLAYER-JOIN 19:Some Random Persona #23 BZid:12345 RED  IP:4.7.3.4 VERIFIED GLOBALUSER'
+    LogParser.process_line(@server_host, @bz_server, line)
+    pc = PlayerConnection.find(:first)
+    assert_equal(Callsign.find_by_name("Some Random Persona").id, pc.callsign_id)
+    assert_equal(23, pc.slot)
+    assert_equal(12345, pc.bzid)
+    assert_equal(Team.find_by_name("RED").id, pc.team_id)
+    assert_equal(Ip.find_by_ip("4.7.3.4").id, pc.ip_id)
+    assert_equal('2007-12-29T00:03:57Z', pc.join_at.strftime('%Y-%m-%dT%H:%M:%SZ'))
+    lm = LogMessage.find(:first)
+    assert_equal(pc.join_at, lm.logged_at)
+    assert_equal(LogType.find_by_token("PLAYER-JOIN").id, lm.log_type_id)
+    assert_equal(pc.callsign_id, lm.callsign_id)
+    assert_nil(lm.to_callsign_id)
+    assert_equal(pc.bzid, lm.bzid)
+    assert_equal(pc.team_id, lm.team_id)
+    assert_equal(true, pc.is_verified)
+    assert_equal(false, pc.is_admin)
+    assert_equal(true, pc.is_globaluser)
+    assert_nil(lm.message_id)
+    assert_equal(@bz_server.id, lm.bz_server_id)
+  end
+
+  def test_player_join_admin
+    line = '2007-12-29T00:15:52Z PLAYER-JOIN 7:simtech #20 BZid:2000 GREEN  IP:10.447.11.12 VERIFIED GLOBALUSER ADMIN'
+    LogParser.process_line(@server_host, @bz_server, line)
+    pc = PlayerConnection.find(:first)
+    assert_equal(Callsign.find_by_name("simtech").id, pc.callsign_id)
+    assert_equal(20, pc.slot)
+    assert_equal(2000, pc.bzid)
+    assert_equal(Team.find_by_name("GREEN").id, pc.team_id)
+    assert_equal(Ip.find_by_ip("10.447.11.12").id, pc.ip_id)
+    assert_equal('2007-12-29T00:15:52Z', pc.join_at.strftime('%Y-%m-%dT%H:%M:%SZ'))
+    lm = LogMessage.find(:first)
+    assert_equal(pc.join_at, lm.logged_at)
+    assert_equal(LogType.find_by_token("PLAYER-JOIN").id, lm.log_type_id)
+    assert_equal(pc.callsign_id, lm.callsign_id)
+    assert_nil(lm.to_callsign_id)
+    assert_equal(pc.bzid, lm.bzid)
+    assert_equal(pc.team_id, lm.team_id)
+    assert_equal(true, pc.is_verified)
+    assert_equal(true, pc.is_admin)
+    assert_equal(true, pc.is_globaluser)
+    assert_nil(lm.message_id)
+    assert_equal(@bz_server.id, lm.bz_server_id)
+  end
+
+  def test_player_part
+    line = '2007-12-29T00:02:14Z PLAYER-PART 11:Roger Smith #14 BZid:33333 left'
+    # Add a player connection for this server and verify it's still there after processing
+    cs = Callsign.create!(:name => "Roger Smith")
+    pc = PlayerConnection.create!(:bz_server => @bz_server, :join_at => '2007-10-11', :part_at => nil, :callsign => cs)
+    LogParser.process_line(@server_host, @bz_server, line)
+    lm = LogMessage.find(:first)
+    assert_equal('2007-12-29T00:02:14Z', lm.logged_at.strftime('%Y-%m-%dT%H:%M:%SZ'))
+    assert_equal(LogType.find_by_token("PLAYER-PART").id, lm.log_type_id)
+    assert_equal(Callsign.find_by_name("Roger Smith").id, lm.callsign_id)
+    assert_nil(lm.to_callsign_id)
+    assert_equal(33333, lm.bzid)
+    assert_nil(lm.team_id)
+    assert_equal(Message.find_by_text("left").id, lm.message_id)
+    assert_equal(@bz_server.id, lm.bz_server_id)
+    pc.reload
+    assert_equal('2007-12-29T00:02:14Z', pc.part_at.strftime('%Y-%m-%dT%H:%M:%SZ'))
+  end
+
+  def test_player_part_no_join
+    line = '2007-12-29T00:02:14Z PLAYER-PART 11:Roger Smith #14 BZid:33333 left'
+    # Add a player connection for this server and verify it's still there after processing
+    cs = Callsign.create!(:name => "Roger Smith")
+    LogParser.process_line(@server_host, @bz_server, line)
+    lm = LogMessage.find(:first)
+    assert_equal('2007-12-29T00:02:14Z', lm.logged_at.strftime('%Y-%m-%dT%H:%M:%SZ'))
+    assert_equal(LogType.find_by_token("PLAYER-PART").id, lm.log_type_id)
+    assert_equal(Callsign.find_by_name("Roger Smith").id, lm.callsign_id)
+    assert_nil(lm.to_callsign_id)
+    assert_equal(33333, lm.bzid)
+    assert_nil(lm.team_id)
+    assert_equal(Message.find_by_text("left").id, lm.message_id)
+    assert_equal(@bz_server.id, lm.bz_server_id)
+    assert_equal(0, PlayerConnection.count)
+  end
+
+  def test_player_auth
+    line = '2007-12-01T07:01:20Z PLAYER-AUTH 6:WhoDat  IP:10.13.181.223 VERIFIED'
+    cs = Callsign.locate("WhoDat")
+    ip = Ip.locate("10.13.181.223")
+    pc = PlayerConnection.create!(:bz_server => @bz_server, :callsign => cs, :ip => ip, :part_at => nil, :is_verified => false, :is_admin => false, :is_globaluser => false)
+    LogParser.process_line(@server_host, @bz_server, line)
+    pc.reload
+    assert_equal(1, PlayerConnection.count)
+    assert_equal(Callsign.find_by_name("WhoDat").id, pc.callsign_id)
+    assert_equal(ip.id, pc.ip_id)
+    lm = LogMessage.find(:first)
+    assert_equal('2007-12-01T07:01:20Z', lm.logged_at.strftime('%Y-%m-%dT%H:%M:%SZ'))
+    assert_equal(LogType.find_by_token("PLAYER-AUTH").id, lm.log_type_id)
+    assert_equal(pc.callsign_id, lm.callsign_id)
+    assert_nil(lm.to_callsign_id)
+    assert_nil(lm.bzid)
+    assert_nil(lm.team_id)
+    assert_equal(true, pc.is_verified)
+    assert_equal(false, pc.is_admin)
+    assert_equal(false, pc.is_globaluser)
+    assert_nil(lm.message_id)
+    assert_equal(@bz_server.id, lm.bz_server_id)
+  end
+
+  def test_player_auth_operator
+    return
+    line = '2007-12-16 11:09:42: PLAYER-AUTH 22:this is really long...  IP:10.168.124.93 ADMIN OPERATOR'
+    cs = Callsign.locate("this is really long...")
+    ip = Ip.locate("10.168.124.93")
+    pc = PlayerConnection.create!(:bz_server => @bz_server, :callsign => cs, :ip => ip, :part_at => nil, :is_verified => false, :is_admin => false, :is_globaluser => false)
+    LogParser.process_line(@server_host, @bz_server, line)
+    pc.reload
+    assert_equal(1, PlayerConnection.count)
+    assert_equal(Callsign.find_by_name("this is really long...").id, pc.callsign_id)
+    assert_equal(ip.id, pc.ip_id)
+    lm = LogMessage.find(:first)
+    assert_equal('2007-12-16T11:09:42Z', lm.logged_at.strftime('%Y-%m-%dT%H:%M:%SZ'))
+    assert_equal(LogType.find_by_token("PLAYER-AUTH").id, lm.log_type_id)
+    assert_equal(pc.callsign_id, lm.callsign_id)
+    assert_nil(lm.to_callsign_id)
+    assert_nil(lm.bzid)
+    assert_nil(lm.team_id)
+    assert_equal(false, pc.is_verified)
+    assert_equal(true, pc.is_admin)
+    assert_equal(false, pc.is_globaluser)
+    assert_equal(true, pc.is_operator)
+    assert_nil(lm.message_id)
+    assert_equal(@bz_server.id, lm.bz_server_id)
+  end
+
+  def test_server_status
+    line = '2007-12-28T01:22:05Z SERVER-STATUS Restart Pending'
+    LogParser.process_line(@server_host, @bz_server, line)
+    lm = LogMessage.find(:first)
+    assert_equal('2007-12-28T01:22:05Z', lm.logged_at.strftime('%Y-%m-%dT%H:%M:%SZ'))
+    assert_equal(LogType.find_by_token("SERVER-STATUS").id, lm.log_type_id)
+    assert_nil(lm.callsign_id)
+    assert_nil(lm.to_callsign_id)
+    assert_nil(lm.bzid)
+    assert_nil(lm.team_id)
+    assert_equal(Message.find_by_text("Restart Pending").id, lm.message_id)
+    assert_equal(@bz_server.id, lm.bz_server_id)
+  end
+
+  def test_msg_broadcast
+    line = '2007-12-29T00:02:12Z MSG-BROADCAST 9:onetwosix random message'
+    LogParser.process_line(@server_host, @bz_server, line)
+    lm = LogMessage.find(:first)
+    assert_equal('2007-12-29T00:02:12Z', lm.logged_at.strftime('%Y-%m-%dT%H:%M:%SZ'))
+    assert_equal(LogType.find_by_token("MSG-BROADCAST").id, lm.log_type_id)
+    assert_equal(Callsign.find_by_name("onetwosix").id, lm.callsign_id)
+    assert_nil(lm.to_callsign_id)
+    assert_nil(lm.bzid)
+    assert_nil(lm.team_id)
+    assert_equal(Message.find_by_text("random message").id, lm.message_id)
+    assert_equal(@bz_server.id, lm.bz_server_id)
+  end
+
+  def test_msg_filtered
+    line = '2007-12-29T00:28:46Z MSG-FILTERED 7:badguy2 whata $*^'
+    LogParser.process_line(@server_host, @bz_server, line)
+    lm = LogMessage.find(:first)
+    assert_equal('2007-12-29T00:28:46Z', lm.logged_at.strftime('%Y-%m-%dT%H:%M:%SZ'))
+    assert_equal(LogType.find_by_token("MSG-FILTERED").id, lm.log_type_id)
+    assert_equal(Callsign.find_by_name("badguy2").id, lm.callsign_id)
+    assert_nil(lm.to_callsign_id)
+    assert_nil(lm.bzid)
+    assert_nil(lm.team_id)
+    assert_equal(Message.find_by_text("whata $*^").id, lm.message_id)
+    assert_equal(@bz_server.id, lm.bz_server_id)
+  end
+
+  def test_msg_report
+    line = '2007-12-29T00:58:41Z MSG-REPORT 5:WQR42 This is the coolest website project ever!'
+    LogParser.process_line(@server_host, @bz_server, line)
+    lm = LogMessage.find(:first)
+    assert_equal('2007-12-29T00:58:41Z', lm.logged_at.strftime('%Y-%m-%dT%H:%M:%SZ'))
+    assert_equal(LogType.find_by_token("MSG-REPORT").id, lm.log_type_id)
+    assert_equal(Callsign.find_by_name("WQR42").id, lm.callsign_id)
+    assert_nil(lm.to_callsign_id)
+    assert_nil(lm.bzid)
+    assert_nil(lm.team_id)
+    assert_equal(Message.find_by_text("This is the coolest website project ever!").id, lm.message_id)
+    assert_equal(@bz_server.id, lm.bz_server_id)
+  end
+
+  def test_msg_command
+    line = '2007-12-29T01:08:57Z MSG-COMMAND 10:IMonDialup lagstats'
+    LogParser.process_line(@server_host, @bz_server, line)
+    lm = LogMessage.find(:first)
+    assert_equal('2007-12-29T01:08:57Z', lm.logged_at.strftime('%Y-%m-%dT%H:%M:%SZ'))
+    assert_equal(LogType.find_by_token("MSG-COMMAND").id, lm.log_type_id)
+    assert_equal(Callsign.find_by_name("IMonDialup").id, lm.callsign_id)
+    assert_nil(lm.to_callsign_id)
+    assert_nil(lm.bzid)
+    assert_nil(lm.team_id)
+    assert_equal(Message.find_by_text("lagstats").id, lm.message_id)
+    assert_equal(@bz_server.id, lm.bz_server_id)
+  end
+
+  def test_msg_admins
+    line = '2007-12-29T00:00:40Z MSG-ADMIN 6:SERVER Team kill: furball14 killed AnotherUser'
+    LogParser.process_line(@server_host, @bz_server, line)
+    lm = LogMessage.find(:first)
+    assert_equal('2007-12-29T00:00:40Z', lm.logged_at.strftime('%Y-%m-%dT%H:%M:%SZ'))
+    assert_equal(LogType.find_by_token("MSG-ADMIN").id, lm.log_type_id)
+    assert_equal(Callsign.find_by_name("SERVER").id, lm.callsign_id)
+    assert_nil(lm.to_callsign_id)
+    assert_nil(lm.bzid)
+    assert_nil(lm.team_id)
+    assert_equal(Message.find_by_text("Team kill: furball14 killed AnotherUser").id, lm.message_id)
+    assert_equal(@bz_server.id, lm.bz_server_id)
+  end
+
+  def test_msg_direct
+    line = '2007-12-29T01:25:18Z MSG-DIRECT 10:DirectMsgs 6:Fred55 ok'
+    LogParser.process_line(@server_host, @bz_server, line)
+    lm = LogMessage.find(:first)
+    assert_equal('2007-12-29T01:25:18Z', lm.logged_at.strftime('%Y-%m-%dT%H:%M:%SZ'))
+    assert_equal(LogType.find_by_token("MSG-DIRECT").id, lm.log_type_id)
+    assert_equal(Callsign.find_by_name("DirectMsgs").id, lm.callsign_id)
+    assert_equal(Callsign.find_by_name("Fred55").id, lm.to_callsign_id)
+    assert_nil(lm.bzid)
+    assert_nil(lm.team_id)
+    assert_equal(Message.find_by_text("ok").id, lm.message_id)
+    assert_equal(@bz_server.id, lm.bz_server_id)
+  end
+
+  def test_msg_team
+    line = '2007-12-29T00:00:44Z MSG-TEAM 9:xxyyzzaab GREEN gah'
+    LogParser.process_line(@server_host, @bz_server, line)
+    lm = LogMessage.find(:first)
+    assert_equal('2007-12-29T00:00:44Z', lm.logged_at.strftime('%Y-%m-%dT%H:%M:%SZ'))
+    assert_equal(LogType.find_by_token("MSG-TEAM").id, lm.log_type_id)
+    assert_equal(Callsign.find_by_name("xxyyzzaab").id, lm.callsign_id)
+    assert_nil(lm.to_callsign_id)
+    assert_nil(lm.bzid)
+    assert_equal(Team.find_by_name("GREEN").id, lm.team_id)
+    assert_equal(Message.find_by_text("gah").id, lm.message_id)
+    assert_equal(@bz_server.id, lm.bz_server_id)
+  end
+
+  def test_players
+    line = '2007-12-29T00:00:04Z PLAYERS (22) [+]11:AAAAAAAAAAA(21:BBBBBBBBBBBBBBBBBBBBB) [ ]7:CCCCCCC(14:DDDDDDDDDDDDDD) [ ]7:EEEEEEE(22:FFFFFFFFFFFFFFFFFFFFFF) [+]8:GGGGGGGG() [@]5:HHHHH(19:IIIIIIIIIIIIIIIIIII) [+]15:JJJJJJJJJJJJJJJ(12:KKKKKKKKKKKK) [ ]4:LLLL(8:MMMMMMM]) [ ]5:NNNNN() [+]8:OOOOOOOO(17:PPPPPPPPPPPPPPPPP) [ ]8:QQQQQQQQ(17:RRRRRRRRRRRRRRRRR) [ ]12:SSSSSSSSSSSS(13:TTTTTTTTTTTTT) [+]15:UUUUUUUUUUUUUUU() [+]7:VVVVVVV(24:WWWWWWWWWWWWWWWWWWWWWWWW) [+]11:XXXXXXXXXXX() [ ]6:YYYYYY() [ ]11:ZZZZZZZZZZZ() [+]7:aaaaaaa(24:bbbbbbbbbbbbbbbbbbbbbbbb) [ ]9:ccccccccc(1:d) [ ]6:eeeeee(17:fffffffffffffffff) [+]9:ggggggggg(12:hhhhhhhhhhhh) [ ]11:iiiiiiiiiii(9:jjjjjjjjj) [+]7:kkkkkkk(11:lllllllllll) '
+    # Add a player connection for this server and verify it's still there after processing
+    PlayerConnection.create!(:bz_server => @bz_server, :join_at => '2007-10-11', :part_at => nil)
+    assert_equal(1, PlayerConnection.count(:conditions => "bz_server_id = #{@bz_server.id} and part_at is null"))
+    LogParser.process_line(@server_host, @bz_server, line)
+    assert_equal(0, LogMessage.count)
+    assert_equal(1, PlayerConnection.count(:conditions => "bz_server_id = #{@bz_server.id} and part_at is null"))
+  end
+
+  def test_players_zero
+    line = '2007-12-29T00:00:04Z PLAYERS (0) '
+    # Add a player connection for this server and verify it's still there after processing
+    PlayerConnection.create!(:bz_server => @bz_server, :join_at => '2007-10-11', :part_at => nil)
+    assert_equal(1, PlayerConnection.count(:conditions => "bz_server_id = #{@bz_server.id} and part_at is null"))
+    LogParser.process_line(@server_host, @bz_server, line)
+    assert_equal(0, LogMessage.count)
+    assert_equal(0, PlayerConnection.count(:conditions => "bz_server_id = #{@bz_server.id} and part_at is null"))
   end
 end
