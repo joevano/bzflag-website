@@ -3,7 +3,11 @@ one:
   id: 1
   created_at: 2007-11-11 21:17:57
   updated_at: 2007-11-11 21:17:57
+  hostname: bzflag
+  owner: Me
 two:
   id: 2
   created_at: 2007-11-11 21:17:57
   updated_at: 2007-11-11 21:17:57
+  hostname: bzflag2
+  owner: Someone Else

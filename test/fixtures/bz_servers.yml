@@ -3,7 +3,27 @@ one:
   id: 1
   created_at: 2007-11-11 21:18:37
   updated_at: 2007-11-11 21:18:37
+  port: 5154
+  server_host_id: 1
+  map_name: Some Random Map
 two:
   id: 2
   created_at: 2007-11-11 21:18:37
   updated_at: 2007-11-11 21:18:37
+  port: 5155
+  server_host_id: 1
+  map_name: Another Random Map
+three:
+  id: 3
+  created_at: 2007-11-11 21:18:37
+  updated_at: 2007-11-11 21:18:37
+  port: 6000
+  server_host_id: 2
+  map_name: Alpha Map
+four:
+  id: 4
+  created_at: 2007-11-11 21:18:37
+  updated_at: 2007-11-11 21:18:37
+  port: 6001
+  server_host_id: 2
+  map_name: Beta Map

@@ -1,11 +1,61 @@
 # Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
-one:
+player_join:
   id: 1
-  token: MyString
+  token: PLAYER-JOIN
   created_at: 2007-12-04 10:41:02
   updated_at: 2007-12-04 10:41:02
-two:
+player_part:
   id: 2
-  token: MyString
+  token: PLAYER-PART
+  created_at: 2007-12-04 10:41:02
+  updated_at: 2007-12-04 10:41:02
+player_auth:
+  id: 3
+  token: PLAYER-AUTH
+  created_at: 2007-12-04 10:41:02
+  updated_at: 2007-12-04 10:41:02
+server_status:
+  id: 4
+  token: SERVER-STATUS
+  created_at: 2007-12-04 10:41:02
+  updated_at: 2007-12-04 10:41:02
+msg_broadcast:
+  id: 5
+  token: MSG-BROADCAST
+  created_at: 2007-12-04 10:41:02
+  updated_at: 2007-12-04 10:41:02
+msg_filtered:
+  id: 6
+  token: MSG-FILTERED
+  created_at: 2007-12-04 10:41:02
+  updated_at: 2007-12-04 10:41:02
+msg_report:
+  id: 7
+  token: MSG-REPORT
+  created_at: 2007-12-04 10:41:02
+  updated_at: 2007-12-04 10:41:02
+msg_command:
+  id: 8
+  token: MSG-COMMAND
+  created_at: 2007-12-04 10:41:02
+  updated_at: 2007-12-04 10:41:02
+msg_admin:
+  id: 9
+  token: MSG-ADMIN
+  created_at: 2007-12-04 10:41:02
+  updated_at: 2007-12-04 10:41:02
+msg_direct:
+  id: 10
+  token: MSG-DIRECT
+  created_at: 2007-12-04 10:41:02
+  updated_at: 2007-12-04 10:41:02
+msg_team:
+  id: 11
+  token: MSG-TEAM
+  created_at: 2007-12-04 10:41:02
+  updated_at: 2007-12-04 10:41:02
+players:
+  id: 12
+  token: PLAYERS
   created_at: 2007-12-04 10:41:02
   updated_at: 2007-12-04 10:41:02

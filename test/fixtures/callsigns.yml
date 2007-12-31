@@ -1,11 +1,11 @@
 # Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
 one:
   id: 1
-  callsign: MyString
+  name: callsign A
   created_at: 2007-12-04 23:14:38
   updated_at: 2007-12-04 23:14:38
 two:
   id: 2
-  callsign: MyString
+  name: callsign B
   created_at: 2007-12-04 23:14:38
   updated_at: 2007-12-04 23:14:38
