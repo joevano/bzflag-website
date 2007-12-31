@@ -102,9 +102,20 @@ class LogParser
       end
       ip = Ip.locate(ip)
 
-      is_verified = !((detail =~ /VERIFIED/).nil?)
-      is_globaluser = !((detail =~ /GLOBALUSER/).nil?)
-      is_admin = !((detail =~ /ADMIN/).nil?)
+      is_verified = false
+      if detail =~ /VERIFIED/
+        is_verified = true
+      end
+
+      is_globaluser = false
+      if detail =~ /GLOBALUSER/
+        is_globaluser = true
+      end
+
+      is_admin = false
+      if detail =~ /ADMIN/
+        is_admin = true
+      end
 
       pc = PlayerConnection.create!(:bz_server => bz_server,
                                     :join_at => date,
@@ -112,12 +123,14 @@ class LogParser
                                     :callsign => callsign,
                                     :is_verified => is_verified,
                                     :is_admin => is_admin,
+                                    :is_globaluser => is_globaluser,
                                     :bzid => bzid,
                                     :team => team,
                                     :slot => slot)
 
       lm.callsign = callsign
       lm.bzid = bzid
+      lm.team = team
 
     when 'PLAYER-PART'
       lm.callsign, detail = get_callsign(detail)
@@ -129,6 +142,7 @@ class LogParser
       slot, detail = detail.split(' ', 2)
       slot = slot[1..-1]
       bzid, detail = parse_bzid(detail)
+      lm.bzid = bzid
       lm.message = get_message(detail)
 
     when 'PLAYER-AUTH'
