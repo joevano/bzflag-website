@@ -561,4 +561,23 @@ class LogParserTest < Test::Unit::TestCase
     assert_equal(0, LogMessage.count)
     assert_equal(0, PlayerConnection.count(:conditions => "bz_server_id = #{@bz_server.id} and part_at is null"))
   end
+
+  def test_missing_date
+    line = '2007-12-28T01:22:05Z some random debug output goes here'
+    LogParser.process_line(@server_host, @bz_server, line)
+    # That fails to create anything since there is not log token
+    assert(0, LogMessage.count)
+    # Now create a log without a date and verify it gets the date from the previous log line
+    line = 'MSG-BROADCAST 5:ABCDE Some text to broadcast'
+    LogParser.process_line(@server_host, @bz_server, line)
+    
+    lm = LogMessage.find(:first)
+    assert_not_nil(lm)
+    assert_not_nil(lm.logged_at)
+    assert_equal('2007-12-28T01:22:05Z', lm.logged_at.strftime('%Y-%m-%dT%H:%M:%SZ'))
+    lt = LogType.find_by_token("MSG-BROADCAST")
+    assert_not_nil(lt)
+    assert_equal(lt.id, lm.log_type_id)
+    assert_equal(@bz_server.id, lm.bz_server_id)
+  end
 end

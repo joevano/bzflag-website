@@ -108,6 +108,7 @@ class LogParser
       @date = date
       detail = $2
     else
+      date = @date
       detail = line
     end
 
