@@ -30,9 +30,23 @@ class LogParser
 
   # Find or create a Team object for a string
   def self.get_team(detail)
-    team, detail = detail.split(' ', 2)
-    t = Team.locate(team)
-    return t, detail
+    team = nil
+    if detail =~ /\s*(\w+)\s+(.*)$/
+      team = Team.locate($1)
+      detail = $2
+    end
+    return team, detail
+  end
+
+  # Parse the slot number from a string
+  def self.parse_slot(detail)
+    # Get slot number
+    slot = nil
+    if detail =~ /\s*#(\d+)\s+(.*)$/
+      slot = $1
+      detail = $2
+    end
+    return slot, detail
   end
 
   # Parse a counted callsign from a string
@@ -58,9 +72,9 @@ class LogParser
   # and returns the bzid value if one is found.
   def self.parse_bzid(detail)
     bzid = nil
-    if detail =~ /^BZid:/
-      bzid, detail = detail.split(' ', 2)
-      bzid = bzid[5..-1]
+    if detail =~ /^\s*BZid:(\d+)\s+(.*)$/
+      bzid = $1
+      detail = $2
     end
     return bzid, detail
   end
@@ -84,37 +98,68 @@ class LogParser
   # Process a line from the log file
   #
   def self.process_line(server_host, bz_server, line)
-    date, log_type, detail = line.chomp.split(' ', 3)
+    # The date can be in 3 formats:
+    #
+    # 2007-12-16T11:09:42Z
+    # 2007-12-16 11:09:42:
+    # or missing in which case we use the last date we have available
+    if line =~ /(\d\d\d\d-\d\d-\d\d[T ]\d\d:\d\d:\d\dZ?):?\s+(.*)$/
+      date = $1
+      @date = date
+      detail = $2
+    else
+      detail = line
+    end
+
+    if detail =~ /(\S+)\s+(.*)$/
+      log_type = $1
+      detail = $2
+    else
+      # Can't parse the line :-P ignore it
+      return
+    end
+           
     log_type_id = LogType.ids([log_type])
     lm = LogMessage.new(:bz_server => bz_server, :logged_at => date, :log_type_id => log_type_id)
 
     case log_type
 
     when 'PLAYER-JOIN'
+      # Get callsign
       callsign, detail = get_callsign(detail)
-      slot, detail = detail.split(' ', 2)
-      slot = slot[1..-1]
+
+      slot, detail = parse_slot(detail)
+
+      # Get bzid
       bzid, detail = parse_bzid(detail)
+
+      # Get team
       team, detail = get_team(detail)
-      ip, detail = detail.split(' ', 2)
-      if ip =~ /^IP:/
-        ip = ip[3..-1]
+
+      # Get ip
+      if detail =~ /\s*IP:(\d+\.\d+\.\d+\.\d+)\s*(.*)$/
+        ip = Ip.locate($1)
+        detail = $2
       end
-      ip = Ip.locate(ip)
 
       is_verified = false
-      if detail =~ /VERIFIED/
+      if detail =~ /\bVERIFIED\b/
         is_verified = true
       end
 
       is_globaluser = false
-      if detail =~ /GLOBALUSER/
+      if detail =~ /\bGLOBALUSER\b/
         is_globaluser = true
       end
 
       is_admin = false
-      if detail =~ /ADMIN/
+      if detail =~ /\bADMIN\b/
         is_admin = true
+      end
+
+      is_operator = false
+      if detail =~ /\bOPERATOR\b/
+        is_operator = true
       end
 
       pc = PlayerConnection.create!(:bz_server => bz_server,
@@ -124,6 +169,7 @@ class LogParser
                                     :is_verified => is_verified,
                                     :is_admin => is_admin,
                                     :is_globaluser => is_globaluser,
+                                    :is_operator => is_operator,
                                     :bzid => bzid,
                                     :team => team,
                                     :slot => slot)
@@ -139,8 +185,7 @@ class LogParser
         pc.part_at = date
         pc.save!
       end
-      slot, detail = detail.split(' ', 2)
-      slot = slot[1..-1]
+      slot, detail = parse_slot(detail)
       bzid, detail = parse_bzid(detail)
       lm.bzid = bzid
       lm.message = get_message(detail)
@@ -150,6 +195,15 @@ class LogParser
       begin
         pc = PlayerConnection.find(:first, :conditions => "bz_server_id = #{bz_server.id} and part_at is null and callsign_id = #{lm.callsign.id}")
         pc.is_verified = true
+
+        if detail =~ /\bADMIN\b/
+          pc.is_admin = true
+        end
+
+        if detail =~ /\bOPERATOR\b/
+          pc.is_operator = true
+        end
+
         pc.save!
       rescue
       end
