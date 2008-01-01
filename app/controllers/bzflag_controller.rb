@@ -6,11 +6,14 @@ class BzflagController < ApplicationController
 
   def servers
     case params[:sort]
-    when 'host' then @bz_servers = BzServer.find(:all, :order => "server_host_id, port")
-    when 'port' then @bz_servers = BzServer.find(:all, :order => "port, server_host_id")
-    when 'map_name' then @bz_servers = BzServer.find(:all, :order => "map_name, server_host_id, port")
-    else  @bz_servers = BzServer.find(:all, :order => "server_host_id, port")
+    when 'host' then servers = BzServer.find(:all, :order => "server_host_id, port")
+    when 'port' then servers = BzServer.find(:all, :order => "port, server_host_id")
+    when 'map_name' then servers = BzServer.find(:all, :order => "map_name, server_host_id, port")
+    else  servers = BzServer.find(:all, :order => "server_host_id, port")
     end
+
+    @bz_servers = servers.collect{ |b| [b, b.player_connections.find(:all, :order => "slot", :conditions => "part_at is null")] }      
+
   end
 
   def help
@@ -22,7 +25,13 @@ class BzflagController < ApplicationController
   end
 
   def players
-    @players = User.find(:all).collect { |p| p.callsign }
+    @num_callsigns = Callsign.count
+    @num_ips = Ip.count
+    @num_player_connections = PlayerConnection.count
+
+    if request.post?
+      
+    end
   end
 
   def bans
