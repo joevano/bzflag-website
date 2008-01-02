@@ -163,6 +163,13 @@ class LogParser
         is_operator = true
       end
 
+      # Any existing player connections on this server for this callsign
+      # can't be connected anymore - so log the part time
+      bz_server.player_connections.find(:all, :conditions => "callsign_id = #{callsign.id} and part_at is null").each do |pc|
+        pc.part_at = date
+        pc.save!
+      end
+
       pc = PlayerConnection.create!(:bz_server => bz_server,
                                     :join_at => date,
                                     :ip => ip,

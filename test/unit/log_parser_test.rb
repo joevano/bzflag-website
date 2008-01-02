@@ -580,4 +580,15 @@ class LogParserTest < Test::Unit::TestCase
     assert_equal(lt.id, lm.log_type_id)
     assert_equal(@bz_server.id, lm.bz_server_id)
   end
+
+  def test_multiple_player_joins_no_part
+    line = '2007-12-29T00:00:04Z PLAYER-JOIN 7:widgets #2 RED  IP:1.2.4.7'
+    LogParser.process_line(@server_host, @bz_server, line)
+    pc = PlayerConnection.find(:first)
+    assert_not_nil(pc)
+    line = '2007-12-29T00:10:04Z PLAYER-JOIN 7:widgets #4 RED  IP:1.2.4.8'
+    LogParser.process_line(@server_host, @bz_server, line)
+    pc.reload
+    assert_not_nil(pc.part_at)
+  end
 end
