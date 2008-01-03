@@ -31,6 +31,7 @@ class BzflagController < ApplicationController
     @num_player_connections = PlayerConnection.count
     @num_log_messages = LogMessage.count
     @search_options = ['Callsign','IP','Hostname']
+    @lastlog = LogMessage.find(:first, :order => "id desc")
 
     if request.post?
       
