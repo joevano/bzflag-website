@@ -28,7 +28,7 @@ class BzflagController < ApplicationController
     @num_callsigns = Callsign.count
     @num_ips = Ip.count
     @num_player_connections = PlayerConnection.count
-    @num_logs_messages = LogMessage.count
+    @num_log_messages = LogMessage.count
     @search_options = ['Callsign','IP','Hostname']
 
     if request.post?
