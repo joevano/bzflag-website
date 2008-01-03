@@ -34,8 +34,15 @@ class BzflagController < ApplicationController
     @num_messages = Message.count
     @lastlog = LogMessage.find(:first, :order => "id desc")
 
+    @results = nil
     if request.post?
-      
+      if params[:search][:search_by] == 'Callsign'
+        @results = Callsign.find(:all, :conditions => "name like '#{params[:search][:search_for]}'").collect{|x| x.name}.uniq
+      elsif params[:search][:search_by] == 'IP'
+        @results = Ip.find(:all, :conditions => "ip like '#{params[:search][:search_for]}'").collect{|x| "#{x.ip} #{x.hostname}"}.uniq
+      elsif params[:search][:search_by] == 'Hostname'
+        @results = Ip.find(:all, :conditions => "hostname like '#{params[:search][:search_for]}'").collect{|x| "#{x.ip} #{x.hostname}"}.uniq
+      end
     end
   end
 

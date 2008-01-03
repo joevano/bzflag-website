@@ -15,7 +15,7 @@
 <div>
   <fieldset>
     <legend>Enter Player Search Criteria</legend>
-    <% form_for :player_connection do |form| %>
+    <% form_for :search do |form| %>
       <p><label for="search_for">Search For:</label>
          <%= form.text_field :search_for, :size => 30 %>
          <%= form.select :search_by, @search_options %>
@@ -25,3 +25,14 @@
   </fieldset>
 </div>
 
+<div>
+<% if @results %>
+     <table>
+<%   @results.each do |rslt| %>
+     <tr>
+     <td><%= rslt %></td>
+     </tr>
+<%   end %>
+     </table>
+<% end %>
+</div>
