@@ -12,7 +12,8 @@ class BzflagController < ApplicationController
     else  servers = BzServer.find(:all, :order => "server_host_id, port")
     end
 
-    @bz_servers = servers.collect{ |b| [b, b.player_connections.find(:all, :order => "slot", :conditions => "part_at is null")] }      
+#    @bz_servers = servers.collect{ |b| [b, b.player_connections.find(:all, :order => "slot", :conditions => "part_at is null")] }      
+    @bz_servers = servers.collect{ |b| [b, []] }
 
   end
 
