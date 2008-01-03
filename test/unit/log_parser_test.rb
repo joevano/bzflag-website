@@ -591,4 +591,30 @@ class LogParserTest < Test::Unit::TestCase
     pc.reload
     assert_not_nil(pc.part_at)
   end
+
+  def test_player_join_unknown_team
+    line = '2005-06-10T14:40:26Z PLAYER-JOIN 8:ABCDEFGH #11 UNKNOWN IP:10.237.7.91'
+    LogParser.process_line(@server_host, @bz_server, line)
+    pc = PlayerConnection.find(:first)
+    assert_not_nil(pc)
+    assert_not_nil(pc.callsign)
+    assert_equal("ABCDEFGH", pc.callsign.name)
+    assert_equal(11, pc.slot)
+    assert_not_nil(pc.team)
+    assert_equal("UNKNOWN", pc.team.name)
+    assert_not_nil(pc.ip)
+    assert_equal("10.237.7.91", pc.ip.ip)
+  end
+
+  def test_player_join_no_part_same_slot
+    line = '2007-12-29T00:00:04Z PLAYER-JOIN 7:widgets #2 RED  IP:1.2.4.7'
+    LogParser.process_line(@server_host, @bz_server, line)
+    pc = PlayerConnection.find(:first)
+    assert_not_nil(pc)
+    line = '2007-12-29T00:10:04Z PLAYER-JOIN 7:getwids #2 BLUE IP:1.2.4.8'
+    LogParser.process_line(@server_host, @bz_server, line)
+    pc.reload
+    assert_not_nil(pc.part_at)
+    assert_equal(2, PlayerConnection.count)
+  end
 end

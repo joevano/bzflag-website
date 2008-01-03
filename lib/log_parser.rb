@@ -63,6 +63,7 @@ class LogParser
     rescue
       callsign = "UNKNOWN"
     end
+
     return callsign , msg
   end
 
@@ -166,6 +167,13 @@ class LogParser
       # Any existing player connections on this server for this callsign
       # can't be connected anymore - so log the part time
       bz_server.player_connections.find(:all, :conditions => "callsign_id = #{callsign.id} and part_at is null").each do |pc|
+        pc.part_at = date
+        pc.save!
+      end
+
+      # Any existing player connections on this server and slot
+      # can't be connected anymore - so log the part time
+      bz_server.player_connections.find(:all, :conditions => "slot = #{slot} and part_at is null").each do |pc|
         pc.part_at = date
         pc.save!
       end
