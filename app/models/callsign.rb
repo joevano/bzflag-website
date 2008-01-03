@@ -6,7 +6,7 @@ class Callsign < ActiveRecord::Base
   has_many :log_messages
 
   def self.locate(name)
-    if name == ''
+    if name == '' || name =~ /^\s+$/
       name = 'UNKNOWN'
     end
     Callsign.find_by_name(name) || Callsign.create!(:name => name)

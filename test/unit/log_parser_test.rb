@@ -21,6 +21,12 @@ class LogParserTest < Test::Unit::TestCase
     assert_equal("more stuff", detail)
   end
 
+  def test_get_blank_callsign
+    callsign, detail = LogParser.get_callsign("3:    more stuff")
+    assert_equal("UNKNOWN", callsign.name)
+    assert_equal("more stuff", detail)
+  end
+
   def test_get_message
     msg_text = "This is a test message"
     msg = LogParser.get_message(msg_text)
