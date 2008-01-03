@@ -27,6 +27,9 @@
 
 <div>
 <% if @results %>
+     <p>
+       <%= @results.size %> results found.
+     </p>
      <table>
 <%   @results.each do |rslt| %>
      <tr>
