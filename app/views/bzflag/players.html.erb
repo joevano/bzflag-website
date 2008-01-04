@@ -5,7 +5,6 @@
     <td><%= number_with_delimiter(@num_ips) %> IPs</td>
     <td><%= number_with_delimiter(@num_player_connections) %> Player Connections</td>
     <td><%= number_with_delimiter(@num_log_messages) %> Log Messages</td>
-    <td><%= number_with_delimiter(@num_messages) %> Unique Messages</td>
   </tr>
   <tr>
     <td colspan=5>Last Log Processed: <%= @lastlog && @lastlog.bz_server.server_host.hostname %>:<%= @lastlog && @lastlog.bz_server.port %> &nbsp; <%= @lastlog && @lastlog.log_type.token %> &nbsp; <%= @lastlog && @lastlog.logged_at %> </td>
