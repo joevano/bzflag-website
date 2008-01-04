@@ -5,16 +5,8 @@ class BzflagController < ApplicationController
   end
 
   def servers
-    case params[:sort]
-    when 'host' then servers = BzServer.find(:all, :order => "server_host_id, port")
-    when 'port' then servers = BzServer.find(:all, :order => "port, server_host_id")
-    when 'map_name' then servers = BzServer.find(:all, :order => "map_name, server_host_id, port")
-    else  servers = BzServer.find(:all, :order => "server_host_id, port")
-    end
-
-#    @bz_servers = servers.collect{ |b| [b, b.player_connections.find(:all, :order => "slot", :conditions => "part_at is null")] }      
+    servers = BzServer.find(:all, :order => "server_host_id, port")
     @bz_servers = servers.collect{ |b| [b, []] }
-
   end
 
   def help
