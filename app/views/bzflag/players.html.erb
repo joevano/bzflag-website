@@ -1,16 +1,4 @@
 <h1>Players</h1>
-<table>
-  <tr>
-    <td><%= number_with_delimiter(@num_callsigns) %> Callsigns</td>
-    <td><%= number_with_delimiter(@num_ips) %> IPs</td>
-    <td><%= number_with_delimiter(@num_player_connections) %> Player Connections</td>
-    <td><%= number_with_delimiter(@num_log_messages) %> Log Messages</td>
-  </tr>
-  <tr>
-    <td colspan=5>Last Log Processed: <%= @lastlog && @lastlog.bz_server.server_host.hostname %>:<%= @lastlog && @lastlog.bz_server.port %> &nbsp; <%= @lastlog && @lastlog.log_type.token %> &nbsp; <%= @lastlog && @lastlog.logged_at %> </td>
-  </tr>
-</table>
-
 <div>
   <fieldset>
     <legend>Enter Player Search Criteria</legend>

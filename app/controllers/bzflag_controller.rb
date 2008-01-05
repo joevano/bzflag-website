@@ -18,16 +18,13 @@ class BzflagController < ApplicationController
   end
 
   def players
-    @num_callsigns = Callsign.count
-    @num_ips = Ip.count
-    @num_player_connections = PlayerConnection.count
-    @num_log_messages = LogMessage.count
     @search_options = ['Callsign','IP','Hostname']
-    @lastlog = LogMessage.find(:first, :order => "id desc")
 
     @results = nil
     if request.post?
-      if params[:search][:search_by] == 'Callsign'
+      if params[:search][:search_for] =~ /^%*$/
+        flash[:notice] = "Please enter some search criteria"
+      elsif params[:search][:search_by] == 'Callsign'
         @results = Callsign.find(:all, :conditions => "name like '#{params[:search][:search_for]}'").collect{|x| x.name}.uniq
       elsif params[:search][:search_by] == 'IP'
         @results = Ip.find(:all, :conditions => "ip like '#{params[:search][:search_for]}'").collect{|x| "#{x.ip} #{x.hostname}"}.uniq
