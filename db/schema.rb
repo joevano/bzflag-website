@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 47) do
+ActiveRecord::Schema.define(:version => 51) do
 
   create_table "bz_servers", :force => true do |t|
     t.datetime "created_at"
@@ -17,6 +17,9 @@ ActiveRecord::Schema.define(:version => 47) do
     t.integer  "port"
     t.integer  "server_host_id"
     t.string   "map_name"
+    t.integer  "last_chat_log_message_id"
+    t.integer  "last_filtered_log_message_id"
+    t.integer  "server_status_log_message_id"
   end
 
   create_table "callsigns", :force => true do |t|
@@ -26,6 +29,17 @@ ActiveRecord::Schema.define(:version => 47) do
   end
 
   add_index "callsigns", ["name"], :name => "index_callsigns_on_name"
+
+  create_table "current_players", :force => true do |t|
+    t.integer  "slot_index"
+    t.boolean  "is_verified"
+    t.boolean  "is_admin"
+    t.string   "callsign"
+    t.string   "email"
+    t.integer  "bz_server_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "emails", :force => true do |t|
     t.string   "email"
@@ -72,6 +86,7 @@ ActiveRecord::Schema.define(:version => 47) do
   end
 
   add_index "log_messages", ["bz_server_id", "log_type_id", "logged_at"], :name => "index_log_messages"
+  add_index "log_messages", ["id"], :name => "index_log_messages_by_id"
 
   create_table "log_types", :force => true do |t|
     t.string   "token"
