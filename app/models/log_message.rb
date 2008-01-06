@@ -5,6 +5,6 @@ class LogMessage < ActiveRecord::Base
   belongs_to :team
   belongs_to :message
   belongs_to :bz_server
-  belongs_to :server_last_chat, :class_name => "BzServer", :foreign_key => "last_chat_message_id"
-  belongs_to :server_last_filtered_chat, :class_name => "BzServer", :foreign_key => "last_filtered_chat_message_id"
+  has_one :last_chat_log_server, :class_name => "BzServer", :foreign_key => "last_chat_log_message_id"
+  has_one :last_filtered_log_server, :class_name => "BzServer", :foreign_key => "last_filtered_log_message_id"
 end
