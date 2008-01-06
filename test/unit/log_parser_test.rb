@@ -388,6 +388,7 @@ class LogParserTest < Test::Unit::TestCase
     assert_not_nil(msg)
     assert_equal(msg.id, lm.message_id)
     assert_equal(@bz_server.id, lm.bz_server_id)
+    assert_equal(lm.id, @bz_server.server_status_log_message_id)
   end
 
   def test_msg_broadcast
@@ -549,13 +550,29 @@ class LogParserTest < Test::Unit::TestCase
   end
 
   def test_players
-    line = '2007-12-29T00:00:04Z PLAYERS (22) [+]11:AAAAAAAAAAA(21:BBBBBBBBBBBBBBBBBBBBB) [ ]7:CCCCCCC(14:DDDDDDDDDDDDDD) [ ]7:EEEEEEE(22:FFFFFFFFFFFFFFFFFFFFFF) [+]8:GGGGGGGG() [@]5:HHHHH(19:IIIIIIIIIIIIIIIIIII) [+]15:JJJJJJJJJJJJJJJ(12:KKKKKKKKKKKK) [ ]4:LLLL(8:MMMMMMM]) [ ]5:NNNNN() [+]8:OOOOOOOO(17:PPPPPPPPPPPPPPPPP) [ ]8:QQQQQQQQ(17:RRRRRRRRRRRRRRRRR) [ ]12:SSSSSSSSSSSS(13:TTTTTTTTTTTTT) [+]15:UUUUUUUUUUUUUUU() [+]7:VVVVVVV(24:WWWWWWWWWWWWWWWWWWWWWWWW) [+]11:XXXXXXXXXXX() [ ]6:YYYYYY() [ ]11:ZZZZZZZZZZZ() [+]7:aaaaaaa(24:bbbbbbbbbbbbbbbbbbbbbbbb) [ ]9:ccccccccc(1:d) [ ]6:eeeeee(17:fffffffffffffffff) [+]9:ggggggggg(12:hhhhhhhhhhhh) [ ]11:iiiiiiiiiii(9:jjjjjjjjj) [+]7:kkkkkkk(11:lllllllllll) '
+    line = '2007-12-29T00:00:04Z PLAYERS (3) [+]11:AAAAAAAAAAA(21:BBBBBBBBBBBBBBBBBBBBB) [ ]7:CCCCCCC(14:DDDDDDDDDDDDDD) [@]5:NNNNN()'
     # Add a player connection for this server and verify it's still there after processing
     PlayerConnection.create!(:bz_server => @bz_server, :join_at => '2007-10-11', :part_at => nil)
     assert_equal(1, PlayerConnection.count(:conditions => "bz_server_id = #{@bz_server.id} and part_at is null"))
     LogParser.process_line(@server_host, @bz_server, line)
     assert_equal(0, LogMessage.count)
     assert_equal(1, PlayerConnection.count(:conditions => "bz_server_id = #{@bz_server.id} and part_at is null"))
+    assert_equal(3, @bz_server.current_players.size)
+    assert_equal(true, @bz_server.current_players[0].is_verified)
+    assert_equal(1, @bz_server.current_players[0].slot_index)
+    assert_equal('AAAAAAAAAAA', @bz_server.current_players[0].callsign)
+    assert_equal('(BBBBBBBBBBBBBBBBBBBBB)', @bz_server.current_players[0].email)
+    assert_equal(false, @bz_server.current_players[0].is_admin)
+    assert_equal(false, @bz_server.current_players[1].is_verified)
+    assert_equal(2, @bz_server.current_players[1].slot_index)
+    assert_equal('CCCCCCC', @bz_server.current_players[1].callsign)
+    assert_equal('(DDDDDDDDDDDDDD)', @bz_server.current_players[1].email)
+    assert_equal(false, @bz_server.current_players[1].is_admin)
+    assert_equal(true, @bz_server.current_players[2].is_verified)
+    assert_equal(true, @bz_server.current_players[2].is_admin)
+    assert_equal(3, @bz_server.current_players[2].slot_index)
+    assert_equal('NNNNN', @bz_server.current_players[2].callsign)
+    assert_equal("", @bz_server.current_players[2].email)
   end
 
   def test_players_zero
@@ -566,6 +583,7 @@ class LogParserTest < Test::Unit::TestCase
     LogParser.process_line(@server_host, @bz_server, line)
     assert_equal(0, LogMessage.count)
     assert_equal(0, PlayerConnection.count(:conditions => "bz_server_id = #{@bz_server.id} and part_at is null"))
+    assert_equal(0, @bz_server.current_players.size)
   end
 
   def test_missing_date
@@ -623,4 +641,5 @@ class LogParserTest < Test::Unit::TestCase
     assert_not_nil(pc.part_at)
     assert_equal(2, PlayerConnection.count)
   end
+
 end

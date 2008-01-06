@@ -193,6 +193,7 @@ class LogParser
       lm.callsign = callsign
       lm.bzid = bzid
       lm.team = team
+      lm.save!
 
     when 'PLAYER-PART'
       lm.callsign, detail = get_callsign(detail)
@@ -205,6 +206,7 @@ class LogParser
       bzid, detail = parse_bzid(detail)
       lm.bzid = bzid
       lm.message = get_message(detail)
+      lm.save!
 
     when 'PLAYER-AUTH'
       lm.callsign, detail = get_callsign(detail)
@@ -223,26 +225,34 @@ class LogParser
         pc.save!
       rescue
       end
+      lm.save!
 
     when 'SERVER-STATUS'
       lm.message = get_message(detail)
+      lm.save!
+      bz_server.server_status_log_message_id = lm.id
+      bz_server.save!
 
     when 'MSG-BROADCAST', 'MSG-FILTERED', 'MSG-REPORT', 'MSG-COMMAND', 'MSG-ADMIN'
       lm.callsign, detail = get_callsign(detail)
       lm.message = get_message(detail)
+      lm.save!
 
     when 'MSG-DIRECT'
       lm.callsign, detail = get_callsign(detail)
       lm.to_callsign, detail = get_callsign(detail)
       lm.message = get_message(detail)
+      lm.save!
 
     when 'MSG-TEAM'
       lm.callsign, detail = get_callsign(detail)
       lm.team, detail = get_team(detail)
       lm.message = get_message(detail)
+      lm.save!
 
     when 'PLAYERS'
-      lm.log_type_id = nil    # We don't save PLAYERS data in the log
+      # We do not save PLAYERS data in log messages
+      # This updates current_players instead
       count, callsigns = detail.split(" ", 2)
       count = count.slice(1..-2).to_i
       if count == 0
@@ -251,11 +261,16 @@ class LogParser
           pc.part_at = date
           pc.save!
         end
+      else
+        bz_server.current_players.delete_all
+        1.upto(count) do |idx|
+          v, callsign, email, callsigns = parse_player_email(callsigns)
+          is_admin = (v == '@')
+          is_verified = (v == '+' || is_admin)
+          cp = bz_server.current_players.create!(:is_verified => is_verified, :is_admin => is_admin, :callsign => callsign, :email => email, :slot_index => idx)
+        end
       end
     end
-
-    # Save the log if it has a valid id
-    lm.log_type_id && lm.save!
   end
 
   def self.process
