@@ -262,7 +262,7 @@ class LogParser
           pc.save!
         end
       else
-        bz_server.current_players.delete_all
+        CurrentPlayer.delete_all(:bz_server_id => bz_server.id)
         1.upto(count) do |idx|
           v, callsign, email, callsigns = parse_player_email(callsigns)
           is_admin = (v == '@')

@@ -586,6 +586,15 @@ class LogParserTest < Test::Unit::TestCase
     assert_equal(0, @bz_server.current_players.size)
   end
 
+  def test_players_cleared
+    line = '2007-12-29T00:00:04Z PLAYERS (3) [+]11:AAAAAAAAAAA(21:BBBBBBBBBBBBBBBBBBBBB) [ ]7:CCCCCCC(14:DDDDDDDDDDDDDD) [@]5:NNNNN()'
+    LogParser.process_line(@server_host, @bz_server, line)
+    assert_equal(3, CurrentPlayer.count)
+    line = '2007-12-29T00:00:04Z PLAYERS (1) [+]11:XXXXXXXXXXX(21:UUUUUUUUUUUUUUUUUUUUU)'
+    LogParser.process_line(@server_host, @bz_server, line)
+    assert_equal(1, CurrentPlayer.count)
+  end
+
   def test_missing_date
     line = '2007-12-28T01:22:05Z some random debug output goes here'
     LogParser.process_line(@server_host, @bz_server, line)
