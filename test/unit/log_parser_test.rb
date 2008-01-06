@@ -128,9 +128,17 @@ class LogParserTest < Test::Unit::TestCase
     assert_equal('more stuff goes here', rest)
   end
 
+  def test_parse_player_email_special_chars
+    data = '[+]22:(}=-!@#$%^&*()-_=~-={)(30:~`!@#$%^&*()_+=-\|{}][<>.,/?12) '
+    v, callsign, email, moredata = LogParser.parse_player_email(data)
+    assert_equal('+', v)
+    assert_equal('(}=-!@#$%^&*()-_=~-={)', callsign)
+    assert_equal('(~`!@#$%^&*()_+=-\|{}][<>.,/?12)', email)
+    assert_equal('', moredata)
+  end
+
   def test_parse_player_email
-    data = '[+]9:Bad Sushi() [+]10:spatialgur(15:spatialguru.com) [@]12:drunk driver()
-'
+    data = '[+]9:Bad Sushi() [+]10:spatialgur(15:spatialguru.com) [@]12:drunk driver()'
     v, callsign, email, moredata = LogParser.parse_player_email(data)
     assert_equal('+', v)
     assert_equal('Bad Sushi', callsign)
@@ -650,5 +658,4 @@ class LogParserTest < Test::Unit::TestCase
     assert_not_nil(pc.part_at)
     assert_equal(2, PlayerConnection.count)
   end
-
 end

@@ -54,14 +54,13 @@ class LogParser
   #
   # 	e.g. 7:Thumper
   # 	returns 'Thumper' as the callsign and the remainder of the string
-  def self.parse_callsign(msg, skip=2)
+  def self.parse_callsign(msg)
     begin
-      colon = msg.index(":")
-      length = msg[0..colon-1].to_i
-      callsign = msg[colon+1..colon+length]
-      msg = msg[colon+skip+length..-1]
-    rescue
       callsign = "UNKNOWN"
+      length = 0
+      length, rest = $1, $2 if msg =~ /^(\d+):(.*)$/
+      callsign, msg = $1, $2 if rest =~ /(.{#{length}}) ?(.*)$/
+    rescue
     end
 
     return callsign , msg
@@ -84,15 +83,22 @@ class LogParser
   #
   # [+]9:Bad Sushi() [+]10:spatialgur(15:spatialguru.com) [@]12:drunk driver()
   def self.parse_player_email(data)
-    data =~ /\[(.)\]([^\(]*)\(([^\)]*\)) ?(.*)/
-    v, callsign, email, data = "#$1", "#$2", "#$3", "#$4"
-    callsign, junk = parse_callsign(callsign)
-    email, junk = parse_callsign(email)
+    v, data = $1, $2 if data =~ /^\[(.)\](.*)$/
+
+    callsign, data = parse_callsign(data)
+
+    # Skip the ( prefixing the email
+    data = $1 if data =~ /^\((.*)$/
+
+    email, data = parse_callsign(data)
     if email == 'UNKNOWN'
       email = ''
     else
       email = '(' + email + ')'
     end
+    # Skip the final ) after the email
+    data = $1 if data =~ /^\) ?(.*)$/
+
     return v, callsign, email, data
   end
 
