@@ -419,6 +419,7 @@ class LogParserTest < Test::Unit::TestCase
     assert_not_nil(msg)
     assert_equal(msg.id, lm.message_id)
     assert_equal(@bz_server.id, lm.bz_server_id)
+    assert_equal(lm.id, @bz_server.last_chat_log_message_id)
   end
 
   def test_msg_filtered
@@ -441,6 +442,7 @@ class LogParserTest < Test::Unit::TestCase
     assert_not_nil(msg)
     assert_equal(msg.id, lm.message_id)
     assert_equal(@bz_server.id, lm.bz_server_id)
+    assert_equal(lm.id, @bz_server.last_filtered_log_message_id)
   end
 
   def test_msg_report
@@ -507,6 +509,7 @@ class LogParserTest < Test::Unit::TestCase
     assert_not_nil(msg)
     assert_equal(msg.id, lm.message_id)
     assert_equal(@bz_server.id, lm.bz_server_id)
+    assert_equal(lm.id, @bz_server.last_chat_log_message_id)
   end
 
   def test_msg_direct
@@ -531,6 +534,7 @@ class LogParserTest < Test::Unit::TestCase
     assert_not_nil(msg)
     assert_equal(msg.id, lm.message_id)
     assert_equal(@bz_server.id, lm.bz_server_id)
+    assert_equal(lm.id, @bz_server.last_chat_log_message_id)
   end
 
   def test_msg_team
@@ -555,6 +559,7 @@ class LogParserTest < Test::Unit::TestCase
     assert_not_nil(msg)
     assert_equal(msg.id, lm.message_id)
     assert_equal(@bz_server.id, lm.bz_server_id)
+    assert_equal(lm.id, @bz_server.last_chat_log_message_id)
   end
 
   def test_players

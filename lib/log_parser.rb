@@ -239,22 +239,40 @@ class LogParser
       bz_server.server_status_log_message_id = lm.id
       bz_server.save!
 
-    when 'MSG-BROADCAST', 'MSG-FILTERED', 'MSG-REPORT', 'MSG-COMMAND', 'MSG-ADMIN'
+    when 'MSG-REPORT', 'MSG-COMMAND'
       lm.callsign, detail = get_callsign(detail)
       lm.message = get_message(detail)
       lm.save!
+
+    when 'MSG-BROADCAST', 'MSG-ADMIN'
+      lm.callsign, detail = get_callsign(detail)
+      lm.message = get_message(detail)
+      lm.save!
+      bz_server.last_chat_log_message_id = lm.id
+      bz_server.save!
+
+    when 'MSG-FILTERED'
+      lm.callsign, detail = get_callsign(detail)
+      lm.message = get_message(detail)
+      lm.save!
+      bz_server.last_filtered_log_message_id = lm.id
+      bz_server.save!
 
     when 'MSG-DIRECT'
       lm.callsign, detail = get_callsign(detail)
       lm.to_callsign, detail = get_callsign(detail)
       lm.message = get_message(detail)
       lm.save!
+      bz_server.last_chat_log_message_id = lm.id
+      bz_server.save!
 
     when 'MSG-TEAM'
       lm.callsign, detail = get_callsign(detail)
       lm.team, detail = get_team(detail)
       lm.message = get_message(detail)
       lm.save!
+      bz_server.last_chat_log_message_id = lm.id
+      bz_server.save!
 
     when 'PLAYERS'
       # We do not save PLAYERS data in log messages
