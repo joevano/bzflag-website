@@ -11,18 +11,18 @@
     <th>#</th>
     <th>Players</th>
   </tr>
-  <% @bz_servers.each do |b, p| %>
+  <% @bz_servers.each do |b| %>
   <tr>
     <td><%= b.server_host.hostname %></td>
     <td><%= b.port %></td>
     <td><%= b.map_name %></td>
     <% if @admin_menu_perm -%>
-    <td><%= b.last_chat_at && b.last_chat_at.strftime("%H:%M") %></td>
-    <td><%= b.last_filtered_chat_at  && b.last_filtered_chat_at.strftime("%H:%M") %></td>
+    <td><%= b.last_chat_message && b.last_chat_message.logged_at %></td>
+    <td><%= b.last_filtered_message  && b.last_filtered_message.logged_at %></td>
     <% end -%>
-    <td><%= p.size %></td>
-    <td><%= p[0] && p[0].callsign.name %></td>
-    <% p[1] && p[1..-1].each do |x| %>
+    <td><%= b.current_players.count %></td>
+    <td><%= b.current_players[0] && b.current_players[0].callsign %><% b.current_players[0] && b.current_players[0].email %> </td>
+    <% b.current_players[1] && b.current_players[1..-1].each do |x| %>
   </tr>
   <tr>
     <td></td>
@@ -33,7 +33,7 @@
     <td></td>
     <% end -%>
     <td></td>
-    <td><%= x && x.callsign.name %></td>
+    <td><%= x && x.callsign %><%= x && x.email %></td>
     <% end %>
   </tr>
   <% end %>
