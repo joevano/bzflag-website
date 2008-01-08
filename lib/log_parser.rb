@@ -236,7 +236,7 @@ class LogParser
     when 'SERVER-STATUS'
       lm.message = get_message(detail)
       lm.save!
-      bz_server.server_status_log_message_id = lm.id
+      bz_server.server_status_message = lm
       bz_server.save!
 
     when 'MSG-REPORT', 'MSG-COMMAND'
@@ -248,14 +248,14 @@ class LogParser
       lm.callsign, detail = get_callsign(detail)
       lm.message = get_message(detail)
       lm.save!
-      bz_server.last_chat_log_message_id = lm.id
+      bz_server.last_chat_message = lm
       bz_server.save!
 
     when 'MSG-FILTERED'
       lm.callsign, detail = get_callsign(detail)
       lm.message = get_message(detail)
       lm.save!
-      bz_server.last_filtered_log_message_id = lm.id
+      bz_server.last_filtered_message = lm
       bz_server.save!
 
     when 'MSG-DIRECT'
@@ -263,7 +263,7 @@ class LogParser
       lm.to_callsign, detail = get_callsign(detail)
       lm.message = get_message(detail)
       lm.save!
-      bz_server.last_chat_log_message_id = lm.id
+      bz_server.last_chat_message = lm
       bz_server.save!
 
     when 'MSG-TEAM'
@@ -271,7 +271,7 @@ class LogParser
       lm.team, detail = get_team(detail)
       lm.message = get_message(detail)
       lm.save!
-      bz_server.last_chat_log_message_id = lm.id
+      bz_server.last_chat_message = lm
       bz_server.save!
 
     when 'PLAYERS'
