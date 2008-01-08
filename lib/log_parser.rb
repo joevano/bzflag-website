@@ -9,7 +9,7 @@ class LogParser
 
   # Display format of command line usage
   def self.usage
-    puts "usage: parse_bzfs_log.rb HOST:PORT"
+    puts "usage: parse_bzfs_log.rb [-s] HOST:PORT"
     exit 1
   end
 
@@ -277,21 +277,23 @@ class LogParser
     when 'PLAYERS'
       # We do not save PLAYERS data in log messages
       # This updates current_players instead
-      count, callsigns = detail.split(" ", 2)
-      count = count.slice(1..-2).to_i
-      if count == 0
-        # Close out all player connections for this server
-        PlayerConnection.find(:all, :conditions => "bz_server_id = #{bz_server.id} and part_at is null").each do |pc|
-          pc.part_at = date
-          pc.save!
-        end
-      else
-        CurrentPlayer.delete_all(:bz_server_id => bz_server.id)
-        1.upto(count) do |idx|
-          v, callsign, email, callsigns = parse_player_email(callsigns)
-          is_admin = (v == '@')
-          is_verified = (v == '+' || is_admin)
-          cp = bz_server.current_players.create!(:is_verified => is_verified, :is_admin => is_admin, :callsign => callsign, :email => email, :slot_index => idx)
+      if !@option_skip_current_players
+        count, callsigns = detail.split(" ", 2)
+        count = count.slice(1..-2).to_i
+        if count == 0
+          # Close out all player connections for this server
+          PlayerConnection.find(:all, :conditions => "bz_server_id = #{bz_server.id} and part_at is null").each do |pc|
+            pc.part_at = date
+            pc.save!
+          end
+        else
+          CurrentPlayer.delete_all(:bz_server_id => bz_server.id)
+          1.upto(count) do |idx|
+            v, callsign, email, callsigns = parse_player_email(callsigns)
+            is_admin = (v == '@')
+            is_verified = (v == '+' || is_admin)
+            cp = bz_server.current_players.create!(:is_verified => is_verified, :is_admin => is_admin, :callsign => callsign, :email => email, :slot_index => idx)
+          end
         end
       end
     end
@@ -301,16 +303,22 @@ class LogParser
     # Initialization
     #
     # Get the server host and BZFlag server record ids
-    if ARGV.length != 1
-      usage
-    end
+    args = ARGV
 
-    hostname, port = ARGV[0].split(':')
+    #
+    while arg = ARGV.shift
+      if arg =~ /^-s$/
+        @option_skip_current_players = true
+      elsif arg =~ /^([\w.]+):(\d+)$/
+        hostname, port = $1, $2
+      else
+        usage
+      end
+    end
+    usage if hostname.nil? || port.nil?
 
     server_host = ServerHost.find_by_hostname(hostname)
-    if server_host
-      bz_server = BzServer.find_by_server_host_id_and_port(server_host.id, port)
-    end
+    bz_server = BzServer.find_by_server_host_id_and_port(server_host.id, port) if server_host
 
     if server_host.nil? || bz_server.nil?
       puts "Can't find server #{hostname}:#{port}"
