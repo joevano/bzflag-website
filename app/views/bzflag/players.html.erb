@@ -31,7 +31,7 @@
   <% pcs.each do |pc|%>
   <tr>
     <td></td>
-    <td><%= pc.callsign.name %></td>
+    <td><%= link_to pc.callsign.name, { :action => "players", :player_search => { :search_by => "Callsign", :search_for => pc.callsign.name } }, { :method => :post } %></td>
     <td><%= pc.bzid %></td>
     <td><%= 'VERIFIED' if pc.is_verified %>
       <%= 'GLOBALUSER' if pc.is_globaluser %>
