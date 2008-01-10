@@ -25,6 +25,7 @@ class BzflagController < ApplicationController
       @player_search.search_by = params[:player_search][:search_by]
       @player_search.search_for = params[:player_search][:search_for]
       ips = []
+      @matches = 0
       if params[:player_search][:search_for] =~ /^%*$/
         flash[:notice] = "Please enter some search criteria"
       elsif params[:player_search][:search_by] == 'Callsign'
@@ -46,6 +47,7 @@ class BzflagController < ApplicationController
             cdet.part_at = pc_last.part_at if pc_last
             connections.push(cdet)
           end
+          @matches += callsign_details.size
         end
         @ips.push([ip, connections])
       end
