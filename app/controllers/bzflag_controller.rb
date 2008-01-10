@@ -19,16 +19,35 @@ class BzflagController < ApplicationController
   def players
     @search_options = ['Callsign','IP','Hostname']
 
-    @ips = nil
+    @ips = []
     if request.post?
-      if params[:search][:search_for] =~ /^%*$/
+      @player_search = PlayerSearch.new()
+      @player_search.search_by = params[:player_search][:search_by]
+      @player_search.search_for = params[:player_search][:search_for]
+      ips = []
+      if params[:player_search][:search_for] =~ /^%*$/
         flash[:notice] = "Please enter some search criteria"
-      elsif params[:search][:search_by] == 'Callsign'
-        @ips = Callsign.find(:all, :conditions => "name like '#{params[:search][:search_for]}'").collect{|x| x.ips}.flatten
-      elsif params[:search][:search_by] == 'IP'
-        @ips = Ip.find(:all, :conditions => "ip like '#{params[:search][:search_for]}'")
-      elsif params[:search][:search_by] == 'Hostname'
-        @ips = Ip.find(:all, :conditions => "hostname like '#{params[:search][:search_for]}'")
+      elsif params[:player_search][:search_by] == 'Callsign'
+        ips = Callsign.find(:all, :conditions => "name like '#{params[:player_search][:search_for]}'").collect{|x| x.ips}.flatten
+      elsif params[:player_search][:search_by] == 'IP'
+        ips = Ip.find(:all, :conditions => "ip like '#{params[:player_search][:search_for]}'")
+      elsif params[:player_search][:search_by] == 'Hostname'
+        ips = Ip.find(:all, :conditions => "hostname like '#{params[:player_search][:search_for]}'")
+      end
+
+      ips.each do |ip|
+        connections = []
+        ip.callsigns.each do |callsign|
+          callsign_details = PlayerConnection.find_by_sql("select callsign_id, is_verified, is_admin, is_operator, is_globaluser, bzid from player_connections where callsign_id = #{callsign.id} and ip_id = #{ip.id} group by callsign_id, is_verified, is_admin, is_operator, is_globaluser") 
+          callsign_details.each do |cdet|
+            pc_first = ip.player_connections.find(:first, :conditions => "callsign_id = #{callsign.id} and is_verified = #{cdet.is_verified} and is_admin = #{cdet.is_admin} and is_operator = #{cdet.is_operator} and is_globaluser = #{cdet.is_globaluser}", :order => "join_at")
+            pc_last = ip.player_connections.find(:first, :conditions => "callsign_id = #{callsign.id} and is_verified = #{cdet.is_verified} and is_admin = #{cdet.is_admin} and is_operator = #{cdet.is_operator} and is_globaluser = #{cdet.is_globaluser}", :order => "part_at desc")
+            cdet.join_at = pc_first.join_at if pc_first
+            cdet.part_at = pc_last.part_at if pc_last
+            connections.push(cdet)
+          end
+        end
+        @ips.push([ip, connections])
       end
     end
   end

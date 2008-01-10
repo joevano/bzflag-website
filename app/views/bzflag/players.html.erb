@@ -2,7 +2,7 @@
 <div>
   <fieldset>
     <legend>Enter Player Search Criteria</legend>
-    <% form_for :search do |form| %>
+    <% form_for :player_search do |form| %>
       <p><label for="search_for">Search For:</label>
          <%= form.text_field :search_for, :size => 30 %>
          <%= form.select :search_by, @search_options %>
@@ -13,33 +13,30 @@
 </div>
 
 <div>
-<% if @ips %>
+<% if @ips[0] %>
      <table>
        <tr>
 	 <th>IP</th>
 	 <th>Hostname and Callsigns</th>
+	 <th>BZid</th>
 	 <th>Status</th>
-	 <th>Last On</th>
-	 <th>Server</th>
+	 <th>Connections</th>
        </tr>
-<%     @ips.each do |ip| %>
+<%     @ips.each do |ip, pcs| %>
        <tr>
 	 <td><%= ip.ip %></td>
-	 <td><%= ip.hostname %></td>
-	 <td></td>
-	 <td></td>
-	 <td></td>
+	 <td colspan="4"><%= ip.hostname %></td>
        </tr>
-<%     ip.player_connections.each do |pc|%>
+<%     pcs.each do |pc|%>
        <tr>
 	 <td></td>
 	 <td><%= pc.callsign.name %></td>
+	 <td><%= pc.bzid %></td>
 	 <td><%= 'VERIFIED' if pc.is_verified %>
 	     <%= 'GLOBALUSER' if pc.is_globaluser %>
 	     <%= 'ADMIN' if pc.is_admin %>
 	     <%= 'OPERATOR' if pc.is_operator %></td>
 	 <td><%= pc.join_at %> - <%= pc.part_at %> </td>
-	 <td><%= pc.bz_server.server_host.hostname %>:<%= pc.bz_server.port %></td>
        </tr>
 <%     end %>
 <%     end %>
