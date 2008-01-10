@@ -17,7 +17,7 @@ require 'fixtures/tagging'
 require 'fixtures/person'
 require 'fixtures/reader'
 
-class AssociationsTest < Test::Unit::TestCase
+class AssociationsTest < ActiveSupport::TestCase
   fixtures :accounts, :companies, :developers, :projects, :developers_projects,
            :computers
 
@@ -55,7 +55,7 @@ class AssociationsTest < Test::Unit::TestCase
   def test_storing_in_pstore
     require "tmpdir"
     store_filename = File.join(Dir.tmpdir, "ar-pstore-association-test")
-    File.delete(store_filename) if File.exists?(store_filename)
+    File.delete(store_filename) if File.exist?(store_filename)
     require "pstore"
     apple = Firm.create("name" => "Apple")
     natural = Client.new("name" => "Natural Company")
@@ -72,23 +72,23 @@ class AssociationsTest < Test::Unit::TestCase
     end
   end
 end
-
-class AssociationProxyTest < Test::Unit::TestCase
+ 
+class AssociationProxyTest < ActiveSupport::TestCase
   fixtures :authors, :posts, :categorizations, :categories, :developers, :projects, :developers_projects
-
+  
   def test_proxy_accessors
     welcome = posts(:welcome)
     assert_equal  welcome, welcome.author.proxy_owner
     assert_equal  welcome.class.reflect_on_association(:author), welcome.author.proxy_reflection
     welcome.author.class  # force load target
     assert_equal  welcome.author, welcome.author.proxy_target
-
+  
     david = authors(:david)
     assert_equal  david, david.posts.proxy_owner
     assert_equal  david.class.reflect_on_association(:posts), david.posts.proxy_reflection
     david.posts.first   # force load target
     assert_equal  david.posts, david.posts.proxy_target
-
+  
     assert_equal  david, david.posts_with_extension.testing_proxy_owner
     assert_equal  david.class.reflect_on_association(:posts_with_extension), david.posts_with_extension.testing_proxy_reflection
     david.posts_with_extension.first   # force load target
@@ -98,9 +98,27 @@ class AssociationProxyTest < Test::Unit::TestCase
   def test_push_does_not_load_target
     david = authors(:david)
 
+    david.posts << (post = Post.new(:title => "New on Edge", :body => "More cool stuff!"))
+    assert !david.posts.loaded?
+    assert david.posts.include?(post)
+  end
+
+  def test_push_has_many_through_does_not_load_target
+    david = authors(:david)
+
     david.categories << categories(:technology)
     assert !david.categories.loaded?
     assert david.categories.include?(categories(:technology))
+  end
+  
+  def test_push_followed_by_save_does_not_load_target
+    david = authors(:david)
+
+    david.posts << (post = Post.new(:title => "New on Edge", :body => "More cool stuff!"))
+    assert !david.posts.loaded?
+    david.save
+    assert !david.posts.loaded?
+    assert david.posts.include?(post)
   end
 
   def test_push_does_not_lose_additions_to_new_record
@@ -122,9 +140,33 @@ class AssociationProxyTest < Test::Unit::TestCase
     developer = Developer.create :name => "Bryan", :salary => 50_000
     assert_equal 1, developer.reload.audit_logs.size
   end
+
+  def test_failed_reload_returns_nil
+    p = setup_dangling_association
+    assert_nil p.author.reload
+  end
+
+  def test_failed_reset_returns_nil
+    p = setup_dangling_association
+    assert_nil p.author.reset
+  end
+
+  def test_reload_returns_assocition
+    david = developers(:david)
+    assert_nothing_raised do
+      assert_equal david.projects, david.projects.reload.reload
+    end
+  end
+
+  def setup_dangling_association
+    josh = Author.create(:name => "Josh")
+    p = Post.create(:title => "New on Edge", :body => "More cool stuff!", :author => josh)
+    josh.destroy
+    p
+  end
 end
 
-class HasOneAssociationsTest < Test::Unit::TestCase
+class HasOneAssociationsTest < ActiveSupport::TestCase
   fixtures :accounts, :companies, :developers, :projects, :developers_projects
 
   def setup
@@ -421,7 +463,7 @@ class HasOneAssociationsTest < Test::Unit::TestCase
 end
 
 
-class HasManyAssociationsTest < Test::Unit::TestCase
+class HasManyAssociationsTest < ActiveSupport::TestCase
   fixtures :accounts, :companies, :developers, :projects,
            :developers_projects, :topics, :authors, :comments
 
@@ -461,6 +503,36 @@ class HasManyAssociationsTest < Test::Unit::TestCase
     assert_equal 1, companies(:first_firm).limited_clients.size
     assert_equal 1, companies(:first_firm).limited_clients.find(:all).size
     assert_equal 2, companies(:first_firm).limited_clients.find(:all, :limit => nil).size
+  end
+
+  def test_dynamic_find_should_respect_association_order
+    assert_equal companies(:second_client), companies(:first_firm).clients_sorted_desc.find(:first, :conditions => "type = 'Client'")
+    assert_equal companies(:second_client), companies(:first_firm).clients_sorted_desc.find_by_type('Client')
+  end
+
+  def test_dynamic_find_order_should_override_association_order
+    assert_equal companies(:first_client), companies(:first_firm).clients_sorted_desc.find(:first, :conditions => "type = 'Client'", :order => 'id')
+    assert_equal companies(:first_client), companies(:first_firm).clients_sorted_desc.find_by_type('Client', :order => 'id')
+  end
+
+  def test_dynamic_find_all_should_respect_association_order
+    assert_equal [companies(:second_client), companies(:first_client)], companies(:first_firm).clients_sorted_desc.find(:all, :conditions => "type = 'Client'")
+    assert_equal [companies(:second_client), companies(:first_client)], companies(:first_firm).clients_sorted_desc.find_all_by_type('Client')
+  end
+
+  def test_dynamic_find_all_order_should_override_association_order
+    assert_equal [companies(:first_client), companies(:second_client)], companies(:first_firm).clients_sorted_desc.find(:all, :conditions => "type = 'Client'", :order => 'id')
+    assert_equal [companies(:first_client), companies(:second_client)], companies(:first_firm).clients_sorted_desc.find_all_by_type('Client', :order => 'id')
+  end
+
+  def test_dynamic_find_all_should_respect_association_limit
+    assert_equal 1, companies(:first_firm).limited_clients.find(:all, :conditions => "type = 'Client'").length
+    assert_equal 1, companies(:first_firm).limited_clients.find_all_by_type('Client').length
+  end
+
+  def test_dynamic_find_all_limit_should_override_association_limit
+    assert_equal 2, companies(:first_firm).limited_clients.find(:all, :conditions => "type = 'Client'", :limit => 9_000).length
+    assert_equal 2, companies(:first_firm).limited_clients.find_all_by_type('Client', :limit => 9_000).length
   end
 
   def test_triple_equality
@@ -718,7 +790,13 @@ class HasManyAssociationsTest < Test::Unit::TestCase
     assert companies(:first_firm).save
     assert_equal 3, companies(:first_firm).clients_of_firm(true).size
   end
-
+  
+  def test_build_followed_by_save_does_not_load_target
+    new_client = companies(:first_firm).clients_of_firm.build("name" => "Another Client")
+    assert companies(:first_firm).save
+    assert !companies(:first_firm).clients_of_firm.loaded?
+  end
+  
   def test_build_without_loading_association
     first_topic = topics(:first)
     Reply.column_names
@@ -769,6 +847,12 @@ class HasManyAssociationsTest < Test::Unit::TestCase
   def test_create_many
     companies(:first_firm).clients_of_firm.create([{"name" => "Another Client"}, {"name" => "Another Client II"}])
     assert_equal 3, companies(:first_firm).clients_of_firm(true).size
+  end
+
+  def test_create_followed_by_save_does_not_load_target
+    new_client = companies(:first_firm).clients_of_firm.create("name" => "Another Client")
+    assert companies(:first_firm).save
+    assert !companies(:first_firm).clients_of_firm.loaded?
   end
 
   def test_find_or_initialize
@@ -1079,9 +1163,40 @@ class HasManyAssociationsTest < Test::Unit::TestCase
   def test_assign_ids_for_through
     assert_raise(NoMethodError) { authors(:mary).comment_ids = [123] }
   end
+
+  def test_dynamic_find_should_respect_association_order_for_through
+    assert_equal Comment.find(10), authors(:david).comments_desc.find(:first, :conditions => "comments.type = 'SpecialComment'")
+    assert_equal Comment.find(10), authors(:david).comments_desc.find_by_type('SpecialComment')
+  end
+
+  def test_dynamic_find_order_should_override_association_order_for_through
+    assert_equal Comment.find(3), authors(:david).comments_desc.find(:first, :conditions => "comments.type = 'SpecialComment'", :order => 'comments.id')
+    assert_equal Comment.find(3), authors(:david).comments_desc.find_by_type('SpecialComment', :order => 'comments.id')
+  end
+
+  def test_dynamic_find_all_should_respect_association_order_for_through
+    assert_equal [Comment.find(10), Comment.find(7), Comment.find(6), Comment.find(3)], authors(:david).comments_desc.find(:all, :conditions => "comments.type = 'SpecialComment'")
+    assert_equal [Comment.find(10), Comment.find(7), Comment.find(6), Comment.find(3)], authors(:david).comments_desc.find_all_by_type('SpecialComment')
+  end
+
+  def test_dynamic_find_all_order_should_override_association_order_for_through
+    assert_equal [Comment.find(3), Comment.find(6), Comment.find(7), Comment.find(10)], authors(:david).comments_desc.find(:all, :conditions => "comments.type = 'SpecialComment'", :order => 'comments.id')
+    assert_equal [Comment.find(3), Comment.find(6), Comment.find(7), Comment.find(10)], authors(:david).comments_desc.find_all_by_type('SpecialComment', :order => 'comments.id')
+  end
+
+  def test_dynamic_find_all_should_respect_association_limit_for_through
+    assert_equal 1, authors(:david).limited_comments.find(:all, :conditions => "comments.type = 'SpecialComment'").length
+    assert_equal 1, authors(:david).limited_comments.find_all_by_type('SpecialComment').length
+  end
+
+  def test_dynamic_find_all_order_should_override_association_limit_for_through
+    assert_equal 4, authors(:david).limited_comments.find(:all, :conditions => "comments.type = 'SpecialComment'", :limit => 9_000).length
+    assert_equal 4, authors(:david).limited_comments.find_all_by_type('SpecialComment', :limit => 9_000).length
+  end
+
 end
 
-class BelongsToAssociationsTest < Test::Unit::TestCase
+class BelongsToAssociationsTest < ActiveSupport::TestCase
   fixtures :accounts, :companies, :developers, :projects, :topics,
            :developers_projects, :computers, :authors, :posts, :tags, :taggings
 
@@ -1457,7 +1572,7 @@ class DeveloperForProjectWithAfterCreateHook < ActiveRecord::Base
 end
 
 
-class HasAndBelongsToManyAssociationsTest < Test::Unit::TestCase
+class HasAndBelongsToManyAssociationsTest < ActiveSupport::TestCase
   fixtures :accounts, :companies, :categories, :posts, :categories_posts, :developers, :projects, :developers_projects
 
   def test_has_and_belongs_to_many
@@ -1783,6 +1898,56 @@ class HasAndBelongsToManyAssociationsTest < Test::Unit::TestCase
     assert_equal 3, projects(:active_record).limited_developers.find(:all, :limit => nil).size
   end
 
+  def test_dynamic_find_should_respect_association_order
+    # Developers are ordered 'name DESC, id DESC'
+    low_id_jamis = developers(:jamis)
+    middle_id_jamis = developers(:poor_jamis)
+    high_id_jamis = projects(:active_record).developers.create(:name => 'Jamis')
+
+    assert_equal high_id_jamis, projects(:active_record).developers.find(:first, :conditions => "name = 'Jamis'")
+    assert_equal high_id_jamis, projects(:active_record).developers.find_by_name('Jamis')
+  end
+
+  def test_dynamic_find_order_should_override_association_order
+    # Developers are ordered 'name DESC, id DESC'
+    low_id_jamis = developers(:jamis)
+    middle_id_jamis = developers(:poor_jamis)
+    high_id_jamis = projects(:active_record).developers.create(:name => 'Jamis')
+
+    assert_equal low_id_jamis, projects(:active_record).developers.find(:first, :conditions => "name = 'Jamis'", :order => 'id')
+    assert_equal low_id_jamis, projects(:active_record).developers.find_by_name('Jamis', :order => 'id')
+  end
+
+  def test_dynamic_find_all_should_respect_association_order
+    # Developers are ordered 'name DESC, id DESC'
+    low_id_jamis = developers(:jamis)
+    middle_id_jamis = developers(:poor_jamis)
+    high_id_jamis = projects(:active_record).developers.create(:name => 'Jamis')
+
+    assert_equal [high_id_jamis, middle_id_jamis, low_id_jamis], projects(:active_record).developers.find(:all, :conditions => "name = 'Jamis'")
+    assert_equal [high_id_jamis, middle_id_jamis, low_id_jamis], projects(:active_record).developers.find_all_by_name('Jamis')
+  end
+
+  def test_dynamic_find_all_order_should_override_association_order
+    # Developers are ordered 'name DESC, id DESC'
+    low_id_jamis = developers(:jamis)
+    middle_id_jamis = developers(:poor_jamis)
+    high_id_jamis = projects(:active_record).developers.create(:name => 'Jamis')
+
+    assert_equal [low_id_jamis, middle_id_jamis, high_id_jamis], projects(:active_record).developers.find(:all, :conditions => "name = 'Jamis'", :order => 'id')
+    assert_equal [low_id_jamis, middle_id_jamis, high_id_jamis], projects(:active_record).developers.find_all_by_name('Jamis', :order => 'id')
+  end
+
+  def test_dynamic_find_all_should_respect_association_limit
+    assert_equal 1, projects(:active_record).limited_developers.find(:all, :conditions => "name = 'Jamis'").length
+    assert_equal 1, projects(:active_record).limited_developers.find_all_by_name('Jamis').length
+  end
+
+  def test_dynamic_find_all_order_should_override_association_limit
+    assert_equal 2, projects(:active_record).limited_developers.find(:all, :conditions => "name = 'Jamis'", :limit => 9_000).length
+    assert_equal 2, projects(:active_record).limited_developers.find_all_by_name('Jamis', :limit => 9_000).length
+  end
+
   def test_new_with_values_in_collection
     jamis = DeveloperForProjectWithAfterCreateHook.find_by_name('Jamis')
     david = DeveloperForProjectWithAfterCreateHook.find_by_name('David')
@@ -1870,6 +2035,12 @@ class HasAndBelongsToManyAssociationsTest < Test::Unit::TestCase
     assert_raises(ActiveRecord::ReadOnlyRecord) { david.save! }
   end
 
+  def test_updating_attributes_on_rich_associations_with_limited_find_from_reflection
+    david = projects(:action_controller).selected_developers.first
+    david.name = "DHH"
+    assert_nothing_raised { david.save! }
+  end
+
 
   def test_updating_attributes_on_rich_associations_with_limited_find
     david = projects(:action_controller).developers.find(:all, :select => "developers.*").first
@@ -1892,7 +2063,7 @@ class HasAndBelongsToManyAssociationsTest < Test::Unit::TestCase
   end
 
   def test_get_ids
-    assert_equal projects(:active_record, :action_controller).map(&:id), developers(:david).project_ids
+    assert_equal projects(:active_record, :action_controller).map(&:id).sort, developers(:david).project_ids.sort
     assert_equal [projects(:active_record).id], developers(:jamis).project_ids
   end
 
@@ -1941,7 +2112,7 @@ class HasAndBelongsToManyAssociationsTest < Test::Unit::TestCase
 end
 
 
-class OverridingAssociationsTest < Test::Unit::TestCase
+class OverridingAssociationsTest < ActiveSupport::TestCase
   class Person < ActiveRecord::Base; end
   class DifferentPerson < ActiveRecord::Base; end
 

@@ -1,4 +1,4 @@
-require File.dirname(__FILE__) + '/../active_record_unit'
+require 'active_record_unit'
 
 class RenderPartialWithRecordIdentificationTest < ActiveRecordTestCase
   fixtures :developers, :projects, :developers_projects, :topics, :replies
@@ -12,6 +12,11 @@ class RenderPartialWithRecordIdentificationTest < ActiveRecordTestCase
     def render_with_has_many_association
       @topic = Topic.find(1)
       render :partial => @topic.replies
+    end
+    
+    def render_with_has_many_through_association
+      @developer = Developer.find(:first)
+      render :partial => @developer.topics
     end
     
     def render_with_belongs_to_association
@@ -45,6 +50,11 @@ class RenderPartialWithRecordIdentificationTest < ActiveRecordTestCase
   def test_rendering_partial_with_has_many_association
     get :render_with_has_many_association
     assert_template 'replies/_reply'
+  end
+  
+  def test_rendering_partial_with_has_many_association
+    get :render_with_has_many_through_association
+    assert_template 'topics/_topic'
   end
   
   def test_rendering_partial_with_belongs_to_association

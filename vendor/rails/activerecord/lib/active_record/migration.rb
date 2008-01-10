@@ -85,7 +85,7 @@ module ActiveRecord
   # == Irreversible transformations
   #
   # Some transformations are destructive in a manner that cannot be reversed. Migrations of that kind should raise
-  # an <tt>IrreversibleMigration</tt> exception in their +down+ method.
+  # an <tt>ActiveRecord::IrreversibleMigration</tt> exception in their +down+ method.
   #
   # == Running migrations from within Rails
   #
@@ -105,7 +105,7 @@ module ActiveRecord
   # To roll the database back to a previous migration version, use
   # <tt>rake db:migrate VERSION=X</tt> where <tt>X</tt> is the version to which
   # you wish to downgrade. If any of the migrations throw an
-  # <tt>IrreversibleMigration</tt> exception, that step will fail and you'll
+  # <tt>ActiveRecord::IrreversibleMigration</tt> exception, that step will fail and you'll
   # have some manual work to do.
   #
   # == Database support
@@ -124,7 +124,7 @@ module ActiveRecord
   #
   #     def self.down
   #       # not much we can do to restore deleted data
-  #       raise IrreversibleMigration
+  #       raise ActiveRecord::IrreversibleMigration, "Can't recover the deleted tags"
   #     end
   #   end
   #
@@ -230,7 +230,7 @@ module ActiveRecord
       # recursively. We use @ignore_new_methods as a guard to indicate whether
       # it is safe for the call to proceed.
       def singleton_method_added(sym) #:nodoc:
-        return if @ignore_new_methods
+        return if defined?(@ignore_new_methods) && @ignore_new_methods
 
         begin
           @ignore_new_methods = true
@@ -350,17 +350,20 @@ module ActiveRecord
       end
     end
 
+    def pending_migrations
+      migration_classes.select { |m| m.version > current_version }
+    end
+
     private
       def migration_classes
-        migrations = migration_files.inject([]) do |migrations, migration_file|
+        classes = migration_files.inject([]) do |migrations, migration_file|
           load(migration_file)
           version, name = migration_version_and_name(migration_file)
           assert_unique_migration_version(migrations, version.to_i)
           migrations << migration_class(name, version.to_i)
-        end
+        end.sort_by(&:version)
 
-        sorted = migrations.sort_by { |m| m.version }
-        down? ? sorted.reverse : sorted
+        down? ? classes.reverse : classes
       end
 
       def assert_unique_migration_version(migrations, version)

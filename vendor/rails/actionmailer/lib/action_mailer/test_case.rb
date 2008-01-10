@@ -8,10 +8,12 @@ module ActionMailer
         "test case definition"
     end
   end
-  # New Test Super class for forward compatibility.
-  # To override
+
   class TestCase < ActiveSupport::TestCase
     include ActionMailer::Quoting
+
+    setup :initialize_test_deliveries
+    setup :set_expected_mail
 
     class << self
       def tests(mailer)
@@ -33,15 +35,18 @@ module ActionMailer
       end
     end
 
-    def setup
-      ActionMailer::Base.delivery_method = :test
-      ActionMailer::Base.perform_deliveries = true
-      ActionMailer::Base.deliveries = []
+    protected
+      def initialize_test_deliveries
+        ActionMailer::Base.delivery_method = :test
+        ActionMailer::Base.perform_deliveries = true
+        ActionMailer::Base.deliveries = []
+      end
 
-      @expected = TMail::Mail.new
-      @expected.set_content_type "text", "plain", { "charset" => charset }
-      @expected.mime_version = '1.0'
-    end
+      def set_expected_mail
+        @expected = TMail::Mail.new
+        @expected.set_content_type "text", "plain", { "charset" => charset }
+        @expected.mime_version = '1.0'
+      end
 
     private
       def charset
@@ -53,7 +58,7 @@ module ActionMailer
       end
 
       def read_fixture(action)
-        IO.readlines(File.join(RAILS_ROOT, 'test', 'fixtures', mailer_class.name.underscore, action))
+        IO.readlines(File.join(RAILS_ROOT, 'test', 'fixtures', self.class.mailer_class.name.underscore, action))
       end
   end
 end
