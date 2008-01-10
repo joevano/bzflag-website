@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 52) do
+ActiveRecord::Schema.define(:version => 53) do
 
   create_table "bz_servers", :force => true do |t|
     t.datetime "created_at"
@@ -128,6 +128,7 @@ ActiveRecord::Schema.define(:version => 52) do
   end
 
   add_index "player_connections", ["bz_server_id", "part_at", "callsign_id"], :name => "index_player_connections"
+  add_index "player_connections", ["ip_id", "callsign_id", "is_verified", "is_admin", "is_globaluser", "is_operator", "join_at"], :name => "index_player_connections_search"
 
   create_table "server_hosts", :force => true do |t|
     t.datetime "created_at"
