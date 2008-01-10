@@ -27,7 +27,7 @@ class BzflagController < ApplicationController
       ips = []
       @matches = 0
       if params[:player_search][:search_for] =~ /^%*$/
-        flash[:notice] = "Please enter some search criteria"
+        flash.now[:notice] = "Please enter some search criteria"
       elsif params[:player_search][:search_by] == 'Callsign'
         ips = Callsign.find(:all, :conditions => [ "name like ?", params[:player_search][:search_for]]).collect{|x| x.ips}.flatten
       elsif params[:player_search][:search_by] == 'IP'
