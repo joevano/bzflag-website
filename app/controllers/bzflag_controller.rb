@@ -39,12 +39,15 @@ class BzflagController < ApplicationController
       ips.each do |ip|
         connections = []
         ip.callsigns.each do |callsign|
-          callsign_details = PlayerConnection.find_by_sql("select callsign_id, is_verified, is_admin, is_operator, is_globaluser, bzid from player_connections where callsign_id = #{callsign.id} and ip_id = #{ip.id} group by callsign_id, is_verified, is_admin, is_operator, is_globaluser") 
+          callsign_details = PlayerConnection.find_by_sql("select callsign_id, is_verified, is_admin, is_operator, is_globaluser from player_connections where callsign_id = #{callsign.id} and ip_id = #{ip.id} group by callsign_id, is_verified, is_admin, is_operator, is_globaluser") 
           callsign_details.each do |cdet|
+            cdet.bzid = nil
             pc_first = ip.player_connections.find(:first, :conditions => "callsign_id = #{callsign.id} and is_verified = #{cdet.is_verified} and is_admin = #{cdet.is_admin} and is_operator = #{cdet.is_operator} and is_globaluser = #{cdet.is_globaluser}", :order => "join_at")
             pc_last = ip.player_connections.find(:first, :conditions => "callsign_id = #{callsign.id} and is_verified = #{cdet.is_verified} and is_admin = #{cdet.is_admin} and is_operator = #{cdet.is_operator} and is_globaluser = #{cdet.is_globaluser}", :order => "part_at desc")
             cdet.join_at = pc_first.join_at if pc_first
+            cdet.bzid = pc_first.bzid if pc_first && pc_first.bzid
             cdet.part_at = pc_last.part_at if pc_last
+            cdet.bzid = pc_last.bzid if pc_last && pc_last.bzid
             connections.push(cdet)
           end
           @matches += callsign_details.size
