@@ -13,16 +13,36 @@
 </div>
 
 <div>
-<% if @results %>
-     <p>
-       <%= @results.size %> results found.
-     </p>
+<% if @ips %>
      <table>
-<%   @results.each do |rslt| %>
-     <tr>
-     <td><%= rslt %></td>
-     </tr>
-<%   end %>
+       <tr>
+	 <th>IP</th>
+	 <th>Hostname and Callsigns</th>
+	 <th>Status</th>
+	 <th>Last On</th>
+	 <th>Server</th>
+       </tr>
+<%     @ips.each do |ip| %>
+       <tr>
+	 <td><%= ip.ip %></td>
+	 <td><%= ip.hostname %></td>
+	 <td></td>
+	 <td></td>
+	 <td></td>
+       </tr>
+<%     ip.player_connections.each do |pc|%>
+       <tr>
+	 <td></td>
+	 <td><%= pc.callsign.name %></td>
+	 <td><%= 'VERIFIED' if pc.is_verified %>
+	     <%= 'GLOBALUSER' if pc.is_globaluser %>
+	     <%= 'ADMIN' if pc.is_admin %>
+	     <%= 'OPERATOR' if pc.is_operator %></td>
+	 <td><%= pc.join_at %> - <%= pc.part_at %> </td>
+	 <td><%= pc.bz_server.server_host.hostname %>:<%= pc.bz_server.port %></td>
+       </tr>
+<%     end %>
+<%     end %>
      </table>
 <% end %>
 </div>
