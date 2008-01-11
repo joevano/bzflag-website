@@ -71,7 +71,8 @@ class BzflagController < ApplicationController
   def authorize
     unless @admin_menu_perm
       flash[:notice] = "Access Denied."
-      redirect_to(:controller => "bzflag", :action => "index")
+      session[:original_uri] = request.request_uri
+      redirect_to(:controller => "login", :action => "login")
     end
   end
 end

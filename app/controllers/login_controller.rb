@@ -59,6 +59,8 @@ class LoginController < ApplicationController
     else
       flash[:notice] = "Login failed."
     end
-    redirect_to "/bzflag/index"
+    uri = session[:original_uri]
+    session[:original_uri] = nil
+    redirect_to(uri || { :controller => "bzflag", :action => "index" })
   end
 end
