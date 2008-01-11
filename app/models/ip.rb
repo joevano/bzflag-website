@@ -14,4 +14,10 @@ class Ip < ActiveRecord::Base
     end
     return newip
   end
+
+  def <=>(other)
+    lastpart = self.player_connections.find(:first, :order => 'join_at desc').part_at
+    otherlastpart = other.player_connections.find(:first, :order => 'join_at desc').part_at
+    otherlastpart <=> lastpart
+  end
 end
