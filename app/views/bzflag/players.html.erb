@@ -36,10 +36,10 @@
     <td></td>
     <td><%= link_to pc.callsign.name, { :action => "players", :player_search => { :search_by => "Callsign", :search_for => pc.callsign.name } }, { :method => :post } %></td>
     <td><%= pc.bzid %></td>
-    <td><%= 'Verified' if pc.is_verified %>
-      <%= 'GlobalUser' if pc.is_globaluser %>
-      <%= 'Admin' if pc.is_admin %>
-      <%= 'Operator' if pc.is_operator %></td>
+    <td><%= '<span class="verified">Verified</span>' if pc.is_verified %>
+      <%= '<span class="globaluser">GlobalUser</span>' if pc.is_globaluser %>
+      <%= '<span class="admin">Admin</span>' if pc.is_admin %>
+      <%= '<span class="operator">Operator</span>' if pc.is_operator %></td>
     <td><%= pc.join_at.strftime("%Y-%m-%dT%H:%M:%SZ") %> - <%= pc.part_at.strftime("%Y-%m-%dT%H:%M:%SZ") %> </td>
   </tr>
   <% end %>

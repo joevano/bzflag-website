@@ -341,13 +341,29 @@ div.players table {
 }
 
 div.players th {
-  background-color:#ccc;
-  margin:0pt;
-  padding:0pt;
-  text-align:left;
+  background-color: #ccc;
+  margin: 0pt;
+  padding: 0pt;
+  text-align: left;
 }
 
 div.players table caption {
   font-weight: bold;
   text-align: left;
+}
+
+.globaluser {
+  color: #090;
+}
+
+.verified {
+  color: #00f;
+}
+
+.admin {
+  color: #f60;
+}
+
+.operator {
+  color: #f00;
 }
