@@ -17,6 +17,13 @@
 <div id="columns">
   <div id="side">
     <p>
+      <% if @user.id %>
+      <%= link_to "Logout", :controller => 'login', :action => 'logout' %>
+      <% else %>
+      <%= link_to "Login", :controller => 'login', :action => 'login' %>
+      <% end %>
+    </p>
+    <p>
       <%= link_to "Home", :controller => 'bzflag', :action => 'index' %>
       <br />
       <%= link_to "Servers", :controller => 'bzflag', :action => 'servers' %>
@@ -47,13 +54,6 @@
       <br />
       <%= link_to "Wiki", "http://my.bzflag.org/w" %>
    </p>
-    <p>
-      <% if @user.id %>
-      <%= link_to "Logout", :controller => 'login', :action => 'logout' %>
-      <% else %>
-      <%= link_to "Login", :controller => 'login', :action => 'login' %>
-      <% end %>
-    </p>
     <p>
       <%= link_to "Source Code", "http://git.norang.ca/?p=bzflag-website;a=summary" %>
     </p>
