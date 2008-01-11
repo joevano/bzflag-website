@@ -337,6 +337,7 @@ div.players tr.iphost {
 div.players table {
   border: 1px solid #999;
   border-collapse: separate;
+  width: 100%;
 }
 
 div.players th {
