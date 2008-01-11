@@ -7,6 +7,8 @@
          <%= form.text_field :search_for, :size => 30 %>
          <%= form.select :search_by, @search_options %>
          <%= submit_tag "Search" %>
+      <br/>
+      Use % for wildcard matches.
       </p>
     <% end %>
   </fieldset>
@@ -14,7 +16,7 @@
 
 <div class="players">
 <% if @matches %>
-<p> <%= @matches %> matches found.</p>
+<p> <%= @matches %> matches found on <%= @ips.size %> IPs.  Recently used IPs listed first.</p>
 <% end %>
 <% if @ips[0] %>
 <table>
@@ -36,16 +38,24 @@
     <td></td>
     <td><%= link_to pc.callsign.name, { :action => "players", :player_search => { :search_by => "Callsign", :search_for => pc.callsign.name } }, { :method => :post } %></td>
     <td><%= pc.bzid %></td>
-    <td><%= '<span class="verified">Verified</span>' if pc.is_verified %>
-      <%= '<span class="globaluser">GlobalUser</span>' if pc.is_globaluser %>
-      <%= '<span class="admin">Admin</span>' if pc.is_admin %>
-      <%= '<span class="operator">Operator</span>' if pc.is_operator %></td>
+    <td><%= '<span class="verified">VERIFIED</span>' if pc.is_verified %>
+      <%= '<span class="globaluser">GLOBALUSER</span>' if pc.is_globaluser %>
+      <%= '<span class="admin">ADMIN</span>' if pc.is_admin %>
+      <%= '<span class="operator">OPERATOR</span>' if pc.is_operator %></td>
     <td><%= pc.join_at.strftime("%Y-%m-%dT%H:%M:%SZ") %> - <%= pc.part_at.strftime("%Y-%m-%dT%H:%M:%SZ") %> </td>
   </tr>
   <% end %>
   <% end %>
 </table>
+<p><b>Disclaimer:</b></p>
+<p>Unverified callsigns can be forged by other players - please consider this when interpreting the data.</p>
+<p>Status column information:</p>
+<ul>
+  <li><span class="verified">VERIFIED</span> - Player has identified</li>
+  <li><span class="globaluser">GLOBALUSER</span> - Player has identified and is registered globally on bzbb</li>
+  <li><span class="admin">ADMIN</span> - Player has ban privileges</li>
+  <li><span class="operator">OPERATOR</span> - Player has entered the server password</li>
+</ul>
+
 <% end %>
-<p>Use a percent sign (%) for wildcard searching.  e.g. "ABC%" matches anything starting with 'ABC'
-</p>
 </div>
