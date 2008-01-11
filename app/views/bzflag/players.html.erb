@@ -12,12 +12,13 @@
   </fieldset>
 </div>
 
-<div>
+<div class="players">
 <% if @matches %>
 <p> <%= @matches %> matches found.</p>
 <% end %>
 <% if @ips[0] %>
 <table>
+  <caption>IPs and Callsign Results </caption>
   <tr>
     <th>IP</th>
     <th>Hostname and Callsigns</th>
@@ -26,12 +27,12 @@
     <th>Connections</th>
   </tr>
   <% @ips.each do |ip, pcs| %>
-  <tr>
+  <tr class="iphost">
     <td><%= ip.ip %></td>
     <td colspan="4"><%= ip.hostname %></td>
   </tr>
   <% pcs.each do |pc|%>
-  <tr>
+  <tr class="callsign">
     <td></td>
     <td><%= link_to pc.callsign.name, { :action => "players", :player_search => { :search_by => "Callsign", :search_for => pc.callsign.name } }, { :method => :post } %></td>
     <td><%= pc.bzid %></td>
@@ -39,7 +40,7 @@
       <%= 'GlobalUser' if pc.is_globaluser %>
       <%= 'Admin' if pc.is_admin %>
       <%= 'Operator' if pc.is_operator %></td>
-    <td><%= pc.join_at %> - <%= pc.part_at %> </td>
+    <td><%= pc.join_at.strftime("%Y-%m-%dT%H:%M:%SZ") %> - <%= pc.part_at.strftime("%Y-%m-%dT%H:%M:%SZ") %> </td>
   </tr>
   <% end %>
   <% end %>

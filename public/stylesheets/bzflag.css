@@ -317,3 +317,36 @@ span.underline {
 table.permissions td {
   text-align: center;
 }
+
+/* Styles for Player Search */
+
+div.players td {
+  border: 1px solid #fff;
+  margin: 0;
+  padding: 0;
+}
+
+div.players tr.callsign {
+  background: #eee;
+}
+
+div.players tr.iphost {
+  background: #fff;
+}
+
+div.players table {
+  border: 1px solid #999;
+  border-collapse: separate;
+}
+
+div.players th {
+  background-color:#ccc;
+  margin:0pt;
+  padding:0pt;
+  text-align:left;
+}
+
+div.players table caption {
+  font-weight: bold;
+  text-align: left;
+}
