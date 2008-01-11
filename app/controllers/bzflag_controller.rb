@@ -20,12 +20,13 @@ class BzflagController < ApplicationController
     @search_options = ['Callsign','IP','Hostname']
 
     @ips = []
+    @matches = nil
     if request.post?
+      @matches = 0
       @player_search = PlayerSearch.new()
       @player_search.search_by = params[:player_search][:search_by]
       @player_search.search_for = params[:player_search][:search_for]
       ips = []
-      @matches = 0
       if params[:player_search][:search_for] =~ /^%*$/
         flash.now[:notice] = "Please enter some search criteria"
       elsif params[:player_search][:search_by] == 'Callsign'

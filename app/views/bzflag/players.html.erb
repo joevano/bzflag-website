@@ -13,8 +13,10 @@
 </div>
 
 <div>
-<% if @ips[0] %>
+<% if @matches %>
 <p> <%= @matches %> matches found.</p>
+<% end %>
+<% if @ips[0] %>
 <table>
   <tr>
     <th>IP</th>
