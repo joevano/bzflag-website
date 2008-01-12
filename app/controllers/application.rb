@@ -6,16 +6,6 @@ require 'fileutils'
 class ApplicationController < ActionController::Base
   # Pick a unique cookie name to distinguish our session data from others'
   session :session_key => '_bzflag.norang.ca_session_id'
-  ADMIN_MENU_PERM = "Admin Menu"
-  CONFIGURATION_MENU_PERM = "Configuration Menu"
-  BAN_PERM = "Ban"
-  LOGS_PERM = "Logs"
-  MAP_UPLOAD_PERM = "Map Upload"
-  PLAYER_INFO_PERM = "Player Info"
-  SERVER_CONTROL_PERM = "Server Control"
-  SHORT_BAN_PERM = "Short Ban"
-  TEST_SERVER_CONTROL_PERM = "Test Server Control"
-  VIEW_PRIVATE_CHAT_PERM = "View Private Chat"
 
   before_filter :get_user
 
@@ -24,22 +14,22 @@ class ApplicationController < ActionController::Base
   def get_user
     @user = (session[:user_id] && User.find(session[:user_id])) || User.new
     permissions = @user.permissions
-    @admin_menu_perm = permissions.index(Permission.find_by_name(ADMIN_MENU_PERM))
-    cfg_menu_p = Permission.find_by_name(CONFIGURATION_MENU_PERM)
+    @admin_menu_perm = permissions.index(Permission.find_by_name("admin menu"))
+    cfg_menu_p = Permission.find_by_name("configuration menu")
     @configuration_menu_perm = permissions.index(cfg_menu_p)
     if cfg_menu_p.groups.count == 0
       @configuration_menu_perm = true
       flash[:notice] = "<strong>Configuration Menu unrestricted - anyone can edit permissions</strong>"
       flash[:notice] += "<br>Add the 'Configuration Menu' to at least one group"
     end
-    @ban_perm = permissions.index(Permission.find_by_name(BAN_PERM))
-    @logs_perm = permissions.index(Permission.find_by_name(LOGS_PERM))
-    @map_upload_perm = permissions.index(Permission.find_by_name(MAP_UPLOAD_PERM))
-    @player_info_perm = permissions.index(Permission.find_by_name(PLAYER_INFO_PERM))
-    @server_control_perm = permissions.index(Permission.find_by_name(SERVER_CONTROL_PERM))
-    @short_ban_perm = permissions.index(Permission.find_by_name(SHORT_BAN_PERM))
-    @test_server_control_perm = permissions.index(Permission.find_by_name(TEST_SERVER_CONTROL_PERM))
-    @view_private_chat_perm = permissions.index(Permission.find_by_name(VIEW_PRIVATE_CHAT_PERM))
+    @ban_perm = permissions.index(Permission.find_by_name("ban"))
+    @logs_perm = permissions.index(Permission.find_by_name("logs"))
+    @map_upload_perm = permissions.index(Permission.find_by_name("map upload"))
+    @player_info_perm = permissions.index(Permission.find_by_name("player info"))
+    @server_control_perm = permissions.index(Permission.find_by_name("server control"))
+    @short_ban_perm = permissions.index(Permission.find_by_name("short ban"))
+    @test_server_control_perm = permissions.index(Permission.find_by_name("test server control"))
+    @view_private_chat_perm = permissions.index(Permission.find_by_name("view private chat"))
   end
 
   def read_html_and_strip_to_body_content(file)

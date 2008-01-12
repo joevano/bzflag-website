@@ -27,33 +27,38 @@
       <%= link_to "Home", :controller => 'bzflag', :action => 'index' %>
       <br />
       <%= link_to "Servers", :controller => 'bzflag', :action => 'servers' %>
-      <% if @admin_menu_perm %>
-      <br />
+    </p>
+    <% if @player_info_perm %>
+    <p>
+      <%= link_to "Player Info", :controller => 'search', :action => 'players' %>
+    </p>
+    <% end %>
+    <% if @admin_menu_perm %>
+    <p>
       <%= link_to "Reports", :controller => 'bzflag', :action => 'reports' %>
       <br />
       <%= link_to "Bans", :controller => 'bzflag', :action => 'bans' %>
-      <br />
+    </p>
+    <p>
       <%= link_to "Recordings", :controller => 'bzflag', :action => 'recordings' %>
     </p>
     <p>
       <%= link_to "Mailing List", :controller => 'mailing_list', :action => 'threads' %>
-      <br />
-      <%= link_to "Players", :controller => 'bzflag', :action => 'players' %>
     </p>
     <p>
       <%= link_to "Help", :controller => 'help', :action => 'index' %>
-      <% end %>
     </p>
-   <% if @configuration_menu_perm %>
-   <p>
-     <%= link_to "Configuration", :controller => 'config', :action => 'index' %>
-   </p>
-   <% end %>
+    <% end %>
+    <% if @configuration_menu_perm %>
+    <p>
+      <%= link_to "Configuration", :controller => 'config', :action => 'index' %>
+    </p>
+    <% end %>
     <p>
       <%= link_to "Forum", "http://my.bzflag.org/bb" %>
       <br />
       <%= link_to "Wiki", "http://my.bzflag.org/w" %>
-   </p>
+    </p>
     <p>
       <%= link_to "Source Code", "http://git.norang.ca/?p=bzflag-website;a=summary" %>
     </p>
