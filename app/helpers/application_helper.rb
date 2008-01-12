@@ -10,10 +10,8 @@ module ApplicationHelper
       range = range + " - "
       if d2.strftime("%Y") != d1.strftime("%Y")
         range = range + display_date(d2)
-      elsif d2.strftime("%b") != d1.strftime("%b")
+      elsif d2.strftime("%b") != d1.strftime("%b") || d2.strftime("%d") != d1.strftime("%d")
         range = range + d2.strftime("%b %d %H:%M:%S")
-      elsif d2.strftime("%d") != d1.strftime("%d")
-        range = range + d2.strftime("%d %H:%M:%S")
       else
         range = range + d2.strftime("%H:%M:%S")
       end
