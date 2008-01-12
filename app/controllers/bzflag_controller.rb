@@ -38,7 +38,7 @@ class BzflagController < ApplicationController
           ips = Ip.find(:all, :conditions => [ "ip like ?", params[:player_search][:search_for]])
         end
       elsif params[:player_search][:search_by] == 'Hostname'
-        if params[:player_search][:search_for] =~ /^%+\.[^.]*$/
+        if params[:player_search][:search_for] =~ /^[%\.]+[^.]*$/
           flash.now[:notice] = "Hostname search criteria will return too many matches - try something else."
         else
           ips = Ip.find(:all, :conditions => [ "hostname like ?", params[:player_search][:search_for]])
