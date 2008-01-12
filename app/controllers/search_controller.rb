@@ -15,7 +15,7 @@ class SearchController < ApplicationController
       if params[:player_search][:search_for] =~ /^%*$/
         flash.now[:notice] = "Please enter some search criteria"
       elsif params[:player_search][:search_by] == 'Callsign'
-        ips = Callsign.find(:all, :conditions => [ "name like ?", params[:player_search][:search_for]]).collect{|x| x.ips}
+        ips = Callsign.find(:all, :conditions => [ "name like ?", params[:player_search][:search_for]]).collect{|x| x.ips}.flatten!.uniq
       elsif params[:player_search][:search_by] == 'IP'
         if params[:player_search][:search_for] =~ /^%*(\.%){0,3}$/
           flash.now[:notice] = "IP Search criteria will return too many matches - try something else."
@@ -30,7 +30,6 @@ class SearchController < ApplicationController
         end
       end
 
-      ips.flatten! if ips
       ips.sort! if ips
 
       ips.each do |ip|
