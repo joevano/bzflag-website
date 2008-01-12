@@ -31,7 +31,8 @@
   <% @ips.each do |ip, pcs| %>
   <tr class="iphost">
     <td><%= link_to ip.ip, { :action => "players", :player_search => { :search_by => "IP", :search_for => ip.ip.split('.')[0..2].join('.') + ".%" } }, { :method => :post } if ip.ip %></td>
-    <td colspan="4"><%= link_to ip.hostname, { :action => "players", :player_search => { :search_by => "Hostname", :search_for => '%.' + ip.hostname.split('.')[1..-1].join('.') } }, { :method => :post } if ip.hostname %></td>
+    <td colspan="3"><%= link_to ip.hostname, { :action => "players", :player_search => { :search_by => "Hostname", :search_for => '%.' + ip.hostname.split('.')[1..-1].join('.') } }, { :method => :post } if ip.hostname %></td>
+    <td> <%= ip.first_join_at %> - <%= ip.last_part_at %> </td>
   </tr>
   <% pcs.each do |pc|%>
   <tr class="callsign">

@@ -61,6 +61,10 @@ class BzflagController < ApplicationController
             cdet.part_at = pc_last.part_at if pc_last
             cdet.bzid = pc_last.bzid if pc_last && pc_last.bzid
             connections.push(cdet)
+
+            # Update the ip join and part times
+            ip.first_join_at = cdet.join_at if ip.first_join_at.nil? || cdet.join_at < ip.first_join_at
+            ip.last_part_at = cdet.part_at if ip.last_part_at.nil? || cdet.part_at > ip.last_part_at
           end
           @matches += callsign_details.size
         end

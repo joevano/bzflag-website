@@ -2,6 +2,8 @@ class Ip < ActiveRecord::Base
   has_many :player_connections
   has_many :callsigns, :through => :player_connections, :uniq => true
 
+  attr_accessor :first_join_at, :last_part_at
+
   def self.locate(ip)
     newip = Ip.find_by_ip(ip)
     if newip.nil?
