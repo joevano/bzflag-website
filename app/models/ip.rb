@@ -16,8 +16,26 @@ class Ip < ActiveRecord::Base
   end
 
   def <=>(other)
-    lastpart = self.player_connections.find(:first, :order => 'join_at desc').part_at
-    otherlastpart = other.player_connections.find(:first, :order => 'join_at desc').part_at
-    otherlastpart <=> lastpart
+    # Sort two IPs by the latest player connection part_at time
+    #
+
+    # Get the last part_at time if we have one for this IP
+    lastpart = self.player_connections.find(:first, :order => 'join_at desc')
+    lastpart = lastpart.part_at if lastpart
+
+    # Get the last part_at time for the other IP if it has one
+    otherlastpart = other.player_connections.find(:first, :order => 'join_at desc')
+    otherlastpart = otherlastpart.part_at if otherlastpart
+
+    # If the other IP has no part_at sort it to the bottom
+    # If we have not part_at sort it to the bottom
+    # Otherwise compare the part_at times and sort accordingly
+    if lastpart.nil?
+      1
+    elsif otherlastpart.nil?
+      -1
+    else
+      otherlastpart <=> lastpart
+    end
   end
 end
