@@ -32,9 +32,17 @@ class BzflagController < ApplicationController
       elsif params[:player_search][:search_by] == 'Callsign'
         ips = Callsign.find(:all, :conditions => [ "name like ?", params[:player_search][:search_for]]).collect{|x| x.ips}
       elsif params[:player_search][:search_by] == 'IP'
-        ips = Ip.find(:all, :conditions => [ "ip like ?", params[:player_search][:search_for]])
+        if params[:player_search][:search_for] =~ /^%*(\.%){0,3}$/
+          flash.now[:notice] = "IP Search criteria will return too many matches - try something else."
+        else
+          ips = Ip.find(:all, :conditions => [ "ip like ?", params[:player_search][:search_for]])
+        end
       elsif params[:player_search][:search_by] == 'Hostname'
-        ips = Ip.find(:all, :conditions => [ "hostname like ?", params[:player_search][:search_for]])
+        if params[:player_search][:search_for] =~ /^%+\.[^.]*$/
+          flash.now[:notice] = "Hostname search criteria will return too many matches - try something else."
+        else
+          ips = Ip.find(:all, :conditions => [ "hostname like ?", params[:player_search][:search_for]])
+        end
       end
 
       ips.flatten! if ips
