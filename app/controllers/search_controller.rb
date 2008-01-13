@@ -18,23 +18,15 @@ class SearchController < ApplicationController
       elsif params[:player_search][:search_by] == 'Callsign'
         ips=Ip.find_by_sql(["select distinct ips.* from ips inner join player_connections on ips.id = player_connections.ip_id inner join callsigns on callsigns.id = player_connections.callsign_id where callsigns.name like ? order by ips.last_part_at desc limit #{IP_LIMIT}", params[:player_search][:search_for]])
       elsif params[:player_search][:search_by] == 'IP'
-        if false && params[:player_search][:search_for] =~ /^%*(\.%){0,3}$/
-          flash.now[:notice] = "IP Search criteria will return too many matches - try something else."
-        else
-          ips = Ip.find(:all,
-                        :conditions => [ "ip like ?", params[:player_search][:search_for]],
-                        :order => "last_part_at desc",
-                        :limit => IP_LIMIT)
-        end
+        ips = Ip.find(:all,
+                      :conditions => [ "ip like ?", params[:player_search][:search_for]],
+                      :order => "last_part_at desc",
+                      :limit => IP_LIMIT)
       elsif params[:player_search][:search_by] == 'Hostname'
-        if false && params[:player_search][:search_for] =~ /^[%\.]+[^.]*$/
-          flash.now[:notice] = "Hostname search criteria will return too many matches - try something else."
-        else
-          ips = Ip.find(:all,
-                        :conditions => [ "hostname like ?", params[:player_search][:search_for]],
-                        :order => "last_part_at desc",
-                        :limit => IP_LIMIT)
-        end
+        ips = Ip.find(:all,
+                      :conditions => [ "hostname like ?", params[:player_search][:search_for]],
+                      :order => "last_part_at desc",
+                      :limit => IP_LIMIT)
       end
 
       if ips.size > 0
