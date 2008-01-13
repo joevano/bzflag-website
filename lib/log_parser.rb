@@ -147,6 +147,10 @@ class LogParser
       # Get ip
       if detail =~ /\s*IP:(\d+\.\d+\.\d+\.\d+)\s*(.*)$/
         ip = Ip.locate($1)
+        if ip.first_join_at.nil?
+          ip.first_join_at = date
+          ip.save!
+        end
         detail = $2
       end
 
@@ -203,9 +207,11 @@ class LogParser
 
     when 'PLAYER-PART'
       lm.callsign, detail = get_callsign(detail)
-      pc = PlayerConnection.find(:first, :conditions => "bz_server_id = #{bz_server.id} and part_at is null and callsign_id = #{lm.callsign.id}")
+      pc = PlayerConnection.find(:first, :conditions => "bz_server_id = #{bz_server.id} and part_at is null and callsign_id = #{lm.callsign.id}", :include => :ip)
       if pc
         pc.part_at = date
+        pc.ip.last_part_at = date
+        pc.ip.save!
         pc.save!
       end
       slot, detail = parse_slot(detail)
