@@ -3,13 +3,11 @@ class SearchController < ApplicationController
   IP_LIMIT = 500
 
   def players
-    @search_options = ['Callsign','IP','Hostname']
-
     @ips = []
     @matches = nil
+    @player_search = PlayerSearch.new()
     if request.post?
       @matches = 0
-      @player_search = PlayerSearch.new()
       @player_search.search_by = params[:player_search][:search_by]
       @player_search.search_for = params[:player_search][:search_for]
       ips = []
@@ -51,6 +49,8 @@ class SearchController < ApplicationController
         @ips.push([ip, connections])
       end
       flash.now[:notice] = "Oops - BUG: lost entries #{callsign_details_idx} - #{callsign_details.size}" if callsign_details_idx < callsign_details.size
+    else
+      @player_search.search_by = "Callsign"
     end
   end
 

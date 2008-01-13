@@ -3,10 +3,12 @@
   <fieldset>
     <legend>Enter Player Search Criteria</legend>
     <% form_for :player_search do |form| %>
-      <p><label for="search_for">Search For:</label>
+      <p><%= submit_tag "Search" %>
+         <label for="search_for">For:</label>
          <%= form.text_field :search_for, :size => 30 %>
-         <%= form.select :search_by, @search_options %>
-         <%= submit_tag "Search" %>
+	 <%= form.radio_button(:search_by, "Callsign") %> Callsign
+	 <%= form.radio_button(:search_by, "IP") %> IP
+	 <%= form.radio_button(:search_by, "Hostname") %> Hostname
       <br/>
       Use % for wildcard matches.
       </p>
