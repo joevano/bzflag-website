@@ -61,6 +61,11 @@
     </p>
     <p>
       <%= link_to "Source Code", "http://git.norang.ca/?p=bzflag-website;a=summary" %>
+      <% if @admin_menu_perm %>
+      <br/>
+      <%= link_to "ToDo", :controller => 'todo', :action => 'index' %>
+      <% end %>
+    </p>
     </p>
   </div>
   <div id="main">
