@@ -45,10 +45,10 @@
     <p>
       <%= link_to "Mailing List", :controller => 'mailing_list', :action => 'threads' %>
     </p>
+    <% end %>
     <p>
       <%= link_to "Help", :controller => 'help', :action => 'index' %>
     </p>
-    <% end %>
     <% if @configuration_menu_perm %>
     <p>
       <%= link_to "Configuration", :controller => 'config', :action => 'index' %>
