@@ -18,4 +18,8 @@ module ApplicationHelper
     end
     range
   end
+
+  def display_server(bz_server)
+    "#{bz_server.server_host.hostname}:#{bz_server.port}"
+  end
 end
