@@ -61,12 +61,12 @@
     </p>
     <p>
       <%= link_to "Source Code", "http://git.norang.ca/?p=bzflag-website;a=summary" %>
-      <% if @admin_menu_perm %>
-      <br/>
+    </p>
+    <% if @admin_menu_perm %>
+    <p>
       <%= link_to "ToDo", :controller => 'todo', :action => 'index' %>
-      <% end %>
     </p>
-    </p>
+    <% end %>
   </div>
   <div id="main">
     <% if flash[:notice] -%>
