@@ -29,7 +29,7 @@ class SearchController < ApplicationController
 
       if ips.size > 0
         ip_ids = ips.collect{|i| i.id}.join(",")
-        callsign_details = PlayerConnection.find_by_sql("select ip.id,pc.callsign_id,pc.is_verified, pc.is_admin, pc.bzid, pc.ip_id, min(pc.join_at) as join_at, max(pc.part_at) as part_at, pc.is_globaluser, pc.is_operator from player_connections pc inner join ips ip on pc.ip_id = ip.id where pc.ip_id in (#{ip_ids}) group by ip.id, pc.callsign_id, pc.is_verified, pc.is_admin, pc.is_operator, pc.is_globaluser order by ip.last_part_at desc, ip.id, part_at desc")
+        callsign_details = PlayerConnection.find_by_sql("select ip.id,pc.callsign_id,pc.is_verified, pc.is_admin, pc.bzid, pc.ip_id, min(pc.join_at) as join_at, max(pc.part_at) as part_at, pc.is_globaluser, pc.is_operator from player_connections pc inner join ips ip on pc.ip_id = ip.id where pc.ip_id in (#{ip_ids}) group by ip.id, pc.callsign_id, pc.is_verified, pc.is_admin, pc.is_operator, pc.is_globaluser, pc.bzid order by ip.last_part_at desc, ip.id, part_at desc")
       else
         callsign_details = []
       end
