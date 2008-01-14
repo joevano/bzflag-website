@@ -367,3 +367,23 @@ div.players table caption {
 .operator {
   color: #f00;
 }
+
+/* Todo List Styles */
+
+.title { text-align: center; }
+.todo  { color: red; }
+.done { color: green; }
+.timestamp { color: grey }
+.timestamp-kwd { color: CadetBlue }
+.tag { background-color:lightblue; font-weight:normal }
+.target { background-color: lavender; }
+pre {
+	border: 1pt solid #AEBDCC;
+	background-color: #F3F5F7;
+	padding: 5pt;
+	font-family: courier, monospace;
+}
+table { border-collapse: collapse; }
+td, th {
+  vertical-align: top;
+}
