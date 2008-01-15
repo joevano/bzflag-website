@@ -1,5 +1,5 @@
 class ConfigController < ApplicationController
-  before_filter :authorize
+  before_filter :authorize_configuration_menu_perm
 
   def index
   end
@@ -132,20 +132,6 @@ class ConfigController < ApplicationController
       if @bz_server.update_attributes(params[:bz_server])
         flash[:notice] = "BZFlag Server saved"
         redirect_to :action=> :bz_server_list
-      end
-    end
-  end
-
-  private
-
-  def authorize
-    unless @configuration_menu_perm
-      flash[:notice] = "Access Denied."
-      if session[:user_id]
-        redirect_to(:controller => "bzflag", :action => "index")
-      else
-        session[:original_uri] = request.request_uri
-        redirect_to(:controller => "login", :action => "login")
       end
     end
   end

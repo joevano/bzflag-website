@@ -1,5 +1,5 @@
 class MailingListController < ApplicationController
-  before_filter :authorize
+  before_filter :authorize_admin_menu_perm
 
   def method_missing(action)
     if action == "index"
@@ -15,19 +15,5 @@ class MailingListController < ApplicationController
       flash.now[:notice] = "Can't find article"
     end
     render :template => "mailing_list/article"
-  end
-
-  private
-
-  def authorize
-    unless @admin_menu_perm
-      flash[:notice] = "Access Denied."
-      if session[:user_id]
-        redirect_to(:controller => "bzflag", :action => "index")
-      else
-        session[:original_uri] = request.request_uri
-        redirect_to(:controller => "login", :action => "login")
-      end
-    end
   end
 end

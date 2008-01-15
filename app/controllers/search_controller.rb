@@ -1,5 +1,5 @@
 class SearchController < ApplicationController
-  before_filter :authorize
+  before_filter :authorize_player_info_perm
   IP_LIMIT = 500
 
   def players
@@ -51,20 +51,6 @@ class SearchController < ApplicationController
       flash.now[:notice] = "Oops - BUG: lost entries #{callsign_details_idx} - #{callsign_details.size}" if callsign_details_idx < callsign_details.size
     else
       @player_search.search_by = "Callsign"
-    end
-  end
-
-  private
-
-  def authorize
-    unless @player_info_perm
-      flash[:notice] = "Access Denied."
-      if session[:user_id]
-        redirect_to(:controller => "bzflag", :action => "index")
-      else
-        session[:original_uri] = request.request_uri
-        redirect_to(:controller => "login", :action => "login")
-      end
     end
   end
 end

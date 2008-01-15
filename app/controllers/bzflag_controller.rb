@@ -1,5 +1,5 @@
 class BzflagController < ApplicationController
-  before_filter :authorize, :except => [ :index, :servers ]
+  before_filter :authorize_admin_menu_perm, :except => [ :index, :servers ]
 
   def index
   end
@@ -23,19 +23,5 @@ class BzflagController < ApplicationController
   end
 
   def mailing_list
-  end
-
-  private
-
-  def authorize
-    unless @admin_menu_perm
-      flash[:notice] = "Access Denied."
-      if session[:user_id]
-        redirect_to(:controller => "bzflag", :action => "index")
-      else
-        session[:original_uri] = request.request_uri
-        redirect_to(:controller => "login", :action => "login")
-      end
-    end
   end
 end

@@ -39,4 +39,29 @@ class ApplicationController < ActionController::Base
     # Strip off the trailer
     content = content.sub(/<\/body>.*$/im, '')
   end
+
+  def authorize(perm)
+    unless perm
+      if session[:user_id]
+        flash[:notice] = "Access Denied."
+        redirect_to(:controller => "bzflag", :action => "index")
+      else
+        flash[:notice] = "Access Restricted.  Please log in."
+        session[:original_uri] = request.request_uri
+        redirect_to(:controller => "login", :action => "login")
+      end
+    end
+  end
+
+  def authorize_admin_menu_perm
+    authorize(@admin_menu_perm)
+  end
+
+  def authorize_configuration_menu_perm
+    authorize(@configuration_menu_perm)
+  end
+
+  def authorize_player_info_perm
+    authorize(@player_info_perm)
+  end
 end
