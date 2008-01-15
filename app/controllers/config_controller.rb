@@ -141,7 +141,12 @@ class ConfigController < ApplicationController
   def authorize
     unless @configuration_menu_perm
       flash[:notice] = "Access Denied."
-      redirect_to(:controller => "bzflag", :action => "id")
+      if session[:user_id]
+        redirect_to(:controller => "bzflag", :action => "index")
+      else
+        session[:original_uri] = request.request_uri
+        redirect_to(:controller => "login", :action => "login")
+      end
     end
   end
 end

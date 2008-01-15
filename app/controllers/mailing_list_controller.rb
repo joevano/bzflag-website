@@ -22,8 +22,12 @@ class MailingListController < ApplicationController
   def authorize
     unless @admin_menu_perm
       flash[:notice] = "Access Denied."
-      session[:original_uri] = request.request_uri
-      redirect_to(:controller => "login", :action => "login")
+      if session[:user_id]
+        redirect_to(:controller => "bzflag", :action => "index")
+      else
+        session[:original_uri] = request.request_uri
+        redirect_to(:controller => "login", :action => "login")
+      end
     end
   end
 end
