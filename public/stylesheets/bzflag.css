@@ -318,6 +318,19 @@ table.permissions td {
   text-align: center;
 }
 
+div.players dl {
+  display: inline;
+}
+
+div.players dl dt {
+  float: left;
+  text-align: left;
+  width: 10%;
+}
+
+div.players dl dd {
+}
+
 /* Styles for Player Search */
 
 div.players td {
