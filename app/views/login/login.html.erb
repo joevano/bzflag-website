@@ -1,6 +1,6 @@
 <div class="bzflag-form">
 
-  <form action="http://my.bzflag.org/weblogin.php" method="post">
+  <form action="http://<%= @auth_srv %>/weblogin.php" method="post">
     <div>
       <fieldset>
         <legend>Login</legend>
@@ -11,9 +11,9 @@
 	<input type="hidden" name="url" value="http://<%= @host %>/login/validate?token=%TOKEN%&amp;username=%USERNAME%">
 	<input type="hidden" name="action" value="webvalidate">
         <input type="submit" value="Login"><br/>
-        <a href="http://my.bzflag.org/weblogin.php?url=http://<%= @host %>/login/validate%3Ftoken%3D%25TOKEN%25%26username%3D%25USERNAME%25">Login@my.bzflag.org</a><br/>
-        <a href="http://my.bzflag.org/bb/profile.php?mode=sendpassword">Forgot Password</a><br/>
-        <a href="http://my.bzflag.org/bb/profile.php?mode=register">Register</a>
+        <a href="http://<%= @auth_srv %>/weblogin.php?url=http://<%= @host %>/login/validate%3Ftoken%3D%25TOKEN%25%26username%3D%25USERNAME%25">Login@<%= @auth_srv %></a><br/>
+        <a href="http://<%= @auth_srv %>/bb/profile.php?mode=sendpassword">Forgot Password</a><br/>
+        <a href="http://<%= @auth_srv %>/bb/profile.php?mode=register">Register</a>
       </fieldset>
     </div>
   </form>

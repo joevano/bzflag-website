@@ -12,6 +12,7 @@ class LoginController < ApplicationController
 
   def login
     @host = AppConfig.root_url
+    @auth_srv = AppConfig.auth_srv
   end
 
   def logout
@@ -29,7 +30,7 @@ class LoginController < ApplicationController
     checktoken = "/db/?action=CHECKTOKENS&checktokens=#{CGI::escape(username)}%3D#{CGI::escape(token)}&groups=" + all_groups.join('%0D%0A')
     logger.info(checktoken)
     begin
-      response = Net::HTTP.get('my.bzflag.org', checktoken)
+      response = Net::HTTP.get(AppConfig.auth_srv, checktoken)
     rescue
       flash[:notice] = "Login Fails - can't reach authentication server"
     end
