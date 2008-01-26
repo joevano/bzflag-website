@@ -28,11 +28,15 @@ class LoginController < ApplicationController
 
     checktoken = "/db/?action=CHECKTOKENS&checktokens=#{CGI::escape(username)}%3D#{CGI::escape(token)}&groups=" + all_groups.join('%0D%0A')
     logger.info(checktoken)
-    response = Net::HTTP.get('my.bzflag.org', checktoken)
-    logger.info('Token validation reponse for ' + username + ':' + response)
+    begin
+      response = Net::HTTP.get('my.bzflag.org', checktoken)
+    rescue
+      flash[:notice] = "Login Fails - can't reach authentication server"
+    end
+    logger.info('Token validation reponse for ' + username + ':' + response) if response
 
     session[:user_id] = ip = bzid = groups = nil
-    if response.index('TOKGOOD: ')
+    if response and response.index('TOKGOOD: ')
       ip = request.remote_ip
       for line in response
         line.chomp!
@@ -57,7 +61,7 @@ class LoginController < ApplicationController
       newgroups = groups.collect { |g| Group.find_by_name(g) }
       u.groups.replace(newgroups)
     else
-      flash[:notice] = "Login failed."
+      flash[:notice] = "Login failed." if flash[:notice].nil?
     end
     uri = session[:original_uri]
     session[:original_uri] = nil
