@@ -28,12 +28,9 @@
       <br />
       <%= link_to "Servers", :controller => 'bzflag', :action => 'servers' %>
     </p>
-    <% if @player_info_perm %>
     <p>
       <%= link_to "Player Info", :controller => 'search', :action => 'players' %>
     </p>
-    <% end %>
-    <% if @admin_menu_perm %>
     <p>
       <%= link_to "Reports", :controller => 'bzflag', :action => 'reports' %>
       <br />
@@ -45,7 +42,6 @@
     <p>
       <%= link_to "Mailing List", :controller => 'mailing_list', :action => 'threads' %>
     </p>
-    <% end %>
     <p>
       <%= link_to "Help", :controller => 'help', :action => 'index' %>
     </p>
