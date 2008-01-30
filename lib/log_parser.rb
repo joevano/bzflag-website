@@ -6,9 +6,10 @@ require 'config/environment'
 require 'time'
 
 class LogParser
+  attr_accessor :last_log_time
 
   # Display format of command line usage
-  def self.usage
+  def usage
     puts "usage: parse_bzfs_log.rb [-s] HOST:PORT"
     exit 1
   end
@@ -17,19 +18,19 @@ class LogParser
   #
   # Returns the callsign object that matches the parsed counted string callsign
   # New callsign objects are created if necessary
-  def self.get_callsign(detail)
+  def get_callsign(detail)
     callsign, detail = parse_callsign(detail)
     cs = Callsign.locate(callsign)
     return cs, detail
   end
 
   # Find or create a Message object for a string
-  def self.get_message(message)
+  def get_message(message)
     msg = Message.locate(message)
   end
 
   # Find or create a Team object for a string
-  def self.get_team(detail)
+  def get_team(detail)
     team = nil
     if detail =~ /\s*(\w+)\s+(.*)$/
       team = Team.locate($1)
@@ -39,7 +40,7 @@ class LogParser
   end
 
   # Parse the slot number from a string
-  def self.parse_slot(detail)
+  def parse_slot(detail)
     # Get slot number
     slot = nil
     if detail =~ /\s*#(\d+)\s+(.*)$/
@@ -52,9 +53,9 @@ class LogParser
   # Parse a counted callsign from a string
   # Returns the callsign and the remainder of the string
   #
-  # 	e.g. 7:Thumper
-  # 	returns 'Thumper' as the callsign and the remainder of the string
-  def self.parse_callsign(msg)
+  #	e.g. 7:Thumper
+  #	returns 'Thumper' as the callsign and the remainder of the string
+  def parse_callsign(msg)
     begin
       callsign = "UNKNOWN"
       length = 0
@@ -70,7 +71,7 @@ class LogParser
   #
   # Finds a bzid of the format BZid:nnnn as the next token on the log line
   # and returns the bzid value if one is found.
-  def self.parse_bzid(detail)
+  def parse_bzid(detail)
     bzid = nil
     if detail =~ /^\s*BZid:(\d+)\s+(.*)$/
       bzid = $1
@@ -82,7 +83,7 @@ class LogParser
   # Parse player data that looks like this:
   #
   # [+]9:Bad Sushi() [+]10:spatialgur(15:spatialguru.com) [@]12:drunk driver()
-  def self.parse_player_email(data)
+  def parse_player_email(data)
     v, data = $1, $2 if data =~ /^\[(.)\](.*)$/
 
     callsign, data = parse_callsign(data)
@@ -104,7 +105,7 @@ class LogParser
 
   # Process a line from the log file
   #
-  def self.process_line(server_host, bz_server, line)
+  def process_line(server_host, bz_server, line)
     # The date can be in 3 formats:
     #
     # 2007-12-16T11:09:42Z
@@ -126,7 +127,7 @@ class LogParser
       # Can't parse the line :-P ignore it
       return
     end
-           
+
     log_type_id = LogType.ids([log_type])
     lm = LogMessage.new(:bz_server => bz_server, :logged_at => date, :log_type_id => log_type_id)
 
@@ -305,7 +306,7 @@ class LogParser
     end
   end
 
-  def self.process
+  def process
     # Initialization
     #
     # Get the server host and BZFlag server record ids

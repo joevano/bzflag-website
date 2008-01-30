@@ -4,4 +4,5 @@
 # Create database records from the log for use with the bzflag_website
 require 'lib/log_parser'
 
-LogParser.process
+logger = LogParser.new
+logger.process
