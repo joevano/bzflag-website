@@ -4,12 +4,11 @@ class SearchController < ApplicationController
 
   def players
     @ips = []
-    @matches = nil
+    @matches = 0
     @player_search = PlayerSearch.new()
-    if request.post?
-      @matches = 0
-      @player_search.search_by = params[:player_search][:search_by]
-      @player_search.search_for = params[:player_search][:search_for]
+    @player_search.search_by = params[:player_search][:search_by] if params && params[:player_search]
+    @player_search.search_for = params[:player_search][:search_for] if params && params[:player_search]
+    if @player_search.search_by && @player_search.search_for
       ips = []
       if params[:player_search][:search_for] =~ /^%*$/
         flash.now[:notice] = "Please enter some search criteria"
