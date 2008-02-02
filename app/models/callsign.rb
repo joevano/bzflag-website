@@ -9,6 +9,6 @@ class Callsign < ActiveRecord::Base
     if name == '' || name =~ /^\s+$/
       name = 'UNKNOWN'
     end
-    Callsign.find_by_name(name) || Callsign.create!(:name => name)
+    Callsign.find_or_create_by_name(name)
   end
 end

@@ -26,14 +26,14 @@ class LogParser
 
   # Find or create a Message object for a string
   def get_message(message)
-    msg = Message.locate(message)
+    msg = Message.find_or_create_by_text(message)
   end
 
   # Find or create a Team object for a string
   def get_team(detail)
     team = nil
     if detail =~ /\s*(\w+)\s+(.*)$/
-      team = Team.locate($1)
+      team = Team.find_or_create_by_name($1)
       detail = $2
     end
     return team, detail
