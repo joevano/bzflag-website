@@ -58,3 +58,6 @@ end
 # Mime::Type.register "application/x-mobile", :mobile
 
 # Include your application configuration below
+
+# Default times to UTC
+ActiveRecord::Base.default_timezone = :utc
