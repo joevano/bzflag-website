@@ -376,6 +376,9 @@ class LogParser
       exit 1
     end
 
+    lm = bz_server.log_messages.find(:first, :order => "logged_at desc")
+    @last_log_time = lm.logged_at if lm
+
     # Process the Log Messages
     STDIN.each do |line|
       process_line(server_host, bz_server, line)
