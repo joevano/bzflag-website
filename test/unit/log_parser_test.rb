@@ -683,4 +683,172 @@ class LogParserTest < Test::Unit::TestCase
     assert_not_nil(pc.part_at)
     assert_equal(2, PlayerConnection.count)
   end
+
+  def test_skip_existing_player_join_logs
+    line = '2007-12-29T00:00:03Z PLAYER-JOIN 7:widget1 #1 RED  IP:1.2.4.7'
+    @logger.process_line(@server_host, @bz_server, line)
+    line = '2007-12-29T00:00:04Z PLAYER-JOIN 7:widget2 #2 RED  IP:1.2.4.7'
+    @logger.process_line(@server_host, @bz_server, line)
+    line = '2007-12-29T00:00:05Z PLAYER-JOIN 7:widget3 #3 RED  IP:1.2.4.7'
+    @logger.process_line(@server_host, @bz_server, line)
+    line = '2007-12-29T00:00:05Z PLAYER-JOIN 7:widget4 #4 RED  IP:1.2.4.7'
+    @logger.process_line(@server_host, @bz_server, line)
+    @logger.last_log_time=@bz_server.log_messages.find(:first, :order => "logged_at desc").logged_at
+    assert_equal(Time.gm(*ParseDate.parsedate('2007-12-29T00:00:05Z')), @logger.last_log_time)
+    # skips this one
+    line = '2007-12-29T00:00:03Z PLAYER-JOIN 7:widget1 #1 RED  IP:1.2.4.7'
+    @logger.process_line(@server_host, @bz_server, line)
+    # and this one
+    line = '2007-12-29T00:00:04Z PLAYER-JOIN 7:widget2 #2 RED  IP:1.2.4.7'
+    @logger.process_line(@server_host, @bz_server, line)
+    # and this one
+    line = '2007-12-29T00:00:05Z PLAYER-JOIN 7:widget3 #3 RED  IP:1.2.4.7'
+    @logger.process_line(@server_host, @bz_server, line)
+    # and this one too
+    line = '2007-12-29T00:00:05Z PLAYER-JOIN 7:widget4 #4 RED  IP:1.2.4.7'
+    @logger.process_line(@server_host, @bz_server, line)
+    # but not this one
+    line = '2007-12-29T00:00:05Z PLAYER-JOIN 7:widget5 #5 RED  IP:1.2.4.7'
+    @logger.process_line(@server_host, @bz_server, line)
+    # or this one
+    line = '2007-12-29T00:00:06Z PLAYER-JOIN 7:widget6 #6 RED  IP:1.2.4.7'
+    @logger.process_line(@server_host, @bz_server, line)
+    assert_equal(6, LogMessage.count)
+  end
+
+  def test_skip_existing_player_part_logs
+    line = '2007-12-29T00:02:14Z PLAYER-PART 11:Roger Sm1th #11 BZid:33331 left'
+    @logger.process_line(@server_host, @bz_server, line)
+    @logger.last_log_time=@bz_server.log_messages.find(:first, :order => "logged_at desc").logged_at
+    assert_equal(Time.gm(*ParseDate.parsedate('2007-12-29T00:02:14Z')), @logger.last_log_time)
+    # skips this one
+    line = '2007-12-29T00:02:14Z PLAYER-PART 11:Roger Sm1th #11 BZid:33331 left'
+    @logger.process_line(@server_host, @bz_server, line)
+    # but not this one
+    line = '2007-12-29T00:02:14Z PLAYER-PART 11:Roger Sm3th #12 BZid:33332 left'
+    @logger.process_line(@server_host, @bz_server, line)
+    # or this one
+    line = '2007-12-29T00:02:15Z PLAYER-PART 11:Roger Sm4th #13 BZid:33333 left'
+    @logger.process_line(@server_host, @bz_server, line)
+    assert_equal(3, LogMessage.count)
+  end
+
+  def test_skip_existing_player_auth_logs
+    line = '2007-12-01T07:01:20Z PLAYER-AUTH 6:WhoDat  IP:10.13.181.223 VERIFIED'
+    @logger.process_line(@server_host, @bz_server, line)
+    @logger.last_log_time=@bz_server.log_messages.find(:first, :order => "logged_at desc").logged_at
+    assert_equal(Time.gm(*ParseDate.parsedate('2007-12-01T07:01:20Z')), @logger.last_log_time)
+    # skips this one
+    line = '2007-12-01T07:01:20Z PLAYER-AUTH 6:WhoDat  IP:10.13.181.223 VERIFIED'
+    @logger.process_line(@server_host, @bz_server, line)
+    # but not this one
+    line = '2007-12-01T07:01:20Z PLAYER-AUTH 6:Who2at  IP:10.13.181.222 VERIFIED'
+    @logger.process_line(@server_host, @bz_server, line)
+    # or this one
+    line = '2007-12-01T07:01:21Z PLAYER-AUTH 6:WhoDat  IP:10.13.181.223 VERIFIED'
+    @logger.process_line(@server_host, @bz_server, line)
+    assert_equal(3, LogMessage.count)
+  end
+
+  def test_skip_existing_server_status_logs
+    line = '2007-12-28T01:22:05Z SERVER-STATUS Restart Pending'
+    @logger.process_line(@server_host, @bz_server, line)
+    @logger.last_log_time=@bz_server.log_messages.find(:first, :order => "logged_at desc").logged_at
+    assert_equal(Time.gm(*ParseDate.parsedate('2007-12-28T01:22:05Z')), @logger.last_log_time)
+    # skips this one
+    line = '2007-12-28T01:22:05Z SERVER-STATUS Restart Pending'
+    @logger.process_line(@server_host, @bz_server, line)
+    # but not this one
+    line = '2007-12-28T01:22:05Z SERVER-STATUS Running'
+    @logger.process_line(@server_host, @bz_server, line)
+    # or this one
+    line = '2007-12-28T01:22:06Z SERVER-STATUS Stopped'
+    @logger.process_line(@server_host, @bz_server, line)
+    assert_equal(3, LogMessage.count)
+  end
+
+  def test_skip_existing_msg_report_logs
+    line = '2007-12-29T00:58:41Z MSG-REPORT 5:WQR42 This is the coolest website project ever!'
+    @logger.process_line(@server_host, @bz_server, line)
+    @logger.last_log_time=@bz_server.log_messages.find(:first, :order => "logged_at desc").logged_at
+    assert_equal(Time.gm(*ParseDate.parsedate('2007-12-29T00:58:41Z')), @logger.last_log_time)
+    # skips this one
+    line = '2007-12-29T00:58:41Z MSG-REPORT 5:WQR42 This is the coolest website project ever!'
+    @logger.process_line(@server_host, @bz_server, line)
+    # but not this one
+    line = '2007-12-29T00:58:41Z MSG-REPORT 5:WQR42 No it is not.'
+    @logger.process_line(@server_host, @bz_server, line)
+    # or this one
+    line = '2007-12-29T00:58:42Z MSG-REPORT 5:WQR42 It does not even record duplicates'
+    @logger.process_line(@server_host, @bz_server, line)
+    assert_equal(3, LogMessage.count)
+  end
+
+  def test_skip_existing_msg_broadcast_logs
+    line = '2007-12-29T00:02:12Z MSG-BROADCAST 9:onetwosix random message'
+    @logger.process_line(@server_host, @bz_server, line)
+    @logger.last_log_time=@bz_server.log_messages.find(:first, :order => "logged_at desc").logged_at
+    assert_equal(Time.gm(*ParseDate.parsedate('2007-12-29T00:02:12Z')), @logger.last_log_time)
+    # skips this one
+    line = '2007-12-29T00:02:12Z MSG-BROADCAST 9:onetwosix random message'
+    @logger.process_line(@server_host, @bz_server, line)
+    # but not this one
+    line = '2007-12-29T00:02:12Z MSG-BROADCAST 9:onetwosix something else'
+    @logger.process_line(@server_host, @bz_server, line)
+    # or this one
+    line = '2007-12-29T00:02:13Z MSG-BROADCAST 9:onetwosix random message'
+    @logger.process_line(@server_host, @bz_server, line)
+    assert_equal(3, LogMessage.count)
+  end
+
+  def test_skip_existing_msg_filtered_logs
+    line = '2007-12-29T00:28:46Z MSG-FILTERED 7:badguy2 whata $*^'
+    @logger.process_line(@server_host, @bz_server, line)
+    @logger.last_log_time=@bz_server.log_messages.find(:first, :order => "logged_at desc").logged_at
+    assert_equal(Time.gm(*ParseDate.parsedate('2007-12-29T00:28:46Z')), @logger.last_log_time)
+    # skips this one
+    line = '2007-12-29T00:28:46Z MSG-FILTERED 7:badguy2 whata $*^'
+    @logger.process_line(@server_host, @bz_server, line)
+    # but not this one
+    line = '2007-12-29T00:28:46Z MSG-FILTERED 7:badguy2 whtaa $*^'
+    @logger.process_line(@server_host, @bz_server, line)
+    # or this one
+    line = '2007-12-29T00:28:47Z MSG-FILTERED 7:badguy2 whata $*^'
+    @logger.process_line(@server_host, @bz_server, line)
+    assert_equal(3, LogMessage.count)
+  end
+
+  def test_skip_existing_msg_direct_logs
+    line = '2007-12-29T01:25:18Z MSG-DIRECT 10:DirectMsgs 6:Fred55 ok'
+    @logger.process_line(@server_host, @bz_server, line)
+    @logger.last_log_time=@bz_server.log_messages.find(:first, :order => "logged_at desc").logged_at
+    assert_equal(Time.gm(*ParseDate.parsedate('2007-12-29T01:25:18Z')), @logger.last_log_time)
+    # skips this one
+    line = '2007-12-29T01:25:18Z MSG-DIRECT 10:DirectMsgs 6:Fred55 ok'
+    @logger.process_line(@server_host, @bz_server, line)
+    # but not this one
+    line = '2007-12-29T01:25:18Z MSG-DIRECT 10:DiretcMsgs 6:Fred55 ok'
+    @logger.process_line(@server_host, @bz_server, line)
+    # or this one
+    line = '2007-12-29T01:25:19Z MSG-DIRECT 10:DirectMsgs 6:Fred55 ok'
+    @logger.process_line(@server_host, @bz_server, line)
+    assert_equal(3, LogMessage.count)
+  end
+
+  def test_skip_existing_msg_team_logs
+    line = '2007-12-29T00:00:44Z MSG-TEAM 9:xxyyzzaab GREEN gah'
+    @logger.process_line(@server_host, @bz_server, line)
+    @logger.last_log_time=@bz_server.log_messages.find(:first, :order => "logged_at desc").logged_at
+    assert_equal(Time.gm(*ParseDate.parsedate('2007-12-29T00:00:44Z')), @logger.last_log_time)
+    # skips this one
+    line = '2007-12-29T00:00:44Z MSG-TEAM 9:xxyyzzaab GREEN gah'
+    @logger.process_line(@server_host, @bz_server, line)
+    # but not this one
+    line = '2007-12-29T00:00:44Z MSG-TEAM 9:xxzzyyaab GREEN gah'
+    @logger.process_line(@server_host, @bz_server, line)
+    # or this one
+    line = '2007-12-29T00:00:45Z MSG-TEAM 9:xxyyzzaab GREEN gah'
+    @logger.process_line(@server_host, @bz_server, line)
+    assert_equal(3, LogMessage.count)
+  end
 end

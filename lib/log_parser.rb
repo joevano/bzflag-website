@@ -4,6 +4,7 @@
 # Create database records from the log for use with the bzflag_website
 require 'config/environment'
 require 'time'
+require 'parsedate'
 
 class LogParser
   attr_accessor :last_log_time
@@ -111,13 +112,20 @@ class LogParser
     # 2007-12-16T11:09:42Z
     # 2007-12-16 11:09:42:
     # or missing in which case we use the last date we have available
-    if line =~ /(\d\d\d\d-\d\d-\d\d[T ]\d\d:\d\d:\d\dZ?):?\s+(.*)$/
-      date = $1
-      @date = date
+    if line =~ /^(\d\d\d\d-\d\d-\d\d[T ]\d\d:\d\d:\d\dZ?):?\s+(.*)$/
+      date = Time.gm(*ParseDate.parsedate($1))
       detail = $2
     else
       date = @date
       detail = line
+    end
+    # Save the date/time in case the next log line has no time -- we'll just reuse this one
+    @date = date
+
+    # If the last_log_time is set then we're updating logs and we should skip all of the logs
+    # until the date is greater than or equal to the last_log_time
+    if @last_log_time and @last_log_time > @date
+      return
     end
 
     if detail =~ /(\S+)\s+(.*)$/
@@ -175,6 +183,14 @@ class LogParser
         is_operator = true
       end
 
+      lm.callsign = callsign
+      lm.bzid = bzid
+      lm.team = team
+
+      return if @last_log_time and @last_log_time = lm.logged_at and bz_server.log_messages.find_by_logged_at_and_log_type_id_and_callsign_id_and_bzid_and_team_id(lm.logged_at, lm.log_type_id, lm.callsign_id, lm.bzid, lm.team_id)
+
+      lm.save!
+
       # Any existing player connections on this server for this callsign
       # can't be connected anymore - so log the part time
       bz_server.player_connections.find(:all, :conditions => "callsign_id = #{callsign.id} and part_at is null").each do |pc|
@@ -201,13 +217,19 @@ class LogParser
                                     :team => team,
                                     :slot => slot)
 
-      lm.callsign = callsign
-      lm.bzid = bzid
-      lm.team = team
-      lm.save!
-
     when 'PLAYER-PART'
       lm.callsign, detail = get_callsign(detail)
+
+      slot, detail = parse_slot(detail)
+      bzid, detail = parse_bzid(detail)
+      lm.bzid = bzid
+      lm.message = get_message(detail)
+
+      # Skip it if we've already recorded it
+      return if @last_log_time and @last_log_time = lm.logged_at and bz_server.log_messages.find_by_logged_at_and_log_type_id_and_callsign_id_and_bzid_and_message_id(lm.logged_at, lm.log_type_id, lm.callsign_id, lm.bzid, lm.message_id)
+
+      lm.save!
+
       pc = PlayerConnection.find(:first, :conditions => "bz_server_id = #{bz_server.id} and part_at is null and callsign_id = #{lm.callsign.id}", :include => :ip)
       if pc
         pc.part_at = date
@@ -215,14 +237,15 @@ class LogParser
         pc.ip.save!
         pc.save!
       end
-      slot, detail = parse_slot(detail)
-      bzid, detail = parse_bzid(detail)
-      lm.bzid = bzid
-      lm.message = get_message(detail)
-      lm.save!
 
     when 'PLAYER-AUTH'
       lm.callsign, detail = get_callsign(detail)
+
+      # Skip it if we've already recorded it
+      return if @last_log_time and @last_log_time = lm.logged_at and bz_server.log_messages.find_by_logged_at_and_log_type_id_and_callsign_id(lm.logged_at, lm.log_type_id, lm.callsign_id)
+
+      lm.save!
+
       begin
         pc = PlayerConnection.find(:first, :conditions => "bz_server_id = #{bz_server.id} and part_at is null and callsign_id = #{lm.callsign.id}")
         pc.is_verified = true
@@ -238,30 +261,45 @@ class LogParser
         pc.save!
       rescue
       end
-      lm.save!
 
     when 'SERVER-STATUS'
       lm.message = get_message(detail)
+
+      # Skip it if we've already recorded it
+      return if @last_log_time and @last_log_time = lm.logged_at and bz_server.log_messages.find_by_logged_at_and_log_type_id_and_callsign_id_and_message_id(lm.logged_at, lm.log_type_id, lm.callsign_id, lm.message_id)
+
       lm.save!
+
       bz_server.server_status_message = lm
       bz_server.save!
 
     when 'MSG-REPORT', 'MSG-COMMAND'
       lm.callsign, detail = get_callsign(detail)
       lm.message = get_message(detail)
+
+      # Skip it if we've already recorded it
+      return if @last_log_time and @last_log_time = lm.logged_at and bz_server.log_messages.find_by_logged_at_and_log_type_id_and_callsign_id_and_message_id(lm.logged_at, lm.log_type_id, lm.callsign_id, lm.message_id)
       lm.save!
 
     when 'MSG-BROADCAST', 'MSG-ADMIN'
       lm.callsign, detail = get_callsign(detail)
       lm.message = get_message(detail)
+
+      # Skip it if we've already recorded it
+      return if @last_log_time and @last_log_time = lm.logged_at and bz_server.log_messages.find_by_logged_at_and_log_type_id_and_callsign_id_and_message_id(lm.logged_at, lm.log_type_id, lm.callsign_id, lm.message_id)
       lm.save!
+
       bz_server.last_chat_message = lm
       bz_server.save!
 
     when 'MSG-FILTERED'
       lm.callsign, detail = get_callsign(detail)
       lm.message = get_message(detail)
+
+      # Skip it if we've already recorded it
+      return if @last_log_time and @last_log_time = lm.logged_at and bz_server.log_messages.find_by_logged_at_and_log_type_id_and_callsign_id_and_message_id(lm.logged_at, lm.log_type_id, lm.callsign_id, lm.message_id)
       lm.save!
+
       bz_server.last_filtered_message = lm
       bz_server.save!
 
@@ -269,7 +307,11 @@ class LogParser
       lm.callsign, detail = get_callsign(detail)
       lm.to_callsign, detail = get_callsign(detail)
       lm.message = get_message(detail)
+
+      # Skip it if we've already recorded it
+      return if @last_log_time and @last_log_time = lm.logged_at and bz_server.log_messages.find_by_logged_at_and_log_type_id_and_callsign_id_and_to_callsign_id_and_message_id(lm.logged_at, lm.log_type_id, lm.callsign_id, lm.to_callsign_id, lm.message_id)
       lm.save!
+
       bz_server.last_chat_message = lm
       bz_server.save!
 
@@ -277,7 +319,11 @@ class LogParser
       lm.callsign, detail = get_callsign(detail)
       lm.team, detail = get_team(detail)
       lm.message = get_message(detail)
+
+      # Skip it if we've already recorded it
+      return if @last_log_time and @last_log_time = lm.logged_at and bz_server.log_messages.find_by_logged_at_and_log_type_id_and_callsign_id_and_team_id_and_message_id(lm.logged_at, lm.log_type_id, lm.callsign_id, lm.team_id, lm.message_id)
       lm.save!
+
       bz_server.last_chat_message = lm
       bz_server.save!
 
