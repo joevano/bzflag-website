@@ -583,9 +583,9 @@ class LogParserTest < Test::Unit::TestCase
   end
 
   def test_players
-    line = '2007-12-29T00:00:04Z PLAYERS (3) [+]11:AAAAAAAAAAA(21:BBBBBBBBBBBBBBBBBBBBB) [ ]7:CCCCCCC(14:DDDDDDDDDDDDDD) [@]5:NNNNN()'
+    line = 5.minutes.ago.gmtime.strftime("%Y-%m-%dT%H:%M:%SZ") + ' PLAYERS (3) [+]11:AAAAAAAAAAA(21:BBBBBBBBBBBBBBBBBBBBB) [ ]7:CCCCCCC(14:DDDDDDDDDDDDDD) [@]5:NNNNN()'
     # Add a player connection for this server and verify it's still there after processing
-    PlayerConnection.create!(:bz_server => @bz_server, :join_at => '2007-10-11', :part_at => nil)
+    PlayerConnection.create!(:bz_server => @bz_server, :join_at => 10.minutes.ago, :part_at => nil)
     assert_equal(1, PlayerConnection.count(:conditions => "bz_server_id = #{@bz_server.id} and part_at is null"))
     @logger.process_line(@server_host, @bz_server, line)
     assert_equal(0, LogMessage.count)
@@ -608,10 +608,21 @@ class LogParserTest < Test::Unit::TestCase
     assert_equal("", @bz_server.current_players[2].email)
   end
 
-  def test_players_zero
-    line = '2007-12-29T00:00:04Z PLAYERS (0) '
+  def test_old_players_not_processed
+    line = 16.minutes.ago.gmtime.strftime("%Y-%m-%dT%H:%M:%SZ") + ' PLAYERS (3) [+]11:AAAAAAAAAAA(21:BBBBBBBBBBBBBBBBBBBBB) [ ]7:CCCCCCC(14:DDDDDDDDDDDDDD) [@]5:NNNNN()'
     # Add a player connection for this server and verify it's still there after processing
-    PlayerConnection.create!(:bz_server => @bz_server, :join_at => '2007-10-11', :part_at => nil)
+    PlayerConnection.create!(:bz_server => @bz_server, :join_at => 10.minutes.ago, :part_at => nil)
+    assert_equal(1, PlayerConnection.count(:conditions => "bz_server_id = #{@bz_server.id} and part_at is null"))
+    @logger.process_line(@server_host, @bz_server, line)
+    assert_equal(0, LogMessage.count)
+    assert_equal(1, PlayerConnection.count(:conditions => "bz_server_id = #{@bz_server.id} and part_at is null"))
+    assert_equal(0, @bz_server.current_players.size)
+  end
+
+  def test_players_zero
+    line = 5.minutes.ago.gmtime.strftime("%Y-%m-%dT%H:%M:%SZ") + ' PLAYERS (0) '
+    # Add a player connection for this server and verify it's still there after processing
+    PlayerConnection.create!(:bz_server => @bz_server, :join_at => 10.minutes.ago, :part_at => nil)
     assert_equal(1, PlayerConnection.count(:conditions => "bz_server_id = #{@bz_server.id} and part_at is null"))
     @logger.process_line(@server_host, @bz_server, line)
     assert_equal(0, LogMessage.count)
@@ -620,12 +631,12 @@ class LogParserTest < Test::Unit::TestCase
   end
 
   def test_players_cleared
-    line = '2007-12-29T00:00:04Z PLAYERS (3) [+]11:AAAAAAAAAAA(21:BBBBBBBBBBBBBBBBBBBBB) [ ]7:CCCCCCC(14:DDDDDDDDDDDDDD) [@]5:NNNNN()'
+    line = 5.minutes.ago.gmtime.strftime("%Y-%m-%dT%H:%M:%SZ") + ' PLAYERS (3) [+]11:AAAAAAAAAAA(21:BBBBBBBBBBBBBBBBBBBBB) [ ]7:CCCCCCC(14:DDDDDDDDDDDDDD) [@]5:NNNNN()'
     @logger.process_line(@server_host, @bz_server, line)
-    assert_equal(3, CurrentPlayer.count)
-    line = '2007-12-29T00:00:04Z PLAYERS (1) [+]11:XXXXXXXXXXX(21:UUUUUUUUUUUUUUUUUUUUU)'
+    assert_equal(3, @bz_server.current_players.count)
+    line = 3.minutes.ago.gmtime.strftime("%Y-%m-%dT%H:%M:%SZ") + ' PLAYERS (1) [+]11:XXXXXXXXXXX(21:UUUUUUUUUUUUUUUUUUUUU)'
     @logger.process_line(@server_host, @bz_server, line)
-    assert_equal(1, CurrentPlayer.count)
+    assert_equal(1, @bz_server.current_players.count)
   end
 
   def test_missing_date

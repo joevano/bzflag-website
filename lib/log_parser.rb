@@ -11,7 +11,7 @@ class LogParser
 
   # Display format of command line usage
   def usage
-    puts "usage: parse_bzfs_log.rb [-s] HOST:PORT"
+    puts "usage: parse_bzfs_log.rb HOST:PORT"
     exit 1
   end
 
@@ -330,7 +330,7 @@ class LogParser
     when 'PLAYERS'
       # We do not save PLAYERS data in log messages
       # This updates current_players instead
-      if !@option_skip_current_players
+      if date > 15.minutes.ago
         count, callsigns = detail.split(" ", 2)
         count = count.slice(1..-2).to_i
         if count == 0
@@ -360,9 +360,7 @@ class LogParser
 
     #
     while arg = ARGV.shift
-      if arg =~ /^-s$/
-        @option_skip_current_players = true
-      elsif arg =~ /^([\w.]+):(\d+)$/
+      if arg =~ /^([\w.]+):(\d+)$/
         hostname, port = $1, $2
       else
         usage
