@@ -330,23 +330,21 @@ class LogParser
     when 'PLAYERS'
       # We do not save PLAYERS data in log messages
       # This updates current_players instead
-      if date > 15.minutes.ago
-        count, callsigns = detail.split(" ", 2)
-        count = count.slice(1..-2).to_i
-        if count == 0
-          # Close out all player connections for this server
-          PlayerConnection.find(:all, :conditions => "bz_server_id = #{bz_server.id} and part_at is null").each do |pc|
-            pc.part_at = date
-            pc.save!
-          end
-        else
-          CurrentPlayer.delete_all(:bz_server_id => bz_server.id)
-          1.upto(count) do |idx|
-            v, callsign, email, callsigns = parse_player_email(callsigns)
-            is_admin = (v == '@')
-            is_verified = (v == '+' || is_admin)
-            cp = bz_server.current_players.create!(:is_verified => is_verified, :is_admin => is_admin, :callsign => callsign, :email => email, :slot_index => idx)
-          end
+      count, callsigns = detail.split(" ", 2)
+      count = count.slice(1..-2).to_i
+      CurrentPlayer.delete_all(:bz_server_id => bz_server.id)
+      if count == 0
+        # Close out all player connections for this server
+        PlayerConnection.find(:all, :conditions => "bz_server_id = #{bz_server.id} and part_at is null").each do |pc|
+          pc.part_at = date
+          pc.save!
+        end
+      elsif date > 15.minutes.ago
+        1.upto(count) do |idx|
+          v, callsign, email, callsigns = parse_player_email(callsigns)
+          is_admin = (v == '@')
+          is_verified = (v == '+' || is_admin)
+          cp = bz_server.current_players.create!(:is_verified => is_verified, :is_admin => is_admin, :callsign => callsign, :email => email, :slot_index => idx)
         end
       end
     end
