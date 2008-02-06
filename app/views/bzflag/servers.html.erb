@@ -1,4 +1,5 @@
 <h1>Servers</h1>
+<p> The current time is <%= display_date(Time.now.utc) %> UTC </p>
 <table>
   <tr>
     <th>Host</th>
@@ -17,8 +18,8 @@
     <td><%= b.port %></td>
     <td><%= b.map_name %></td>
     <% if @admin_menu_perm -%>
-    <td><%= b.last_chat_message && b.last_chat_message.logged_at %></td>
-    <td><%= b.last_filtered_message  && b.last_filtered_message.logged_at %></td>
+    <td><%= b.last_chat_message && b.last_chat_message.logged_at > 24.hours.ago && b.last_chat_message.logged_at.strftime("%H:%M:%S") || nil %></td>
+    <td><%= b.last_filtered_message && b.last_filtered_message.logged_at > 24.hours.ago && b.last_filtered_message.logged_at.strftime("%H:%M:%S") || nil %></td>
     <% end -%>
     <td><%= b.current_players.count %></td>
     <td><%= b.current_players[0] && b.current_players[0].callsign %><% b.current_players[0] && b.current_players[0].email %> </td>
