@@ -10,7 +10,7 @@
     <th>Filtered Chat</th>
     <% end -%>
     <th>#</th>
-    <th>Players</th>
+    <th>Detail</th>
   </tr>
   <% @bz_servers.each do |b| %>
   <tr>
@@ -22,8 +22,8 @@
     <td><%= b.last_filtered_message && b.last_filtered_message.logged_at > 24.hours.ago && b.last_filtered_message.logged_at.strftime("%H:%M:%S") || nil %></td>
     <% end -%>
     <td><%= b.current_players.count %></td>
-    <td><%= b.current_players[0] && b.current_players[0].callsign %><% b.current_players[0] && b.current_players[0].email %> </td>
-    <% b.current_players[1] && b.current_players[1..-1].each do |x| %>
+    <td><%= b.server_status_message && b.server_status_message.message.text %> </td>
+    <% b.current_players.each do |x| %>
   </tr>
   <tr>
     <td></td>
