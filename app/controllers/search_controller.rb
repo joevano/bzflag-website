@@ -4,12 +4,13 @@ class SearchController < ApplicationController
 
   def players
     @ips = []
-    @matches = 0
+    @matches = nil
     @player_search = PlayerSearch.new()
     @player_search.search_by = params[:player_search][:search_by] if params && params[:player_search]
     @player_search.search_for = params[:player_search][:search_for] if params && params[:player_search]
     if @player_search.search_by && @player_search.search_for
       ips = []
+      matches = 0
       if params[:player_search][:search_for] =~ /^%*$/
         flash.now[:notice] = "Please enter some search criteria"
       elsif params[:player_search][:search_by] == 'Callsign'
