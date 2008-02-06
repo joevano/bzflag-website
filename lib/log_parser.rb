@@ -332,10 +332,10 @@ class LogParser
       # This updates current_players instead
       count, callsigns = detail.split(" ", 2)
       count = count.slice(1..-2).to_i
-      CurrentPlayer.delete_all(:bz_server_id => bz_server.id)
+      bz_server.current_players.delete_all
       if count == 0
         # Close out all player connections for this server
-        PlayerConnection.find(:all, :conditions => "bz_server_id = #{bz_server.id} and part_at is null").each do |pc|
+        bz_server.player_connections.find(:all, :conditions => "part_at is null").each do |pc|
           pc.part_at = date
           pc.save!
         end
@@ -347,6 +347,7 @@ class LogParser
           cp = bz_server.current_players.create!(:is_verified => is_verified, :is_admin => is_admin, :callsign => callsign, :email => email, :slot_index => idx)
         end
       end
+      bz_server.reload.current_players_count
     end
   end
 

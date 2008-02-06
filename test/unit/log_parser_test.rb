@@ -614,7 +614,7 @@ class LogParserTest < Test::Unit::TestCase
     @logger.process_line(@server_host, @bz_server, line)
     assert_equal(0, LogMessage.count)
     assert_equal(1, PlayerConnection.count(:conditions => "bz_server_id = #{@bz_server.id} and part_at is null"))
-    assert_equal(3, @bz_server.current_players.size)
+    assert_equal(3, @bz_server.current_players_count)
     assert_equal(true, @bz_server.current_players[0].is_verified)
     assert_equal(1, @bz_server.current_players[0].slot_index)
     assert_equal('AAAAAAAAAAA', @bz_server.current_players[0].callsign)
