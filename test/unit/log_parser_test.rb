@@ -416,6 +416,7 @@ class LogParserTest < Test::Unit::TestCase
     assert_not_nil(msg)
     assert_equal(msg.id, lm.message_id)
     assert_equal(@bz_server.id, lm.bz_server_id)
+    assert_not_equal(lm.id, @bz_server.last_chat_message_id)
     assert_equal(lm.id, @bz_server.server_status_message_id)
   end
 
@@ -440,6 +441,29 @@ class LogParserTest < Test::Unit::TestCase
     assert_equal(msg.id, lm.message_id)
     assert_equal(@bz_server.id, lm.bz_server_id)
     assert_equal(lm.id, @bz_server.last_chat_message_id)
+  end
+
+  def test_msg_broadcast_server
+    line = '2007-12-29T00:02:12Z MSG-BROADCAST 6:SERVER random message'
+    @logger.process_line(@server_host, @bz_server, line)
+    lm = LogMessage.find(:first)
+    assert_not_nil(lm)
+    assert_not_nil(lm.logged_at)
+    assert_equal('2007-12-29T00:02:12Z', lm.logged_at.strftime('%Y-%m-%dT%H:%M:%SZ'))
+    lt = LogType.find_by_token("MSG-BROADCAST")
+    assert_not_nil(lt)
+    assert_equal(lt.id, lm.log_type_id)
+    callsign = Callsign.find_by_name("SERVER")
+    assert_not_nil(callsign)
+    assert_equal(callsign.id, lm.callsign_id)
+    assert_nil(lm.to_callsign_id)
+    assert_nil(lm.bzid)
+    assert_nil(lm.team_id)
+    msg = Message.find_by_text("random message")
+    assert_not_nil(msg)
+    assert_equal(msg.id, lm.message_id)
+    assert_equal(@bz_server.id, lm.bz_server_id)
+    assert_not_equal(lm.id, @bz_server.last_chat_message_id)
   end
 
   def test_msg_filtered
@@ -529,7 +553,7 @@ class LogParserTest < Test::Unit::TestCase
     assert_not_nil(msg)
     assert_equal(msg.id, lm.message_id)
     assert_equal(@bz_server.id, lm.bz_server_id)
-    assert_equal(lm.id, @bz_server.last_chat_message_id)
+    assert_not_equal(lm.id, @bz_server.last_chat_message_id)
   end
 
   def test_msg_direct
@@ -766,6 +790,7 @@ class LogParserTest < Test::Unit::TestCase
     @logger.process_line(@server_host, @bz_server, line)
     @logger.last_log_time=@bz_server.log_messages.find(:first, :order => "logged_at desc").logged_at
     assert_equal(Time.gm(*ParseDate.parsedate('2007-12-28T01:22:05Z')), @logger.last_log_time)
+    assert_nil(@bz_server.last_chat_message_id)
     # skips this one
     line = '2007-12-28T01:22:05Z SERVER-STATUS Restart Pending'
     @logger.process_line(@server_host, @bz_server, line)

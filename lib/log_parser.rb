@@ -289,7 +289,7 @@ class LogParser
       return if @last_log_time and @last_log_time = lm.logged_at and bz_server.log_messages.find_by_logged_at_and_log_type_id_and_callsign_id_and_message_id(lm.logged_at, lm.log_type_id, lm.callsign_id, lm.message_id)
       lm.save!
 
-      bz_server.last_chat_message = lm
+      bz_server.last_chat_message = lm if lm.callsign.name != "SERVER"
       bz_server.save!
 
     when 'MSG-FILTERED'
