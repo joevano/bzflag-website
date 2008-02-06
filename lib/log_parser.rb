@@ -332,7 +332,7 @@ class LogParser
       # This updates current_players instead
       count, callsigns = detail.split(" ", 2)
       count = count.slice(1..-2).to_i
-      bz_server.current_players.delete_all
+      bz_server.current_players.destroy_all
       if count == 0
         # Close out all player connections for this server
         bz_server.player_connections.find(:all, :conditions => "part_at is null").each do |pc|
