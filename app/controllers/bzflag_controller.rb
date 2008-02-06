@@ -5,7 +5,7 @@ class BzflagController < ApplicationController
   end
 
   def servers
-    @bz_servers = BzServer.find(:all, :order => "server_host_id, port", :include => ["last_chat_message", "last_filtered_message"])
+    @bz_servers = BzServer.find(:all, :order => "current_players_count desc, log_messages.logged_at desc, server_host_id, port", :include => ["last_chat_message", "last_filtered_message", "current_players"])
   end
 
   def help
