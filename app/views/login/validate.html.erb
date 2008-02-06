@@ -1,23 +1,22 @@
 <h1>Validate Token</h1>
-
-<% if session[:username] %>
+<% if session[:username] -%>
 <table>
-  <tr>
-    <th>Username</th>
-    <th>BZid</th>
-    <th>Groups</th>
-    <th>Not Admin</th>
-  </tr>
-  <tr>
-    <td><%= session[:username] %></td>
-    <td><%= session[:bzid] %></td>
-    <td><%= session[:groups] && session[:groups][0] %></td>
-    <td><%= session[:admin].nil? %></td>
-  </tr>
-  <% session[:groups] && 1.upto(session[:groups].length) do |i| %>
-  <tr>
-    <td></td><td></td><td><%= session[:groups][i] %></td>
-  </tr>
-  <% end %>
+<tr>
+<th>Username</th>
+<th>BZid</th>
+<th>Groups</th>
+<th>Not Admin</th>
+</tr>
+<tr>
+<td><%= session[:username] %></td>
+<td><%= session[:bzid] %></td>
+<td><%= session[:groups] && session[:groups][0] %></td>
+<td><%= session[:admin].nil? %></td>
+</tr>
+<% session[:groups] && 1.upto(session[:groups].length) do |i| -%>
+<tr>
+<td></td><td></td><td><%= session[:groups][i] %></td>
+</tr>
+<% end -%>
 </table>
-<% end %>
+<% end -%>

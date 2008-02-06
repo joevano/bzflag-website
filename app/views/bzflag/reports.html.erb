@@ -1,11 +1,11 @@
 <h1>Reports</h1>
 <p><%= @reports.size %> reports found.</p>
 <table>
-  <tr>
-    <th>Date</th>
-    <th>Server</th>
-    <th>Reported By</th>
-    <th>Report</th>
-  </tr>
-  <%= render(:partial => "report", :collection => @reports) %>
+<tr>
+<th>Date</th>
+<th>Server</th>
+<th>Reported By</th>
+<th>Report</th>
+</tr>
+<%= render(:partial => "report", :collection => @reports) -%>
 </table>

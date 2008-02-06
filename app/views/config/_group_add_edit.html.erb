@@ -1,8 +1,6 @@
-<%= error_messages_for :group %>
-
+<%= error_messages_for :group -%>
 <% form_for :group do |form| %>
-  <p>Group Name: <%= form.text_field :name, :size => 30 %></p>
-  <p><%= submit_tag %> </p>
-<% end %>
-
+<p>Group Name: <%= form.text_field :name, :size => 30 %></p>
+<p><%= submit_tag %> </p>
+<% end -%>
 <%= link_to "Return to List", :action => :group_list %>

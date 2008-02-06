@@ -1,10 +1,9 @@
 <p><%= link_to "Config", :action => "index" %>>>Server Hosts </p>
 <h1>Server Hosts</h1>
 <table>
-  <tr>
-    <th>Name</th>
-  </tr>
-  <%= render(:partial => "server_host", :collection => @server_hosts) %>
+<tr>
+<th>Name</th>
+</tr>
+<%= render(:partial => "server_host", :collection => @server_hosts) -%>
 </table>
-
 <p><%= link_to "Add server host", :action => :server_host_add %></p>

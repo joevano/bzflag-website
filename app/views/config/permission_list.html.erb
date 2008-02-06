@@ -1,25 +1,23 @@
 <p><%= link_to "Config", :action => "index" %>>>Permissions </p>
 <h1>Group Permissions</h1>
-
 <% form_for :group do |form| -%>
 <table class="permissions">
-  <tr>
-    <th>Group Name</th>
-    <%= render(:partial => "permission", :collection => @permissions) -%>
-  </tr>
-  <% @groups.each do |grp| -%>
-  <tr>
-    <td><%= grp.name %></td>
-    <% @permissions.each do |p| -%>
-      <% if grp.permissions.index(p) -%>
-        <td><%= check_box_tag("g#{grp.id}p#{p.id}", 1, checked=true) -%></td>
-      <% else -%>
-        <td><%= check_box_tag("g#{grp.id}p#{p.id}", 0 ) -%> </td>
-      <% end -%>
-    <% end -%>
-  </tr>
-  <% end -%>
+<tr>
+<th>Group Name</th>
+<%= render(:partial => "permission", :collection => @permissions) -%>
+</tr>
+<% @groups.each do |grp| -%>
+<tr>
+<td><%= grp.name %></td>
+<% @permissions.each do |p| -%>
+<% if grp.permissions.index(p) -%>
+<td><%= check_box_tag("g#{grp.id}p#{p.id}", 1, checked=true) -%></td>
+<% else -%>
+<td><%= check_box_tag("g#{grp.id}p#{p.id}", 0 ) -%> </td>
+<% end -%>
+<% end -%>
+</tr>
+<% end -%>
 </table>
-
 <%= button_to :save -%>
 <% end -%>

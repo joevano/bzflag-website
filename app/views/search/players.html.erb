@@ -1,67 +1,64 @@
 <h1>Players</h1>
 <div>
-  <fieldset>
-    <legend>Enter Player Search Criteria</legend>
-    <% form_for :player_search, :method => :post do |form| %>
-      <p><label for="search_for">Search For:</label>
-         <%= form.text_field :search_for, :size => 30 %>
-	 <%= form.radio_button(:search_by, "Callsign") %> Callsign
-	 <%= form.radio_button(:search_by, "IP") %> IP
-	 <%= form.radio_button(:search_by, "Hostname") %> Hostname
-	 <%= submit_tag "Search" %>
-	 <%= link_to "Link to results", { :action => "players", :player_search => { :search_by => @player_search.search_by, :search_for => @player_search.search_for } }, { :method => :post } if @matches && @matches > 0 %>
-
-      <br/>
-      Use % for wildcard matches.
-      </p>
-    <% end %>
-  </fieldset>
+<fieldset>
+<legend>Enter Player Search Criteria</legend>
+<% form_for :player_search, :method => :post do |form| %>
+<p><label for="search_for">Search For:</label>
+<%= form.text_field :search_for, :size => 30 %>
+<%= form.radio_button(:search_by, "Callsign") %> Callsign
+<%= form.radio_button(:search_by, "IP") %> IP
+<%= form.radio_button(:search_by, "Hostname") %> Hostname
+<%= submit_tag "Search" %>
+<%= link_to "Link to results", { :action => "players", :player_search => { :search_by => @player_search.search_by, :search_for => @player_search.search_for } }, { :method => :post } if @matches && @matches > 0 -%>
+<br/>
+Use % for wildcard matches.
+</p>
+<% end -%>
+</fieldset>
 </div>
-
 <div class="players">
-<% if @matches %>
+<% if @matches -%>
 <p> <%= @matches %> matches found on <%= @ips.size %> IPs showing recent connections first.
 The current time is <%= display_date(Time.now.utc) %> UTC.</p>
-<% end %>
-<% if @ips[0] %>
+<% end -%>
+<% if @ips[0] -%>
 <table>
-  <caption>IPs and Callsign Results </caption>
-  <tr>
-    <th>IP</th>
-    <th>Hostname and Callsigns</th>
-    <th>BZid</th>
-    <th>Status</th>
-    <th>Connections</th>
-  </tr>
-  <% @ips.each do |ip, pcs| %>
-  <tr class="iphost">
-    <td><%= link_to ip.ip, { :action => "players", :player_search => { :search_by => "IP", :search_for => ip.ip.split('.')[0..2].join('.') + ".%" } }, { :method => :post } if ip.ip %></td>
-    <td colspan="3"><%= link_to ip.hostname, { :action => "players", :player_search => { :search_by => "Hostname", :search_for => '%.' + ip.hostname.split('.')[1..-1].join('.') } }, { :method => :post } if ip.hostname %></td>
-    <td> <%= display_date_range(ip.first_join_at, ip.last_part_at) %> </td>
-  </tr>
-  <% pcs.each do |pc|%>
-  <tr class="callsign">
-    <td></td>
-    <td><%= link_to pc.callsign.name, { :action => "players", :player_search => { :search_by => "Callsign", :search_for => pc.callsign.name } }, { :method => :post } %></td>
-    <td><%= pc.bzid %></td>
-    <td><%= '<span class="verified">VERIFIED</span>' if pc.is_verified %>
-      <%= '<span class="globaluser">GLOBALUSER</span>' if pc.is_globaluser %>
-      <%= '<span class="admin">ADMIN</span>' if pc.is_admin %>
-      <%= '<span class="operator">OPERATOR</span>' if pc.is_operator %></td>
-    <td><%= display_date_range(pc.join_at, pc.part_at) %> </td>
-  </tr>
-  <% end %>
-  <% end %>
+<caption>IPs and Callsign Results </caption>
+<tr>
+<th>IP</th>
+<th>Hostname and Callsigns</th>
+<th>BZid</th>
+<th>Status</th>
+<th>Connections</th>
+</tr>
+<% @ips.each do |ip, pcs| -%>
+<tr class="iphost">
+<td><%= link_to ip.ip, { :action => "players", :player_search => { :search_by => "IP", :search_for => ip.ip.split('.')[0..2].join('.') + ".%" } }, { :method => :post } if ip.ip %></td>
+<td colspan="3"><%= link_to ip.hostname, { :action => "players", :player_search => { :search_by => "Hostname", :search_for => '%.' + ip.hostname.split('.')[1..-1].join('.') } }, { :method => :post } if ip.hostname %></td>
+<td> <%= display_date_range(ip.first_join_at, ip.last_part_at) %></td>
+</tr>
+<% pcs.each do |pc| -%>
+<tr class="callsign">
+<td></td>
+<td><%= link_to pc.callsign.name, { :action => "players", :player_search => { :search_by => "Callsign", :search_for => pc.callsign.name } }, { :method => :post } %></td>
+<td><%= pc.bzid %></td>
+<td><%= '<span class="verified">VERIFIED</span>' if pc.is_verified -%>
+<%= '<span class="globaluser">GLOBALUSER</span>' if pc.is_globaluser -%>
+<%= '<span class="admin">ADMIN</span>' if pc.is_admin -%>
+<%= '<span class="operator">OPERATOR</span>' if pc.is_operator %></td>
+<td><%= display_date_range(pc.join_at, pc.part_at) %></td>
+</tr>
+<% end -%>
+<% end -%>
 </table>
 <p><b>Disclaimer:</b></p>
 <p>Unverified callsigns can be forged by other players - please consider this when interpreting the data.</p>
 <p>Status column information:</p>
 <dl>
-  <dt class="verified">VERIFIED</dt><dd>Player has identified</dd>
-  <dt class="globaluser">GLOBALUSER</dt><dd>Player has identified and is registered globally on bzbb</dd>
-  <dt class="admin">ADMIN</dt><dd>Player has ban privileges</dd>
-  <dt class="operator">OPERATOR</dt><dd>Player has entered the server password</dd>
+<dt class="verified">VERIFIED</dt><dd>Player has identified</dd>
+<dt class="globaluser">GLOBALUSER</dt><dd>Player has identified and is registered globally on bzbb</dd>
+<dt class="admin">ADMIN</dt><dd>Player has ban privileges</dd>
+<dt class="operator">OPERATOR</dt><dd>Player has entered the server password</dd>
 </dl>
-
-<% end %>
+<% end -%>
 </div>

@@ -1,10 +1,9 @@
 <p><%= link_to "Config", :action => "index" %>>>Groups</p>
 <h1>Groups</h1>
 <table>
-  <tr>
-    <th>Name</th>
-  </tr>
-  <%= render(:partial => "group", :collection => @groups) %>
+<tr>
+<th>Name</th>
+</tr>
+<%= render(:partial => "group", :collection => @groups) -%>
 </table>
-
 <p><%= link_to "Add group", :action => :group_add %></p>

@@ -1,41 +1,41 @@
 <h1>Servers</h1>
 <p> The current time is <%= display_date(Time.now.utc) %> UTC </p>
 <table>
-  <tr>
-    <th>Host</th>
-    <th>Port</th>
-    <th>Map Name</th>
-    <% if @admin_menu_perm -%>
-    <th>Chat</th>
-    <th>Filtered Chat</th>
-    <% end -%>
-    <th>#</th>
-    <th>Detail</th>
-  </tr>
-  <% @bz_servers.each do |b| %>
-  <tr>
-    <td><%= b.server_host.hostname %></td>
-    <td><%= b.port %></td>
-    <td><%= b.map_name %></td>
-    <% if @admin_menu_perm -%>
-    <td><%= b.last_chat_message && b.last_chat_message.logged_at > 24.hours.ago && b.last_chat_message.logged_at.strftime("%H:%M:%S") || nil %></td>
-    <td><%= b.last_filtered_message && b.last_filtered_message.logged_at > 24.hours.ago && b.last_filtered_message.logged_at.strftime("%H:%M:%S") || nil %></td>
-    <% end -%>
-    <td><%= b.current_players.count %></td>
-    <td><%= b.server_status_message && b.server_status_message.message.text.capitalize %> </td>
-    <% b.current_players.each do |x| %>
-  </tr>
-  <tr>
-    <td></td>
-    <td></td>
-    <td></td>
-    <% if @admin_menu_perm -%>
-    <td></td>
-    <td></td>
-    <% end -%>
-    <td></td>
-    <td><%= x && x.callsign %><%= x && x.email %></td>
-    <% end %>
-  </tr>
-  <% end %>
+<tr>
+<th>Host</th>
+<th>Port</th>
+<th>Map Name</th>
+<% if @admin_menu_perm %><th>Chat <span class="filtered">Filtered</span></th><% end -%>
+<th>#</th>
+<th>Detail</th>
+</tr>
+<% @bz_servers.each do |b| -%>
+<tr>
+<td><%= b.server_host.hostname %></td>
+<td><%= b.port %></td>
+<td><%= b.map_name %></td>
+<% if @admin_menu_perm -%>
+<td><%= b.last_chat_message && b.last_chat_message.logged_at > 24.hours.ago && b.last_chat_message.logged_at.strftime("%H:%M") || nil %>
+<% if b.last_filtered_message && b.last_filtered_message.logged_at > 24.hours.ago %>
+<span class="filtered"><%= b.last_filtered_message.logged_at.strftime("%H:%M") %></span>
+<% end -%>
+</td>
+<% end -%>
+<td><%= b.current_players.count %></td>
+<td><%= b.server_status_message && b.server_status_message.message.text.capitalize %></td>
+<% b.current_players.each do |x| -%>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+<% if @admin_menu_perm -%>
+<td></td>
+<td></td>
+<% end %>
+<td></td>
+<td><%= x && x.callsign %><%= x && x.email %></td>
+<% end -%>
+</tr>
+<% end -%>
 </table>

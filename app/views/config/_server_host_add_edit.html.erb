@@ -1,9 +1,7 @@
-<%= error_messages_for :server_host %>
-
+<%= error_messages_for :server_host -%>
 <% form_for :server_host do |form| %>
-  <p>Server Host Name: <%= form.text_field :hostname, :size => 30 %></p>
-  <p>Owner: <%= form.text_field :owner, :size => 30 %></p>
-  <p><%= submit_tag %> </p>
-<% end %>
-
+<p>Server Host Name: <%= form.text_field :hostname, :size => 30 %></p>
+<p>Owner: <%= form.text_field :owner, :size => 30 %></p>
+<p><%= submit_tag %> </p>
+<% end -%>
 <%= link_to "Return to List", :action => :server_host_list %>
