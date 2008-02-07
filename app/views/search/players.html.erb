@@ -42,10 +42,10 @@ The current time is <%= display_date(Time.now.utc) %> UTC.</p>
 <td></td>
 <td><%= link_to pc.callsign.name, { :action => "players", :player_search => { :search_by => "Callsign", :search_for => pc.callsign.name } }, { :method => :post } %></td>
 <td><%= pc.bzid %></td>
-<td><%= '<span class="verified">VERIFIED</span>' if pc.is_verified -%>
-<%= '<span class="globaluser">GLOBALUSER</span>' if pc.is_globaluser -%>
-<%= '<span class="admin">ADMIN</span>' if pc.is_admin -%>
-<%= '<span class="operator">OPERATOR</span>' if pc.is_operator %></td>
+<td><%= '<span class="verified">VERIFIED </span>' if pc.is_verified -%>
+<%= '<span class="globaluser">GLOBALUSER </span>' if pc.is_globaluser -%>
+<%= '<span class="admin">ADMIN </span>' if pc.is_admin -%>
+<%= '<span class="operator">OPERATOR </span>' if pc.is_operator %></td>
 <td><%= display_date_range(pc.join_at, pc.part_at) %></td>
 </tr>
 <% end -%>
