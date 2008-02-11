@@ -281,7 +281,7 @@ class LogParser
 
       lm.save!
 
-      bz_server.map_name = lm.message.text
+      bz_server.map_name = detail
       bz_server.save!
 
     when 'MSG-REPORT', 'MSG-COMMAND'
