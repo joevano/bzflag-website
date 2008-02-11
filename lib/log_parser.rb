@@ -273,6 +273,17 @@ class LogParser
       bz_server.server_status_message = lm
       bz_server.save!
 
+    when 'SERVER-MAPNAME'
+      lm.message = get_message(detail)
+
+      # Skip it if we've already recorded it
+      return if @last_log_time and @last_log_time = lm.logged_at and bz_server.log_messages.find_by_logged_at_and_log_type_id_and_callsign_id_and_message_id(lm.logged_at, lm.log_type_id, lm.callsign_id, lm.message_id)
+
+      lm.save!
+
+      bz_server.map_name = lm.message.text
+      bz_server.save!
+
     when 'MSG-REPORT', 'MSG-COMMAND'
       lm.callsign, detail = get_callsign(detail)
       lm.message = get_message(detail)

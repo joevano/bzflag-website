@@ -420,6 +420,28 @@ class LogParserTest < Test::Unit::TestCase
     assert_equal(lm.id, @bz_server.server_status_message_id)
   end
 
+  def test_server_mapname
+    line = '2007-12-28T01:22:05Z SERVER-MAPNAME Super Duper Map'
+    @logger.process_line(@server_host, @bz_server, line)
+    lm = LogMessage.find(:first)
+    assert_not_nil(lm)
+    assert_not_nil(lm.logged_at)
+    assert_equal('2007-12-28T01:22:05Z', lm.logged_at.strftime('%Y-%m-%dT%H:%M:%SZ'))
+    lt = LogType.find_by_token("SERVER-MAPNAME")
+    assert_not_nil(lt)
+    assert_equal(lt.id, lm.log_type_id)
+    assert_nil(lm.callsign_id)
+    assert_nil(lm.to_callsign_id)
+    assert_nil(lm.bzid)
+    assert_nil(lm.team_id)
+    msg = Message.find_by_text("Super Duper Map")
+    assert_not_nil(msg)
+    assert_equal(msg.id, lm.message_id)
+    assert_equal(msg.text, @bz_server.map_name)
+    assert_not_equal(lm.id, @bz_server.last_chat_message_id)
+    assert_not_equal(lm.id, @bz_server.server_status_message_id)
+  end
+
   def test_msg_broadcast
     line = '2007-12-29T00:02:12Z MSG-BROADCAST 9:onetwosix random message'
     @logger.process_line(@server_host, @bz_server, line)
