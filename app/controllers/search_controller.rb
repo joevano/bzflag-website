@@ -48,7 +48,6 @@ class SearchController < ApplicationController
         end
         @ips.push([ip, connections])
       end
-      flash.now[:notice] = "Oops - BUG: lost entries #{callsign_details_idx} - #{callsign_details.size}" if callsign_details_idx < callsign_details.size
     else
       @player_search.search_by = "Callsign"
     end
