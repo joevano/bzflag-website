@@ -98,7 +98,7 @@ class ConfigController < ApplicationController
   end
 
   def bz_server_list
-    @bz_servers = BzServer.find(:all, :order => "port")
+    @bz_servers = BzServer.find(:all, :order => "server_host_id, port")
   end
 
   def bz_server_add
