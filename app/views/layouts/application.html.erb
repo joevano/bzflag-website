@@ -15,8 +15,7 @@
 <div id="columns">
 <div id="side">
 <p><% if @user.id %><%= link_to "Logout", :controller => 'login', :action => 'logout' %><% else %><%= link_to "Login", :controller => 'login', :action => 'login' %><% end %></p>
-<p><%= link_to "Home", :controller => 'bzflag', :action => 'index' %><br />
-<%= link_to "Servers", :controller => 'bzflag', :action => 'servers' %>
+<p><%= link_to "Servers", :controller => 'bzflag', :action => 'index' %>
 </p>
 <% if @player_info_perm -%>
 <p><%= link_to "Player Info", :controller => 'search', :action => 'players' %></p>
