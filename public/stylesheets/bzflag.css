@@ -43,6 +43,24 @@
   width: 100%;
 }
 
+.curtime {
+  text-align: right;
+}
+
+table.legend {
+  border: 2px solid #fff;
+  border-collapse: separate;
+  width: 100%;
+}
+
+table.legend td {
+  border: 0;
+}
+
+table#server-list {
+  width: 100%;
+}
+
 #server-list th {
   background-color: #ccc;
   margin: 0pt;
@@ -59,13 +77,12 @@
   border: 2px solid #fff;
 }
 
-#server-list .registeredplayer { 
+.registeredplayer { 
         font-weight: normal;
-/*      background-color: #ffff33; */
         background-color: #ffff99;
 }
 
-#server-list .activeplayer { 
+.activeplayer { 
         font-weight: normal;
         background-color: #cccc99;
 }
@@ -94,7 +111,7 @@
         color: #990000;
 }
 
-#server-list .admin {
+.admin {
         background-color: #ff9900;
 }
 
@@ -425,19 +442,28 @@ div.players table caption {
   text-align: left;
 }
 
-dt.globaluser {
+div.players span.admin {
+  background-color: #eee;
+}
+
+
+div.players dt {
+  background-color: #fff;
+}
+
+div.players span.globaluser, dt.globaluser {
   color: #090;
 }
 
-dt.verified {
+div.players span.verified, dt.verified {
   color: #990;
 }
 
-dt.admin {
+div.players span.admin, dt.admin {
   color: #f60;
 }
 
-dt.operator {
+div.players span.operator, dt.operator {
   color: #f00;
 }
 

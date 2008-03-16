@@ -1,5 +1,25 @@
 <h1>Servers</h1>
-<p> The current time is <%= display_date(Time.now.utc) %> UTC </p>
+<table class="legend">
+<tr>
+<table class="legend">
+<tr>
+<td>Players: <%= @total_players %> Servers: <%= @total_servers %></td>
+<td class="curtime">The current time is: <%= display_date(Time.now.utc) %> UTC</td>
+</tr>
+</table>
+</tr>
+<tr>
+<table class="legend">
+<tr>
+<td class="testserver">Test Server</td>
+<td class="activeplayer">Anonymous Player</td>
+<td class="registeredplayer">Registered Player</td>
+<td class="admin">Administrator</td>
+</tr>
+</table>
+</tr>
+</table>
+
 <table id="server-list">
 <tr>
 <th>Host</th>
