@@ -55,8 +55,8 @@
   text-align: left;
 }
 
-#server-list td {
-  border: 0
+#server-list td, th {
+  border: 2px solid #fff;
 }
 
 #server-list .registeredplayer { 
