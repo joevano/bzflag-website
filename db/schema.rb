@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 56) do
+ActiveRecord::Schema.define(:version => 57) do
 
   create_table "bz_servers", :force => true do |t|
     t.datetime "created_at"
@@ -21,6 +21,7 @@ ActiveRecord::Schema.define(:version => 56) do
     t.integer  "last_filtered_message_id"
     t.integer  "server_status_message_id"
     t.integer  "current_players_count",    :default => 0
+    t.boolean  "is_test_server"
   end
 
   create_table "callsigns", :force => true do |t|
