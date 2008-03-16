@@ -43,6 +43,8 @@
   width: 100%;
 }
 
+.filteredchat { color: #900 }
+
 .curtime {
   text-align: right;
 }
