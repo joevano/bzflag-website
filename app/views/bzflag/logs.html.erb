@@ -1,2 +1,3 @@
 <h1>Logs</h1>
-<p>Logs go here.</p>
+<p>Server <%= @bz_server.server_host.hostname%>:<%=@bz_server.port%> logs go here.</p>
+<p><%= @log_messages.size %> log messages in the last 24 hours.</p>

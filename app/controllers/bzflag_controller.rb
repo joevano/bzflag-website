@@ -14,6 +14,8 @@ class BzflagController < ApplicationController
   end
 
   def logs
+    @bz_server = BzServer.find(params[:id])
+    @log_messages = @bz_server.log_messages.find(:all, :conditions => "logged_at > '#{24.hours.ago.strftime("%Y-%m-%d %H:%M:%S")}'")
   end
 
   def help
