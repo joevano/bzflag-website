@@ -30,13 +30,73 @@
 }
 
 #server-list .list-line-even {
-  background:   #e0f8f8;
+  background:   #eee;
 }
 
 #server-list .list-line-odd {
-  background:   #f8b0f8;
+  background:   #fff;
 }
 
+#server-list table {
+  border: 1px solid #999;
+  border-collapse: separate;
+  width: 100%;
+}
+
+#server-list th {
+  background-color: #ccc;
+  margin: 0pt;
+  padding: 0pt;
+  text-align: left;
+}
+
+#server-list table caption {
+  font-weight: bold;
+  text-align: left;
+}
+
+#server-list td {
+  border: 0
+}
+
+#server-list .registeredplayer { 
+        font-weight: normal;
+/*      background-color: #ffff33; */
+        background-color: #ffff99;
+}
+
+#server-list .activeplayer { 
+        font-weight: normal;
+        background-color: #cccc99;
+}
+
+#server-list .testserver {
+        background-color: #9cf;
+}
+
+#server-list .serverdisabled {
+        color: #000099;
+}
+
+#server-list .serverdead {
+        background-color: #ff0000;
+}
+
+#server-list .serverrestarting {
+        color: #990000;
+}
+
+#server-list .serverstopped {
+        color: #990000;
+}
+
+#server-list .serverpending {
+        color: #990000;
+}
+
+#server-list .admin {
+        background-color: #ff9900;
+}
 
 /* Styles for main page */
 
@@ -365,19 +425,19 @@ div.players table caption {
   text-align: left;
 }
 
-.globaluser {
+dt.globaluser {
   color: #090;
 }
 
-.verified {
+dt.verified {
   color: #990;
 }
 
-.admin {
+dt.admin {
   color: #f60;
 }
 
-.operator {
+dt.operator {
   color: #f00;
 }
 

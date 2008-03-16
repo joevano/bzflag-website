@@ -1,6 +1,6 @@
 <h1>Servers</h1>
 <p> The current time is <%= display_date(Time.now.utc) %> UTC </p>
-<table>
+<table id="server-list">
 <tr>
 <th>Host</th>
 <th>Port</th>
@@ -9,8 +9,31 @@
 <th>#</th>
 <th>Detail</th>
 </tr>
-<% @bz_servers.each do |b| -%>
-<tr>
+<% server_count = 0
+   @bz_servers.each do |b|
+       server_count += 1
+       if b.current_players.count == 0
+	  if server_count % 2 == 0
+	     server_class = 'list-line-even'
+	  else
+	     server_class = 'list-line-odd'
+	  end
+       else
+	  is_admin = is_verified = nil
+	  b.current_players.each do |pl|
+	      is_admin |= pl.is_admin
+	      is_verified |= pl.is_verified
+	  end
+	  if is_admin
+	      server_class = 'admin'
+	  elsif is_verified
+	      server_class = 'registeredplayer'
+	  else
+	      server_class = 'activeplayer'
+	  end
+       end
+%>
+<tr class="<%= server_class %>">
 <td><%= b.server_host.hostname %></td>
 <td><%= b.port %></td>
 <td><%= b.map_name %></td>
@@ -21,7 +44,7 @@
 <% end -%>
 </td>
 <% end -%>
-<td><%= b.current_players.count %></td>
+<td class="<%= server_class %>"><%= b.current_players.count %></td>
 <td><%= b.server_status_message && b.server_status_message.message.text.capitalize %></td>
 <% b.current_players.each do |x| -%>
 </tr>
@@ -32,8 +55,17 @@
 <% if @admin_menu_perm -%>
 <td></td>
 <% end -%>
-<td></td>
-<td>
+<td class="<%= server_class %>"></td>
+<% player_class = server_class
+   if x.is_admin
+       player_class = 'admin'
+   elsif x.is_verified
+       player_class = 'registeredplayer'
+   else
+       player_class = 'activeplayer'
+   end
+%>
+<td class="<%= player_class %>">
 <% if @player_info_perm -%>
 <%= link_to x.callsign, { :controller => "search", :action => "players", :player_search => { :search_by => "Callsign", :search_for => x.callsign } }, { :method => :post } %>
 <% else -%>
