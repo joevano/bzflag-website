@@ -5,6 +5,12 @@ class BzflagController < ApplicationController
     @bz_servers = BzServer.find(:all,
                                 :order => "current_players_count desc, log_messages.logged_at desc, server_host_id, port",
                                 :include => ["last_chat_message", "last_filtered_message", "current_players"])
+    @total_players = @total_running_servers = 0
+    @bz_servers.each do |b|
+      @total_players += b.current_players_count
+      @total_running_servers += 1 if b.server_status_message && b.server_status_message.message.text.capitalize == 'Running'
+    end
+    
   end
 
   def logs
