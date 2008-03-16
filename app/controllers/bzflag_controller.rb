@@ -7,6 +7,9 @@ class BzflagController < ApplicationController
                                 :include => ["last_chat_message", "last_filtered_message", "current_players"])
   end
 
+  def logs
+  end
+
   def help
   end
 

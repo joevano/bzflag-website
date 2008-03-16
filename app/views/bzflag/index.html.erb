@@ -6,6 +6,7 @@
 <th>Port</th>
 <th>Map Name</th>
 <% if @admin_menu_perm %><th>Chat <span class="filtered">Filtered</span></th><% end -%>
+<th>Links</th>
 <th>#</th>
 <th>Detail</th>
 </tr>
@@ -34,21 +35,24 @@
        end
 %>
 <tr class="<%= server_class %>">
-<td><%= b.server_host.hostname %></td>
-<td><%= b.port %></td>
+<td <%= 'class="testserver"' if b.is_test_server %>><%= b.server_host.hostname %></td>
+<td <%= 'class="testserver"' if b.is_test_server %>><%= b.port %></td>
 <td><%= b.map_name %></td>
 <% if @admin_menu_perm -%>
-<td><%= b.last_chat_message && b.last_chat_message.logged_at > 24.hours.ago && b.last_chat_message.logged_at.strftime("%H:%M") || nil %>
-<% if b.last_filtered_message && b.last_filtered_message.logged_at > 24.hours.ago -%>
-<span class="filtered"><%= b.last_filtered_message.logged_at.strftime("%H:%M") %></span>
+  <td><%= b.last_chat_message && b.last_chat_message.logged_at > 24.hours.ago && b.last_chat_message.logged_at.strftime("%H:%M") || nil %>
+    <% if b.last_filtered_message && b.last_filtered_message.logged_at > 24.hours.ago -%>
+      <span class="filtered"><%= b.last_filtered_message.logged_at.strftime("%H:%M") %></span>
+    <% end -%>
+  </td>
 <% end -%>
+<td><%= link_to "Logs", { :action => "logs", :id => b.id } if @logs_perm %>
 </td>
-<% end -%>
 <td class="<%= server_class %>"><%= b.current_players.count %></td>
 <td><%= b.server_status_message && b.server_status_message.message.text.capitalize %></td>
 <% b.current_players.each do |x| -%>
 </tr>
 <tr>
+<td></td>
 <td></td>
 <td></td>
 <td></td>
