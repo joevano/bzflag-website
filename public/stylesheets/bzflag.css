@@ -91,23 +91,27 @@ table#server-list {
         background-color: #9cf;
 }
 
-#server-list .serverdisabled {
+#server-list .serverDisabled {
         color: #000099;
 }
 
-#server-list .serverdead {
+#server-list .serverDead {
         background-color: #ff0000;
 }
 
-#server-list .serverrestarting {
+#server-list .serverRestarting {
         color: #990000;
 }
 
-#server-list .serverstopped {
+#server-list .serverRunning {
+        color: #009900;
+}
+
+#server-list .serverStopped {
         color: #990000;
 }
 
-#server-list .serverpending {
+#server-list .serverPending {
         color: #990000;
 }
 

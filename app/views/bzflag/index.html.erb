@@ -68,7 +68,8 @@
 <td><%= link_to "Logs", { :action => "logs", :id => b.id } if @logs_perm %>
 </td>
 <td class="<%= server_class %>"><%= b.current_players.count %></td>
-<td><%= b.server_status_message && b.server_status_message.message.text.capitalize %></td>
+<% server_status_message = b.server_status_message && b.server_status_message.message.text.capitalize %>
+<td class="server<%= server_status_message %>"><%= server_status_message %></td>
 <% b.current_players.each do |x| -%>
 </tr>
 <tr>
