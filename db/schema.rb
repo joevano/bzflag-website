@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 57) do
+ActiveRecord::Schema.define(:version => 58) do
 
   create_table "bz_servers", :force => true do |t|
     t.datetime "created_at"
@@ -91,6 +91,7 @@ ActiveRecord::Schema.define(:version => 57) do
 
   add_index "log_messages", ["bz_server_id", "log_type_id", "logged_at"], :name => "index_log_messages"
   add_index "log_messages", ["id"], :name => "index_log_messages_by_id"
+  add_index "log_messages", ["log_type_id", "logged_at"], :name => "index_log_messages_log_type_logged_at"
 
   create_table "log_types", :force => true do |t|
     t.string   "token"
