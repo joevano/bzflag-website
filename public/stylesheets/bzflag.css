@@ -43,6 +43,38 @@
   width: 100%;
 }
 
+table caption { text-align: left;
+		font-weight: bold; 
+}
+
+table#recent_bans {
+  border: 1px solid #999;
+  border-collapse: separate;
+  width: 100%;
+}
+
+#recent_bans th, #recent_reports th {
+  background-color: #ccc;
+  margin: 0pt;
+  padding: 0pt;
+  text-align: left;
+}
+
+table#recent_reports {
+  border: 1px solid #999;
+  border-collapse: separate;
+  width: 100%;
+}
+
+table#recent_reports td {
+  border: 0;
+}
+
+table#recent_bans td {
+  border: 0;
+}
+
+
 .filteredchat { color: #900 }
 
 .curtime {
@@ -50,16 +82,21 @@
 }
 
 table.legend {
-  border: 2px solid #fff;
+  border: 0;
+  margin: 0;
   border-collapse: separate;
   width: 100%;
 }
 
 table.legend td {
   border: 0;
+  margin: 0;
+  padding: 1px;
 }
 
 table#server-list {
+  border: 1px solid #999;
+  border-collapse: separate;
   width: 100%;
 }
 
@@ -75,8 +112,8 @@ table#server-list {
   text-align: left;
 }
 
-#server-list td, th {
-  border: 2px solid #fff;
+#server-list td, #server-list th {
+  border: 0;
 }
 
 .registeredplayer { 
@@ -116,6 +153,17 @@ table#server-list {
 #server-list .serverPending {
         color: #990000;
 }
+
+.srvr  { background-color: #f8ebcd }
+.bcast { background-color: #8df394 }
+.dir   { background-color: #f1ed8c }
+.filtered { background-color: #ffff33 }
+.filteredchat { color: #900 }
+.rpt   { background-color: #e39bd1 }
+.cmd   { background-color: #ff6666 }
+.adm   { background-color: #f37351 }
+.team  { background-color: #39e4ef }
+.playerjoin { background-color: #16ae88 }
 
 .admin {
         background-color: #ff9900;
@@ -417,7 +465,7 @@ div.players dl dd {
 /* Styles for Player Search */
 
 div.players td {
-  border: 1px solid #fff;
+  border: 0;
   margin: 0;
   padding: 0;
 }
