@@ -64,4 +64,8 @@ class ApplicationController < ActionController::Base
   def authorize_player_info_perm
     authorize(@player_info_perm)
   end
+
+  def db_date(date)
+    date && date.gmtime.strftime("%Y-%m-%d %H:%M:%S")
+  end
 end
