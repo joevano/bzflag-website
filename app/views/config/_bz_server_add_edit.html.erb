@@ -3,6 +3,7 @@
 <p>BZFlag Server Host: <%= form.collection_select(:server_host_id, @server_hosts, :id, :hostname) %> </p>
 <p>Port: <%= form.text_field :port, :size => 5 %></p>
 <p>Test Server: <%= form.check_box(:is_test_server) %>
+<p>Disabled: <%= form.check_box(:is_disabled) %>
 <p><%= submit_tag %> </p>
 <% end -%>
 <%= link_to "Return to List", :action => :bz_server_list %>
