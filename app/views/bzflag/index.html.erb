@@ -69,7 +69,11 @@
 </td>
 <td class="<%= server_class %>"><%= b.current_players.count %></td>
 <% server_status_message = b.server_status_message && b.server_status_message.message.text.capitalize %>
-<td class="server<%= server_status_message %>"><%= server_status_message %></td>
+<% if b.is_disabled %>
+  <td class="serverDisabled">Disabled</td>
+<% else %>
+  <td class="server<%= server_status_message %>"><%= server_status_message %></td>
+<% end %>
 <% b.current_players.each do |x| -%>
 </tr>
 <tr>
