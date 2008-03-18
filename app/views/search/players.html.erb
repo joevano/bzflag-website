@@ -2,14 +2,13 @@
 <div>
 <fieldset>
 <legend>Enter Player Search Criteria</legend>
-<% form_for :player_search, :method => :post do |form| %>
+<% form_for :player_search, :html => {:method => :get} do |form| %>
 <p><label for="search_for">Search For:</label>
 <%= form.text_field :search_for, :size => 30 %>
 <%= form.radio_button(:search_by, "Callsign") %> Callsign
 <%= form.radio_button(:search_by, "IP") %> IP
 <%= form.radio_button(:search_by, "Hostname") %> Hostname
 <%= submit_tag "Search" %>
-<%= link_to "Link to results", { :action => "players", :player_search => { :search_by => @player_search.search_by, :search_for => @player_search.search_for } }, { :method => :post } if @matches && @matches > 0 -%>
 <br/>
 Use % for wildcard matches.
 </p>
