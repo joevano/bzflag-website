@@ -41,9 +41,8 @@ Servers
 <% server_count = 0
    @bz_servers.each do |b|
        next if @server_list.hide_disabled == 1 && b.is_disabled
-       next if @server_list.hide_stopped == 1 && b.server_status_message && b.server_status_message.message.text.downcase == 'stopped'
-       next if @server_list.hide_idle == 1 && !b.last_chat_message
-       next if @server_list.hide_idle == 1 && b.last_chat_message && b.last_chat_message.logged_at < 24.hours.ago
+       next if @server_list.hide_stopped == 1 && b.is_stopped
+       next if @server_list.hide_idle == 1 && b.is_idle && !b.is_disabled && !b.is_stopped
        server_count += 1
        if b.current_players.count == 0
 	  if server_count % 2 == 0
