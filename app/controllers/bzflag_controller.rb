@@ -2,6 +2,18 @@ class BzflagController < ApplicationController
   before_filter :authorize_admin_menu_perm, :except => [ :index ]
 
   def index
+    @server_list = ServerList.new()
+
+    if params && params[:server_list]
+      @server_list.hide_disabled = params[:server_list][:hide_disabled].to_i
+      @server_list.hide_idle = params[:server_list][:hide_idle].to_i
+      @server_list.hide_stopped = params[:server_list][:hide_stopped].to_i
+    else
+      @server_list.hide_disabled = 1
+      @server_list.hide_idle = 1
+      @server_list.hide_stopped = 1
+    end
+
     @bz_servers = BzServer.find(:all,
                                 :order => "current_players_count desc, log_messages.logged_at desc, server_host_id, port",
                                 :include => ["last_chat_message", "last_filtered_message", "current_players"])
