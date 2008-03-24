@@ -11,20 +11,18 @@ class SearchController < ApplicationController
     if @player_search.search_by && @player_search.search_for
       ips = []
       matches = 0
-      if @player_search.search_for =~ /^%*$/
+      if @player_search.search_for =~ /^[%*]*$/
         flash.now[:notice] = "Please enter some search criteria"
       elsif @player_search.search_by == 'Callsign'
-        ips=Ip.find_by_sql(["select distinct ips.* from ips inner join player_connections on ips.id = player_connections.ip_id inner join callsigns on callsigns.id = player_connections.callsign_id where callsigns.name like ? order by ips.last_part_at desc, ips.id limit #{IP_LIMIT}", @player_search.search_for])
+        ips=Ip.find_by_sql(["select distinct ips.* from ips inner join player_connections on ips.id = player_connections.ip_id inner join callsigns on callsigns.id = player_connections.callsign_id where callsigns.name like ? order by ips.last_part_at desc, ips.id limit #{IP_LIMIT}", @player_search.search_for.gsub(/\*/, '%')])
       elsif @player_search.search_by == 'IP'
-        # Replace * with % for handling 192.168.*.*
-        @player_search.search_for.gsub!(/\*/,'%')
         ips = Ip.find(:all,
-                      :conditions => [ "ip like ?", @player_search.search_for],
+                      :conditions => [ "ip like ?", @player_search.search_for.gsub(/\*/, '%')],
                       :order => "last_part_at desc, ip",
                       :limit => IP_LIMIT)
       elsif @player_search.search_by == 'Hostname'
         ips = Ip.find(:all,
-                      :conditions => [ "hostname like ?", @player_search.search_for],
+                      :conditions => [ "hostname like ?", @player_search.search_for.gsub(/\*/, '%')],
                       :order => "last_part_at desc, ip",
                       :limit => IP_LIMIT)
       end
