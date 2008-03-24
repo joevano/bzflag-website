@@ -7,22 +7,22 @@ class SearchController < ApplicationController
     @matches = nil
     @player_search = PlayerSearch.new()
     @player_search.search_by = params[:player_search][:search_by] if params && params[:player_search]
-    @player_search.search_for = params[:player_search][:search_for] if params && params[:player_search]
+    @player_search.search_for = params[:player_search][:search_for].lstrip.rstrip if params && params[:player_search]
     if @player_search.search_by && @player_search.search_for
       ips = []
       matches = 0
-      if params[:player_search][:search_for] =~ /^%*$/
+      if @player_search.search_for =~ /^%*$/
         flash.now[:notice] = "Please enter some search criteria"
       elsif params[:player_search][:search_by] == 'Callsign'
-        ips=Ip.find_by_sql(["select distinct ips.* from ips inner join player_connections on ips.id = player_connections.ip_id inner join callsigns on callsigns.id = player_connections.callsign_id where callsigns.name like ? order by ips.last_part_at desc, ips.id limit #{IP_LIMIT}", params[:player_search][:search_for]])
+        ips=Ip.find_by_sql(["select distinct ips.* from ips inner join player_connections on ips.id = player_connections.ip_id inner join callsigns on callsigns.id = player_connections.callsign_id where callsigns.name like ? order by ips.last_part_at desc, ips.id limit #{IP_LIMIT}", @player_search.search_for])
       elsif params[:player_search][:search_by] == 'IP'
         ips = Ip.find(:all,
-                      :conditions => [ "ip like ?", params[:player_search][:search_for]],
+                      :conditions => [ "ip like ?", @player_search.search_for],
                       :order => "last_part_at desc, ip",
                       :limit => IP_LIMIT)
       elsif params[:player_search][:search_by] == 'Hostname'
         ips = Ip.find(:all,
-                      :conditions => [ "hostname like ?", params[:player_search][:search_for]],
+                      :conditions => [ "hostname like ?", @player_search.search_for],
                       :order => "last_part_at desc, ip",
                       :limit => IP_LIMIT)
       end
