@@ -1,3 +1,90 @@
 <h1>Logs</h1>
-<p>Server <%= @bz_server.server_host.hostname%>:<%=@bz_server.port%> logs go here.</p>
-<p><%= @log_messages.size %> log messages in the last 24 hours.</p>
+<p>Server <%= @bz_server.server_host.hostname%>:<%=@bz_server.port%> logs.</p>
+<table>
+<tr>
+<td class="playerjoin">Player Join/Part</td>
+<td class="srvr">Server</td>
+<td class="bcast">Broadcast</td>
+<td class="dir">Private</td>
+<td class="team">Team</td>
+<td class="cmd">Command</td>
+<td class="adm">Admin</td>
+<td class="rpt">Report</td>
+<td class="filtered">Filtered</td>
+</tr>
+</table>
+<table>
+<tr>
+<th>Date</th>
+<th>From</th>
+<th>To</th>
+<th>Detail</th>
+<th>Action</th>
+</tr>
+<% 
+@log_messages.each do |lm| 
+    from = lm.callsign && lm.callsign.name || ""
+    to = lm.to_callsign && lm.to_callsign.name || ""
+    detail = lm.message && lm.message.text || ""
+
+    case lm.log_type_id
+
+    when @player_join_log_type_id
+        css_class = "playerjoin"
+        to = "#SLOT joins"
+
+    when @player_part_log_type_id
+        css_class = "playerjoin"
+        to = "#SLOT removed"
+
+    when @player_auth_log_type_id
+        css_class = "playerjoin"
+        to = 'auth change'
+
+    when @server_status_log_type_id
+        css_class = "srvr"
+        from = "SERVER"
+        to = "STATUS"
+
+    when @msg_broadcast_log_type_id
+        if lm.callsign_id == @server_callsign_id
+            css_class = "srvr"
+        else
+            css_class = "bcast"
+        end
+        to = "ALL"
+
+    when @msg_filtered_log_type_id
+        css_class = "filtered"
+
+    when @msg_direct_log_type_id
+        css_class = "dir"
+
+    when @msg_team_log_type_id
+        css_class = "team"
+
+    when @msg_report_log_type_id
+        css_class = "rpt"
+
+    when @msg_command_log_type_id
+        css_class = "cmd"
+
+    when @msg_admin_log_type_id
+        css_class = "adm"
+        to = "ADMINS"
+
+    when @server_mapname_log_type_id
+        css_class = "srvr"
+        from = "SERVER"
+        to = "MAP NAME"
+    end
+
+%>
+<tr class="<%= css_class %>">
+<td> <%= display_date(lm.logged_at) %> </td>
+<td> <%= from %>  </td>
+<td> <%= to %>  </td>
+<td><%= detail %> </td>
+<td></td>
+</tr>
+<% end -%>

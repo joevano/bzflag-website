@@ -54,7 +54,27 @@ class SearchController < ApplicationController
   end
 
   def logs
+    @player_join_log_type_id = LogType.find_by_token("PLAYER-JOIN").id
+    @player_part_log_type_id = LogType.find_by_token("PLAYER-PART").id
+    @player_auth_log_type_id = LogType.find_by_token("PLAYER-AUTH").id
+    @server_status_log_type_id = LogType.find_by_token("SERVER-STATUS").id
+    @msg_broadcast_log_type_id = LogType.find_by_token("MSG-BROADCAST").id
+    @msg_filtered_log_type_id = LogType.find_by_token("MSG-FILTERED").id
+    @msg_direct_log_type_id = LogType.find_by_token("MSG-DIRECT").id
+    @msg_team_log_type_id = LogType.find_by_token("MSG-TEAM").id
+    @msg_report_log_type_id = LogType.find_by_token("MSG-REPORT").id
+    @msg_command_log_type_id = LogType.find_by_token("MSG-COMMAND").id
+    @msg_admin_log_type_id = LogType.find_by_token("MSG-ADMIN").id
+    @server_mapname_log_type_id = LogType.find_by_token("SERVER-MAPNAME").id
+    @server_status_log_type_id = LogType.find_by_token("SERVER-STATUS").id
+
+    @server_callsign_id = Callsign.find_by_name("SERVER").id
+
     @bz_server = BzServer.find(params[:id])
-    @log_messages = @bz_server.log_messages.find(:all, :conditions => "logged_at > '#{db_date(24.hours.ago)}'")
+    @log_messages = @bz_server.log_messages.find(:all,
+                                                 :conditions => "logged_at > '#{db_date(24.hours.ago)}' and log_type_id in (1,2,3,4,5,6,7,8,9,10,11,12,13)", 
+                                                 :order => "logged_at desc, log_messages.id desc",
+                                                 :include => [ "message", "callsign", "to_callsign" ],
+                                                 :limit => 100).reverse
   end
 end
