@@ -76,7 +76,7 @@ Servers
     <% end -%>
   </td>
 <% end -%>
-<td><%= link_to "Logs", { :action => "logs", :id => b.id } if @logs_perm %>
+<td><%= link_to "Logs", { :controller => "search", :action => "logs", :id => b.id } if @logs_perm %>
 </td>
 <td class="<%= server_class %>"><%= b.current_players.count %></td>
 <% server_status_message = b.server_status_message && b.server_status_message.message.text.capitalize %>

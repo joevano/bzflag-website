@@ -35,11 +35,6 @@ class BzflagController < ApplicationController
     @recent_reports = LogMessage.find(:all, :conditions => "log_type_id = #{report_type_id} and logged_at > '#{db_date(@recent_report_days.days.ago)}'", :order => "logged_at desc")
   end
 
-  def logs
-    @bz_server = BzServer.find(params[:id])
-    @log_messages = @bz_server.log_messages.find(:all, :conditions => "logged_at > '#{db_date(24.hours.ago)}'")
-  end
-
   def help
   end
 
