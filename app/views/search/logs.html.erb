@@ -1,5 +1,9 @@
 <h1>Logs</h1>
-<p>Server <%= @bz_server.server_host.hostname%>:<%=@bz_server.port%> logs.</p>
+<p>Server <%= @bz_server.server_host.hostname%>:<%=@bz_server.port%> - <%= @bz_server.map_name %> - logs.</p>
+<% if @log_messages -%>
+    <%= link_to "Prev", :action => :logs, :id => @bz_server.id, :prev_page => @log_messages[0].id %>
+    <%= link_to "Next", :action => :logs, :id => @bz_server.id, :next_page => @log_messages[-1].id %>
+<% end -%>
 <table>
 <tr>
 <td class="playerjoin">Player Join/Part</td>
@@ -87,4 +91,9 @@
 <td><%= detail %> </td>
 <td></td>
 </tr>
+<% end -%>
+</table>
+<% if @log_messages -%>
+    <%= link_to "Prev", :action => :logs, :id => @bz_server.id, :prev_page => @log_messages[0].id %>
+    <%= link_to "Next", :action => :logs, :id => @bz_server.id, :next_page => @log_messages[-1].id %>
 <% end -%>

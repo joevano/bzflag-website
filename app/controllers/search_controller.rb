@@ -54,6 +54,33 @@ class SearchController < ApplicationController
   end
 
   def logs
+    @bz_server = BzServer.find(params[:id])
+    next_page = params[:next_page]
+    prev_page = params[:prev_page]
+
+    @log_messages = []
+    if next_page
+        @log_messages = @bz_server.log_messages.find(:all,
+                                                     :conditions => "log_messages.id > #{next_page} and log_type_id in (1,2,3,4,5,6,7,8,9,10,11,12,13)", 
+                                                     :order => "logged_at, log_messages.id",
+                                                     :include => [ "message", "callsign", "to_callsign" ],
+                                                     :limit => 100)
+    elsif prev_page
+        @log_messages = @bz_server.log_messages.find(:all,
+                                                     :conditions => "log_messages.id < #{prev_page} and log_type_id in (1,2,3,4,5,6,7,8,9,10,11,12,13)", 
+                                                     :order => "logged_at desc, log_messages.id desc",
+                                                     :include => [ "message", "callsign", "to_callsign" ],
+                                                     :limit => 100).reverse
+    end
+
+    if @log_messages.empty?
+        @log_messages = @bz_server.log_messages.find(:all,
+                                                     :conditions => "log_type_id in (1,2,3,4,5,6,7,8,9,10,11,12,13)", 
+                                                     :order => "logged_at desc, log_messages.id desc",
+                                                     :include => [ "message", "callsign", "to_callsign" ],
+                                                     :limit => 100).reverse
+    end
+
     @player_join_log_type_id = LogType.find_by_token("PLAYER-JOIN").id
     @player_part_log_type_id = LogType.find_by_token("PLAYER-PART").id
     @player_auth_log_type_id = LogType.find_by_token("PLAYER-AUTH").id
@@ -69,12 +96,5 @@ class SearchController < ApplicationController
     @server_status_log_type_id = LogType.find_by_token("SERVER-STATUS").id
 
     @server_callsign_id = Callsign.find_by_name("SERVER").id
-
-    @bz_server = BzServer.find(params[:id])
-    @log_messages = @bz_server.log_messages.find(:all,
-                                                 :conditions => "logged_at > '#{db_date(24.hours.ago)}' and log_type_id in (1,2,3,4,5,6,7,8,9,10,11,12,13)", 
-                                                 :order => "logged_at desc, log_messages.id desc",
-                                                 :include => [ "message", "callsign", "to_callsign" ],
-                                                 :limit => 100).reverse
   end
 end
