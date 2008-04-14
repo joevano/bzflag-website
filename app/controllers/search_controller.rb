@@ -74,6 +74,7 @@ class SearchController < ApplicationController
     end
 
     if @log_messages.empty?
+        flash.now[:notice] = "Displaying most recent records"
         @log_messages = @bz_server.log_messages.find(:all,
                                                      :conditions => "log_type_id in (1,2,3,4,5,6,7,8,9,10,11,12,13)", 
                                                      :order => "logged_at desc, log_messages.id desc",
