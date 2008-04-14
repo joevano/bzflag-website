@@ -65,6 +65,9 @@ class SearchController < ApplicationController
                                                      :order => "logged_at, log_messages.id",
                                                      :include => [ "message", "callsign", "to_callsign" ],
                                                      :limit => 100)
+        if @log_messages.empty?
+            flash.now[:notice] = "Displaying most recent records"
+        end
     elsif prev_page
         @log_messages = @bz_server.log_messages.find(:all,
                                                      :conditions => "log_messages.id < #{prev_page} and log_type_id in (1,2,3,4,5,6,7,8,9,10,11,12,13)", 
@@ -74,7 +77,6 @@ class SearchController < ApplicationController
     end
 
     if @log_messages.empty?
-        flash.now[:notice] = "Displaying most recent records"
         @log_messages = @bz_server.log_messages.find(:all,
                                                      :conditions => "log_type_id in (1,2,3,4,5,6,7,8,9,10,11,12,13)", 
                                                      :order => "logged_at desc, log_messages.id desc",
