@@ -153,7 +153,7 @@ Servers
 <% @recent_bans.each_index do |i| %>
   <% ban = @recent_bans[i] %>
   <tr class="cmd">
-    <td><%= i + 1 %></td>
+    <td><%= link_to (i + 1).to_s, :controller => "search", :action => "logs", :id => ban.bz_server_id, :next_page => ban.id %></td>
     <td><%= display_date(ban.logged_at) %></td>
     <td><%= ban.bz_server.server_host.hostname + ':' + ban.bz_server.port.to_s %></td>
     <td><%= ban.callsign.name %></td>
