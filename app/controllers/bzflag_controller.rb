@@ -27,12 +27,12 @@ class BzflagController < ApplicationController
     command_type_id = LogType.find_by_token("MSG-COMMAND").id
     @recent_bans = LogMessage.find(:all, 
                                    :conditions => "log_type_id = #{command_type_id} and logged_at > '#{db_date(@recent_ban_days.days.ago)}' and (text like 'ban %' or text like 'unban %' or text like 'hostban %' or text like 'hostunban %' or text like 'idban %' or text like 'idunban %' or text like 'poll ban %')", 
-                                   :order => "logged_at desc",
+                                   :order => "logged_at",
                                    :include => "message")
 
     report_type_id = LogType.find_by_token("MSG-REPORT").id
     @recent_report_days = 3
-    @recent_reports = LogMessage.find(:all, :conditions => "log_type_id = #{report_type_id} and logged_at > '#{db_date(@recent_report_days.days.ago)}'", :order => "logged_at desc")
+    @recent_reports = LogMessage.find(:all, :conditions => "log_type_id = #{report_type_id} and logged_at > '#{db_date(@recent_report_days.days.ago)}'", :order => "logged_at")
   end
 
   def help
