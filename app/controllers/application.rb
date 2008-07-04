@@ -2,8 +2,15 @@
 # Likewise, all the methods added will be available for all controllers.
 
 require 'fileutils'
+require 'ostruct'
+require 'yaml'
 
 class ApplicationController < ActionController::Base
+  config = OpenStruct.new(YAML.load_file("#{RAILS_ROOT}/config/config.yml"))
+  env_config = config.send(RAILS_ENV)
+  config.common.update(env_config) unless env_config.nil?
+  ::AppConfig = OpenStruct.new(config.common)
+
   # Pick a unique cookie name to distinguish our session data from others'
   session :session_key => '_bzflag.norang.ca_session_id'
 
