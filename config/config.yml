@@ -2,6 +2,7 @@ common:
   support_email: you@yourdomain.com
   root_url: websitevhost.yourdomain.com
   auth_srv: my.bzflag.org
+  admins_link: http://my.bzflag.org/bb/groupcp.php
 
 production:
 
