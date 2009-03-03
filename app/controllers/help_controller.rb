@@ -2,7 +2,7 @@ class HelpController < ApplicationController
 
   def method_missing(action)
     if action == "index"
-      action = "bzflag-admin-help2"
+      action = "bzflag-admin-help"
     end
 
     @action = action
