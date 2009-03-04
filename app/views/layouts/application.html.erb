@@ -17,30 +17,22 @@
 <p><% if @user.id %><%= link_to "Logout", :controller => 'login', :action => 'logout' %><% else %><%= link_to "Login", :controller => 'login', :action => 'login' %><% end %></p>
 <p><%= link_to "Servers", :controller => 'bzflag', :action => 'index' %>
 </p>
-<% if @player_info_perm -%>
 <p><%= link_to "Player Info", :controller => 'search', :action => 'players' %></p>
-<% end -%>
-<% if @admin_menu_perm -%>
 <p><%= link_to "Reports", :controller => 'bzflag', :action => 'reports' %>
 <br />
 <%= link_to "Bans", :controller => 'bzflag', :action => 'bans' %>
 </p>
 <p><%= link_to "Recordings", :controller => 'bzflag', :action => 'recordings' %></p>
 <p><%= link_to "Mailing List", :controller => 'mailing_list', :action => 'threads' %></p>
-<% end -%>
 <p><%= link_to "Help", :controller => 'help', :action => 'index' %></p>
-<% if @configuration_menu_perm -%>
 <p><%= link_to "Configuration", :controller => 'config', :action => 'index' %></p>
-<% end -%>
 <p><%= link_to "Forum", "http://my.bzflag.org/bb" %>
 <br />
 <%= link_to "Wiki", "http://my.bzflag.org/w" %>
 </p>
 <p><%= link_to "Source Code", "http://git.norang.ca/?p=bzflag-website;a=summary" %></p>
-<% if @admin_menu_perm -%>
 <p><%= link_to "Admins", AppConfig.admins_link %></p>
 <p><%= link_to "ToDo", :controller => 'todo', :action => 'index' %></p>
-<% end -%>
 </div>
 <div id="main">
 <% if flash[:notice] %><div id="notice"><%= flash[:notice] %></div><% end -%>
