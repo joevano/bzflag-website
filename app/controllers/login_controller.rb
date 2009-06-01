@@ -20,7 +20,7 @@ class LoginController < ApplicationController
 
     all_groups = Group.find(:all).collect { |grp| grp.name }
 
-    checktoken = "/db/?action=CHECKTOKENS&checktokens=#{CGI::escape(username)}%3D#{CGI::escape(token)}&groups=" + all_groups.join('%0D%0A')
+    checktoken = "/db/?action=CHECKTOKENS&checktokens=#{CGI::escape(username)}%3D#{CGI::escape(token)}&groups=" + all_groups.join('%0D%0A').upcase
     logger.info(checktoken)
     begin
       response = Net::HTTP.get(AppConfig.auth_srv, checktoken)
