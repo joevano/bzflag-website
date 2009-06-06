@@ -1,0 +1,20 @@
+
+* TODO Outline setup and installation instructions after a fresh clone of the project
+
+  1. Edit config/database.yml
+     For each database (development, test, and production)
+     - set username
+     - set password
+     - set database host
+
+  2. Setting up a database
+     Create the databases
+
+  3. Edit config/config.yml
+     - set support_email
+     - set root_url
+     - set admins_link to the bzbb group that lists your admins
+
+  Setup passenger or mongrels or run script/server
+
+
