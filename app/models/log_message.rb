@@ -27,4 +27,20 @@ class LogMessage < ActiveRecord::Base
   has_one :last_chat_log_server, :class_name => "BzServer", :foreign_key => "last_chat_message_id"
   has_one :last_filtered_log_server, :class_name => "BzServer", :foreign_key => "last_filtered_message_id"
   has_one :server_status_server, :class_name => "BzServer", :foreign_key => "server_status_message_id"
+
+  @recent_ban_days = 3
+  @recent_report_days = 3
+
+  def self.recent_ban_days
+    find(:all,
+         :conditions => "log_type_id = #{LogType.find_by_token("MSG-COMMAND").id} and logged_at > '#{@recent_ban_days.days.ago}' and (text like 'ban %' or text like 'unban %' or text like 'hostban %' or text like 'hostunban %' or text like 'idban %' or text like 'idunban %' or text like 'poll ban %')",
+         :order => "logged_at",
+         :joins => :message,
+         :include => "message")
+  end
+
+  def self.recent_report_days
+    find(:all, :conditions => "log_type_id = #{LogType.find_by_token("MSG-REPORT").id} and logged_at > '#{@recent_report_days.days.ago}'", :order => "logged_at")
+  end
+  
 end
