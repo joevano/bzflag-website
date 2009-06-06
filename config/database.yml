@@ -15,7 +15,7 @@ development:
   adapter: mysql
   database: bzflag_dev
   username: yourname
-  password: yourpassord
+  password: yourpassword
   host: dbhost
 
 # Warning: The database defined as 'test' will be erased and
