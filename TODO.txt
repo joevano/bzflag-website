@@ -1,4 +1,4 @@
-
+# BZFlag Website TODO list
 * TODO Outline setup and installation instructions after a fresh clone of the project
 
   1. Edit config/database.yml
@@ -16,5 +16,36 @@
      - set admins_link to the bzbb group that lists your admins
 
   Setup passenger or mongrels or run script/server
+* TODO Cut first development release v0.1
 
+** TODO Add License files for LGPL
+   1. COPYING
+   2. COPYING.LESSER
+   3. Add copyright info to project files
+* TODO Create documentation information about working on the project
+  1. Git branches
+     - maint (doesn't exist until v1.0)
+     - master
+     - next
+     - pu (pending updates)
 
+     This is basically based on the git project maintenance workflow.
+
+     Normally:
+       - 'maint' is the old (latest) stable release
+       - 'master' is for things included in the next upcoming release
+       - 'next' contains topics for some future release after the next
+         one
+	 - things we want to eventually include but not as part of the
+           next release
+       - 'pu' is pending updates
+	 - experimental stuff that may be included or dumped or
+            rewritten
+
+     Merging does
+       - master into maint, maint advances and records a new release tag
+       - master merges cooked topics ready for the next release
+       - next merges cooked topics for a following release
+       - pu merges experimental stuff and is normally rebased
+	 - this allows topics to be dropped, rewritten, or graduate to a 
+	   branch that only merges to advance (master, maint, or next)
