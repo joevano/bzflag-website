@@ -19,7 +19,7 @@
 
 class LogType < ActiveRecord::Base
   validates_uniqueness_of :token
-  belongs_to :log_messages
+  has_many :log_messages
 
   def self.ids(tokens)
     t = tokens.collect do |l| 
