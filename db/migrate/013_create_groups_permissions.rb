@@ -25,6 +25,6 @@ class CreateGroupsPermissions < ActiveRecord::Migration
   end
 
   def self.down
-    drop_table :group_permissions
+    drop_table :groups_permissions
   end
 end
