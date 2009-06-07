@@ -16,9 +16,10 @@
 # License along with this website project; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 #-------------------------------------------------------------------------------
-require File.dirname(__FILE__) + '/../test_helper'
 
-class GroupTest < Test::Unit::TestCase
+require 'test_helper'
+
+class GroupTest < ActiveSupport::TestCase
   fixtures :groups
 
   # Replace this with your real tests.

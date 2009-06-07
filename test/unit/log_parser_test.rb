@@ -16,10 +16,11 @@
 # License along with this website project; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 #-------------------------------------------------------------------------------
-require File.dirname(__FILE__) + '/../test_helper'
-require File.dirname(__FILE__) + '/../../lib/log_parser'
 
-class LogParserTest < Test::Unit::TestCase
+require 'test_helper'
+require 'log_parser'
+
+class LogParserTest < ActiveSupport::TestCase
   fixtures :server_hosts, :bz_servers, :callsigns, :log_types
 
   def setup
