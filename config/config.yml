@@ -26,3 +26,6 @@ production:
 
 development:
   root_url: localhost:3000
+
+test:
+  root_url: localhost:3000
