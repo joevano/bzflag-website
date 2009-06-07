@@ -19,7 +19,6 @@
 class BzServer < ActiveRecord::Base
   belongs_to :server_host
   has_many :player_connections
-  has_many :users, :through => :player_connections
   has_many :log_messages
   has_many :current_players
   belongs_to :last_chat_message, :class_name => "LogMessage", :foreign_key => "last_chat_message_id"
