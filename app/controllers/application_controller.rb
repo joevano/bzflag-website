@@ -36,9 +36,6 @@ class ApplicationController < ActionController::Base
   config.common.update(env_config) unless env_config.nil?
   ::AppConfig = OpenStruct.new(config.common)
 
-  # Pick a unique cookie name to distinguish our session data from others'
-  session :session_key => '_bzflag.norang.ca_session_id'
-
   before_filter :get_user
 
   private
