@@ -526,7 +526,7 @@ div.players span.operator, dt.operator {
 .title { text-align: center; }
 .todo  { color: red; }
 .done { color: green; }
-.timestamp { color: grey }
+.timestamp { color: gray }
 .timestamp-kwd { color: CadetBlue }
 .tag { background-color:lightblue; font-weight:normal }
 .target { background-color: lavender; }
