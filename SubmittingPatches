@@ -1,0 +1,99 @@
+Checklist (and a short version for the impatient):
+
+	Commits:
+
+	- make commits of logical units
+	- check for unnecessary whitespace with "git diff --check"
+	  before committing
+	- do not check in commented out code or unneeded files
+	- the first line of the commit message should be a short
+	  description and should skip the full stop
+        - the second line is blank separating the short description 
+	  from the body
+	- the body should provide a meaningful commit message, which:
+		- uses the imperative, present tense: "change",
+		  not "changed" or "changes".
+		- includes motivation for the change, and contrasts
+		  its implementation with previous behaviour
+	- if you want your work included in bzflag-website.git, add a
+	  "Signed-off-by: Your Name <you@example.com>" line to the
+	  commit message (or just use the option "-s" when
+	  committing) to confirm that you agree to the Developer's
+	  Certificate of Origin
+	- make sure that you have tests for the bug you are fixing
+	- make sure that the test suite passes after your commit
+
+Long version:
+
+(1) Make separate commits for logically separate changes.
+
+Always make a commit with complete commit message and generate a
+series of patches from your repository.  It is a good discipline.
+
+Describe the technical detail of the change(s).
+
+If your description starts to get too long, that's a sign that you
+probably need to split up your commit to finer grained pieces.
+That being said, patches which plainly describe the things that
+help reviewers check the patch, and future maintainers understand
+the code, are the most beautiful patches.  Descriptions that summarise
+the point in the subject well, and describe the motivation for the
+change, the approach taken by the change, and if relevant how this
+differs substantially from the prior version, can be found on Usenet
+archives back into the late 80's.  Consider it like good Netiquette,
+but for code.
+
+
+(2) Sign your work
+
+To improve tracking of who did what, we've borrowed the
+"sign-off" procedure from the Git project on commits.
+
+The sign-off is a simple line at the end of the explanation for
+the patch, which certifies that you wrote it or otherwise have
+the right to pass it on as a open-source patch.  The rules are
+pretty simple: if you can certify the below:
+
+        Developer's Certificate of Origin 1.1
+
+        By making a contribution to this project, I certify that:
+
+        (a) The contribution was created in whole or in part by me and I
+            have the right to submit it under the open source license
+            indicated in the file; or
+
+        (b) The contribution is based upon previous work that, to the best
+            of my knowledge, is covered under an appropriate open source
+            license and I have the right under that license to submit that
+            work with modifications, whether created in whole or in part
+            by me, under the same open source license (unless I am
+            permitted to submit under a different license), as indicated
+            in the file; or
+
+        (c) The contribution was provided directly to me by some other
+            person who certified (a), (b) or (c) and I have not modified
+            it.
+
+	(d) I understand and agree that this project and the contribution
+	    are public and that a record of the contribution (including all
+	    personal information I submit with it, including my sign-off) is
+	    maintained indefinitely and may be redistributed consistent with
+	    this project or the open source license(s) involved.
+
+then you just add a line saying
+
+	Signed-off-by: Random J Developer <random@developer.example.org>
+
+This line can be automatically added by git if you run the git-commit
+command with the -s option.
+
+Also notice that a real name is used in the Signed-off-by: line. Please
+don't hide your real name.
+
+Some people also put extra tags at the end.
+
+"Acked-by:" says that the patch was reviewed by the person who
+is more familiar with the issues and the area the patch attempts
+to modify.  "Tested-by:" says the patch was tested by the person
+and found to have the desired effect.
+
