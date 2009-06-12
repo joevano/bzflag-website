@@ -41,4 +41,30 @@ module ApplicationHelper
   def display_server(bz_server)
     "#{bz_server.server_host.hostname}:#{bz_server.port}"
   end
+
+  def git_version()
+    version_file = 'GIT-VERSION-FILE'
+    default_version = "0.2.GIT"
+
+    # First see if there is a version file (included in release tarballs)
+    # then try git-describe, then default
+    if File.file? version_file
+      begin
+        version = open(version_file).read.chomp
+      rescue
+        version = default_version
+      end
+    elsif File.exists? ".git"
+      version = IO.popen("git describe --abbrev=4 HEAD").read.chomp
+      # Add a -dirty if files are modified
+      if not IO.popen("git diff-index --name-only HEAD --").read.chomp.empty?
+        version = version + "-dirty"
+      end
+      # Strip off the initial 'v'
+      version = version.sub("v", '')
+      # Replace '-' with '.'
+      version = version.gsub(/-/, ".")
+    end
+  end
+
 end
