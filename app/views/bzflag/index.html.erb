@@ -17,7 +17,7 @@
  # License along with this website project; if not, write to the Free Software
  # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  #-------------------------------------------------------------------------------
- %>
+ -%>
 <h1>Servers</h1>
 <% form_for :server_list, :html => { :method => :get} do |form| %>
 <p>Hide:
@@ -47,7 +47,6 @@ Servers
 </table>
 </tr>
 </table>
-
 <table id="server-list">
 <tr>
 <th>Host</th>
@@ -136,8 +135,7 @@ Servers
 </tr>
 <% end -%>
 </table>
-
-<% if @logs_perm %>
+<% if @logs_perm -%>
 <h1>Recent Reports</h1>
 <table id="recent_reports">
 <caption>Reports In The Last <%= @recent_report_days %> Days</caption>
@@ -157,9 +155,8 @@ Servers
     <td><%= rpt.callsign.name %></td>
     <td><%= rpt.message.text %></td>
   </tr>
-<% end %>
+<% end -%>
 </table>
-
 <h1>Recent Bans</h1>
 <table id="recent_bans">
 <caption>Bans In The Last <%= @recent_ban_days %> Days</caption>
@@ -179,6 +176,6 @@ Servers
     <td><%= ban.callsign.name %></td>
     <td><%= ban.message.text %></td>
   </tr>
-<% end %>
+<% end -%>
 </table>
-<% end %>
+<% end -%>

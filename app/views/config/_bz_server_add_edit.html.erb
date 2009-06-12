@@ -17,7 +17,7 @@
  # License along with this website project; if not, write to the Free Software
  # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  #-------------------------------------------------------------------------------
- %>
+ -%>
 <%= error_messages_for :bz_server -%>
 <% form_for :bz_server do |form| %>
 <p>BZFlag Server Host: <%= form.collection_select(:server_host_id, @server_hosts, :id, :hostname) %> </p>
