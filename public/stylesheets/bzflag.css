@@ -195,16 +195,30 @@ table#server-list {
 }
 
 #footer {
-  border-top:2px solid #999;
-  font-size:75%;
-  padding:1px;
+  margin: 0;
+  padding: 0;
+  border-top:2px solid #ccc;
+  font-size:80%;
   text-align:left;
   width: 100%;
   clear: both;
 }
 
-#footer td {
-  border: 0
+#footer img {
+  padding-top: 1px;
+  float: right;
+}
+
+#copyright {
+  color: #777;
+  float: left;
+  margin: 0;
+  padding-top: 1px;
+}
+
+#copyright p {
+  margin: 0;
+  padding: 1px;
 }
 
 #columns {
@@ -226,6 +240,7 @@ table#server-list {
   padding-top: 1em;
   padding-left: 1em;
   padding-bottom: 1em;
+  margin-bottom: 2px;
   width: 90px;
   background: #369;
   color: #fff;
