@@ -53,7 +53,7 @@ class BzflagController < ApplicationController
     msg_report_id = LogType.find_by_token("MSG-REPORT").id
     @reports = LogMessage.find(:all,
                                :conditions => "log_type_id = #{msg_report_id}",
-                               :order => "logged_at desc", :limit => 100)
+                               :order => "log_type_id, logged_at desc", :limit => 100)
   end
 
   def bans
