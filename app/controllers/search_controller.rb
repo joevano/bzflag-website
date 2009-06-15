@@ -52,25 +52,15 @@ class SearchController < ApplicationController
                       :limit => IP_LIMIT)
       end
 
-      if ips.size > 0
-        ip_ids = ips.collect{|i| i.id}.join(",")
-        callsign_details = PlayerConnection.find_by_sql("select ip.id,pc.callsign_id,pc.is_verified, pc.is_admin, max(pc.bzid) as bzid, pc.ip_id, min(pc.join_at) as join_at, max(pc.part_at) as part_at, pc.is_globaluser, pc.is_operator from player_connections pc inner join ips ip on pc.ip_id = ip.id where pc.ip_id in (#{ip_ids}) group by ip.id, pc.callsign_id, pc.is_verified, pc.is_admin, pc.is_operator, pc.is_globaluser order by ip.last_part_at desc, ip.id, part_at desc")
-      else
-        callsign_details = []
-      end
-      @matches = callsign_details.size
-
       flash.now[:notice] = "Results limited to #{IP_LIMIT} IPs" if ips.size == IP_LIMIT
 
       # Loop through the callsign_details once and build a new list with an Ip object and list of PlayerConnections for the view to use
       @ips = []
-      callsign_details_idx = 0
+      @matches = 0
+
       ips.each do |ip|
-        connections = []
-        while callsign_details_idx < callsign_details.size && callsign_details[callsign_details_idx].ip_id == ip.id
-          connections.push(callsign_details[callsign_details_idx])
-          callsign_details_idx += 1
-        end
+        connections = ip.player_connections.get_player_join_min_max
+        @matches = @matches + connections.length
         @ips.push([ip, connections])
       end
     else
