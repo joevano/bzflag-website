@@ -59,7 +59,7 @@ The current time is <%= display_date(Time.now.utc) %> UTC.</p>
 <% pcs.each do |pc| -%>
 <tr class="callsign">
 <td></td>
-<td><%= link_to pc.callsign.name, { :action => "players", :player_search => { :search_by => "Callsign", :search_for => pc.callsign.name } }, { :method => :post } %></td>
+<td><%= link_to pc.name, { :action => "players", :player_search => { :search_by => "Callsign", :search_for => pc.name } }, { :method => :post } %></td>
 <td><%= pc.bzid %></td>
 <td><%= '<span class="verified">VERIFIED </span>' if pc.is_verified -%>
 <%= '<span class="globaluser">GLOBALUSER </span>' if pc.is_globaluser -%>

@@ -24,8 +24,9 @@ class PlayerConnection < ActiveRecord::Base
   belongs_to :ip
   belongs_to :team
 
-  named_scope  :get_player_join_min_max, :select => "callsign_id, max(bzid) as bzid, min(join_at) as join_at, max(part_at) as part_at, is_globaluser, is_operator, is_verified, is_admin",
-                                         :group => "callsign_id, is_globaluser, is_operator, is_verified, is_admin",
+  named_scope  :get_player_join_min_max, :select => "callsign_id, callsigns.name as name, max(bzid) as bzid, min(join_at) as join_at, max(part_at) as part_at, is_globaluser, is_operator, is_verified, is_admin",
+                                         :joins => :callsign,
+                                         :group => "callsign_id, callsigns.name, is_globaluser, is_operator, is_verified, is_admin",
                                          :order => "part_at desc"
 
 end
