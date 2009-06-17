@@ -4,33 +4,6 @@ This is a free-format text file which works with Emacs org-mode
 Headings start with one or more *'s in column 1, todo keyword (TODO/DONE), and headline text
 DONE items can be removed to keep the list short.  DONE items are available in the git repository.
 
-* TODO Create documentation information about working on the project
-  1. Git branches
-     - maint (doesn't exist until v1.0)
-     - master
-     - next
-     - pu (pending updates)
-
-     This is basically based on the git project maintenance workflow.
-
-     Normally:
-       - 'maint' is the old (latest) stable release
-       - 'master' is for things included in the next upcoming release
-       - 'next' contains topics for some future release after the next
-         one
-	 - things we want to eventually include but not as part of the
-           next release
-       - 'pu' is pending updates
-	 - experimental stuff that may be included or dumped or
-            rewritten
-
-     Merging does
-       - master into maint, maint advances and records a new release tag
-       - master merges cooked topics ready for the next release
-       - next merges cooked topics for a following release
-       - pu merges experimental stuff and is normally rebased
-	 - this allows topics to be dropped, rewritten, or graduate to a 
-	   branch that only merges to advance (master, maint, or next)
 * TODO Server Logs Data Feed
 ** TODO Add live log feeds
    

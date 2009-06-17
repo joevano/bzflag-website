@@ -1,0 +1,43 @@
+This project is maintained in a git repository at
+git://git.norang.ca/bzflag-website.
+
+This file describes basic project maintenance and is based on the git
+project maintenance work flow.
+
+There are four main integration branches as follows:
+
+ - 'maint' is the latest stable release
+ - 'master' is the development branch with new work for the
+   upcoming release
+ - 'next' contains stable topics for some future release
+   (intentionally left out of the next release)
+ - 'pu' is pending updates
+   - experimental stuff that may be included or dumped or
+      rewritten
+
+maint, master, and next never rewind history.  It is safe to base your
+development topics on any of these branches.  Topics should be based
+on the oldest branch where they will be applied.  Bug fix topics for
+maint should be anchored on maint so that merging into later branches
+is easy. (maint merges topic, master merges maint, next merges master,
+etc.)
+
+Merging goes as follows:
+
+ - maint is the oldest supported stable release
+ - master into maint, maint advances and records a new release tag
+ - master merges cooked topics ready for the next release
+ - next merges cooked topics for a following release
+ - pu merges experimental stuff and is normally rebased
+   - this allows topics to be dropped, rewritten, or graduate to a
+     branch that only merges to advance (master, maint, or next)
+
+To keep things up to date:
+
+ - maint merges maintenance topics (bug fixes)
+ - master merges maint
+ - next merges master
+ - pu is rebased on next regularly
+
+New topics are included in pu and reviewed before graduation to next
+or master.
