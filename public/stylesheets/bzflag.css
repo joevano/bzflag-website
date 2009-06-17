@@ -172,26 +172,27 @@ table#server-list {
 /* Styles for main page */
 
 #banner {
+  padding: 0;
+  margin: 0;
+  border:  2px solid #369;
   background: #369;
   color: #fff;
   font: small-caps 40px/40px "Times New Roman", serif;
   text-align: center;
-  overflow: auto;
+  overflow: visible;
   width: 100%;
-}
-
-#banner img {
-  float: left;
-  border: 2px solid #369;
+  background-image: url("../images/logo.png");
+  background-repeat: no-repeat;
+  background-position: left top;
+  height: 82px;
 }
 
 #callsign {
   font: 20px/20px "Times New Roman", serif;
   color: #ff0;
-  text-align: right;
-  float:right;
-  padding-right: 2em;
-  width: 10%;
+  float: right;
+  padding-right: .5em;
+  padding-top: .5em;
 }
 
 #footer {
