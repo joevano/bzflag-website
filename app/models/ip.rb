@@ -21,6 +21,15 @@ class Ip < ActiveRecord::Base
   has_many :player_connections
   has_many :callsigns, :through => :player_connections, :uniq => true
 
+  def self.callsign_like(name, limit=500)
+     find_by_sql(['select distinct ip.*
+                     from ips as ip
+                     inner join player_connections as pc on ip.id = pc.ip_id
+                     inner join callsigns as cs on cs.id = pc.callsign_id
+                     where cs.name like ?
+                     order by ip.last_part_at desc, ip.ip LIMIT ?', name, limit])
+  end
+
   def self.locate(ip)
     newip = Ip.find_by_ip(ip)
     if newip.nil?
