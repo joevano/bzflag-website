@@ -470,12 +470,8 @@ div.players dl {
 }
 
 div.players dl dt {
-  float: left;
   text-align: left;
   width: 10%;
-}
-
-div.players dl dd {
 }
 
 /* Styles for Player Search */
