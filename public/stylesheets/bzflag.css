@@ -550,23 +550,3 @@ div.players span.admin, dt.admin {
 div.players span.operator, dt.operator {
   color: #f00;
 }
-
-/* Todo List Styles */
-
-.title { text-align: center; }
-.todo  { color: red; }
-.done { color: green; }
-.timestamp { color: gray }
-.timestamp-kwd { color: #f59ea0; }
-.tag { background-color:#add8e6; font-weight:normal }
-.target { background-color: #551a8b; }
-pre {
-	border: 1pt solid #AEBDCC;
-	background-color: #F3F5F7;
-	padding: 5pt;
-	font-family: courier, monospace;
-}
-table { border-collapse: collapse; }
-td, th {
-  vertical-align: top;
-}
