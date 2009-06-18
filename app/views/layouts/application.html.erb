@@ -33,25 +33,27 @@
 </div>
 <div id="columns">
 <div id="side">
-<p><% if @user.id %><%= link_to "Logout", :controller => 'login', :action => 'logout' %><% else %><%= link_to "Login", :controller => 'login', :action => 'login' %><% end %></p>
-<p><%= link_to "Servers", :controller => 'bzflag', :action => 'index' %>
-</p>
-<p><%= link_to "Player Info", :controller => 'search', :action => 'players' %></p>
-<p><%= link_to "Reports", :controller => 'bzflag', :action => 'reports' %>
-<br />
-<%= link_to "Bans", :controller => 'bzflag', :action => 'bans' %>
-</p>
-<p><%= link_to "Recordings", :controller => 'bzflag', :action => 'recordings' %></p>
-<p><%= link_to "Mailing List", :controller => 'mailing_list', :action => 'threads' %></p>
-<p><%= link_to "Help", :controller => 'help', :action => 'index' %></p>
-<p><%= link_to "Configuration", :controller => 'config', :action => 'index' %></p>
-<p><%= link_to "Forum", "http://my.bzflag.org/bb" %>
-<br />
-<%= link_to "Wiki", "http://my.bzflag.org/w" %>
-</p>
-<p><%= link_to "Source Code", "http://git.norang.ca/?p=bzflag-website;a=summary" %></p>
-<p><%= link_to "Admins", AppConfig.admins_link %></p>
-<p><%= link_to "ToDo", :controller => 'todo', :action => 'index' %></p>
+<ul>
+<li><% if @user.id %><%= link_to "Logout", :controller => 'login', :action => 'logout' %><% else %><%= link_to "Login", :controller => 'login', :action => 'login' %><% end %></li>
+<li><%= link_to "Servers", :controller => 'bzflag', :action => 'index' %>
+</li>
+<li><%= link_to "Player Info", :controller => 'search', :action => 'players' %></li>
+<div class="group">
+<li><%= link_to "Reports", :controller => 'bzflag', :action => 'reports' %></li>
+<li><%= link_to "Bans", :controller => 'bzflag', :action => 'bans' %></li>
+</div>
+<li><%= link_to "Recordings", :controller => 'bzflag', :action => 'recordings' %></li>
+<li><%= link_to "Mailing List", :controller => 'mailing_list', :action => 'threads' %></li>
+<li><%= link_to "Help", :controller => 'help', :action => 'index' %></li>
+<li><%= link_to "Configuration", :controller => 'config', :action => 'index' %></li>
+<div class="group">
+<li><%= link_to "Forum", "http://my.bzflag.org/bb" %></li>
+<li><%= link_to "Wiki", "http://my.bzflag.org/w" %></li>
+</div>
+<li><%= link_to "Source Code", "http://git.norang.ca/?p=bzflag-website;a=summary" %></li>
+<li><%= link_to "Admins", AppConfig.admins_link %></li>
+<li><%= link_to "ToDo", :controller => 'todo', :action => 'index' %></li>
+</ul>
 </div>
 <div id="main">
 <% if flash[:notice] %><div id="notice"><%= flash[:notice] %></div><% end -%>
