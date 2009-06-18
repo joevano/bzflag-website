@@ -24,19 +24,22 @@
 <%= form.check_box(:hide_disabled) %> Disabled
 <%= form.check_box(:hide_stopped) %> Stopped
 <%= form.check_box(:hide_idle) %> Idle
-Servers
+Servers</p>
 <%= submit_tag "Refresh" %>
 <% end -%>
 <table class="legend">
 <tr>
+<td>
 <table class="legend">
 <tr>
 <td>Players: <%= @total_players %> Running Servers: <%= @total_running_servers %></td>
 <td class="curtime">The current time is: <%= display_date(Time.now.utc) %> UTC</td>
 </tr>
 </table>
+</td>
 </tr>
 <tr>
+<td>
 <table class="legend">
 <tr>
 <td class="testserver">Test Server</td>
@@ -45,6 +48,7 @@ Servers
 <td class="admin">Administrator</td>
 </tr>
 </table>
+</td>
 </tr>
 </table>
 <table id="server-list">

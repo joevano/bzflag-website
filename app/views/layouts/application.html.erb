@@ -38,18 +38,14 @@
 <li><%= link_to "Servers", :controller => 'bzflag', :action => 'index' %>
 </li>
 <li><%= link_to "Player Info", :controller => 'search', :action => 'players' %></li>
-<div class="group">
-<li><%= link_to "Reports", :controller => 'bzflag', :action => 'reports' %></li>
-<li><%= link_to "Bans", :controller => 'bzflag', :action => 'bans' %></li>
-</div>
+<li class="group"><%= link_to "Reports", :controller => 'bzflag', :action => 'reports' %></li>
+<li class="group"><%= link_to "Bans", :controller => 'bzflag', :action => 'bans' %></li>
 <li><%= link_to "Recordings", :controller => 'bzflag', :action => 'recordings' %></li>
 <li><%= link_to "Mailing List", :controller => 'mailing_list', :action => 'threads' %></li>
 <li><%= link_to "Help", :controller => 'help', :action => 'index' %></li>
 <li><%= link_to "Configuration", :controller => 'config', :action => 'index' %></li>
-<div class="group">
-<li><%= link_to "Forum", "http://my.bzflag.org/bb" %></li>
-<li><%= link_to "Wiki", "http://my.bzflag.org/w" %></li>
-</div>
+<li class="group"><%= link_to "Forum", "http://my.bzflag.org/bb" %></li>
+<li class="group"><%= link_to "Wiki", "http://my.bzflag.org/w" %></li>
 <li><%= link_to "Source Code", "http://git.norang.ca/?p=bzflag-website;a=summary" %></li>
 <li><%= link_to "Admins", AppConfig.admins_link %></li>
 <li><%= link_to "ToDo", :controller => 'todo', :action => 'index' %></li>

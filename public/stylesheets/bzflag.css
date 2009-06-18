@@ -260,7 +260,7 @@ table#server-list {
   text-align: left;
 }
 
-#side div.group li {
+#side li.group {
   padding: 0;
   margin: 0;
 }
