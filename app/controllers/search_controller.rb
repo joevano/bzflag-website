@@ -34,11 +34,7 @@ class SearchController < ApplicationController
         flash.now[:notice] = "Please enter some search criteria"
       elsif @player_search.search_by == 'Callsign'
         ip_id = []
-        Callsign.callsign_like(@player_search.search_for.gsub(/\*/, '%')).each {|callsign| callsign.ips.each { |ip| ip_id.push(ip.id)}}
-        ips = Ip.find(:all,
-                      :conditions => ['id in (?)', ip_id],
-                      :order => "last_part_at desc",
-                      :limit => IP_LIMIT)
+       ips = Ip.callsign_like(@player_search.search_for.gsub(/\*/, '%'), IP_LIMIT)
 
       elsif @player_search.search_by == 'IP'
         ips = Ip.find(:all,
