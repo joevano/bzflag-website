@@ -24,12 +24,12 @@
 <fieldset>
 <legend>Login</legend>
 <label for="username">Username</label>
-<input type="text" name="username" value=""><br/>
+<input type="text" name="username" value=""/><br/>
 <label for="password">Password</label>
-<input type="password" name="password" value=""><br/>
-<input type="hidden" name="url" value="http://<%= @host %>/login/validate?token=%TOKEN%&amp;username=%USERNAME%">
-<input type="hidden" name="action" value="webvalidate">
-<input type="submit" value="Login"><br/>
+<input type="password" name="password" value=""/><br/>
+<input type="hidden" name="url" value="http://<%= @host %>/login/validate?token=%TOKEN%&amp;username=%USERNAME%"/>
+<input type="hidden" name="action" value="webvalidate"/>
+<input type="submit" value="Login"/><br/>
 <a href="http://<%= @auth_srv %>/weblogin.php?url=http://<%= @host %>/login/validate%3Ftoken%3D%25TOKEN%25%26username%3D%25USERNAME%25">Login@<%= @auth_srv %></a><br/>
 <a href="http://<%= @auth_srv %>/bb/profile.php?mode=sendpassword">Forgot Password</a><br/>
 <a href="http://<%= @auth_srv %>/bb/profile.php?mode=register">Register</a>
