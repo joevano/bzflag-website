@@ -557,9 +557,9 @@ div.players span.operator, dt.operator {
 .todo  { color: red; }
 .done { color: green; }
 .timestamp { color: gray }
-.timestamp-kwd { color: CadetBlue }
-.tag { background-color:lightblue; font-weight:normal }
-.target { background-color: lavender; }
+.timestamp-kwd { color: #f59ea0; }
+.tag { background-color:#add8e6; font-weight:normal }
+.target { background-color: #551a8b; }
 pre {
 	border: 1pt solid #AEBDCC;
 	background-color: #F3F5F7;
