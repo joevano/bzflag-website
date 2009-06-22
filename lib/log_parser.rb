@@ -33,6 +33,12 @@ class LogParser
     exit 1
   end
 
+  def generate_log_type_hash()
+    lt = LogType.find(:all, :order => 'id')
+    @log_type = Hash.new
+    lt.each  {|record| @log_type.store( record.token, record.id)}
+  end
+
   # Get a callsign from a string
   #
   # Returns the callsign object that matches the parsed counted string callsign
@@ -130,6 +136,13 @@ class LogParser
     # 2007-12-16T11:09:42Z
     # 2007-12-16 11:09:42:
     # or missing in which case we use the last date we have available
+
+    # Generate @logtype hash if it hasn't been already
+    if !@log_type
+      generate_log_type_hash()
+    end
+
+
     if line =~ /^(\d\d\d\d-\d\d-\d\d[T ]\d\d:\d\d:\d\dZ?):?\s+(.*)$/
       date = Time.gm(*ParseDate.parsedate($1))
       detail = $2
@@ -154,7 +167,7 @@ class LogParser
       return
     end
 
-    log_type_id = LogType.ids([log_type])
+    log_type_id = @log_type[log_type]
     lm = LogMessage.new(:bz_server => bz_server, :logged_at => date, :log_type_id => log_type_id)
 
     case log_type
