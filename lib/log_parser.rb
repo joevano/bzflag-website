@@ -142,6 +142,10 @@ class LogParser
       generate_log_type_hash()
     end
 
+    if !@last_log_time
+      lm = bz_server.log_messages.find(:first, :order => "logged_at desc")
+      @last_log_time = lm.logged_at if lm
+    end
 
     if line =~ /^(\d\d\d\d-\d\d-\d\d[T ]\d\d:\d\d:\d\dZ?):?\s+(.*)$/
       date = Time.gm(*ParseDate.parsedate($1))
@@ -416,9 +420,6 @@ class LogParser
       puts "Can't find server #{hostname}:#{port}"
       exit 1
     end
-
-    lm = bz_server.log_messages.find(:first, :order => "logged_at desc")
-    @last_log_time = lm.logged_at if lm
 
     # Process the Log Messages
     STDIN.each do |line|
