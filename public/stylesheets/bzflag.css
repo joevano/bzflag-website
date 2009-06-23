@@ -242,7 +242,7 @@ table#server-list {
   padding-left: 1em;
   padding-bottom: 1em;
   margin-bottom: 2px;
-  width: 90px;
+  width: 7em;
   background: #369;
   color: #fff;
 }
@@ -267,7 +267,6 @@ table#server-list {
 
 #side a {
   color: #fff;
-  font-size: small;
   text-decoration: none;
 }
 
@@ -278,6 +277,10 @@ h1 {
 }
 
 /* An entry in the content catalog */
+
+#content {
+    font-size: 1.3em;
+}
 
 #content  .entry {
   border-bottom: 1px dotted #77d;
@@ -394,11 +397,11 @@ h1 {
 
 /* Crock stuff */
 body {
+  font-size: 62.5%;
   margin: 1em;
   padding: 0;
   color: #000;
   font-family: "Bitstream Vera Sans", Verdana, sans-serif;
-  font-size: 85%;
 }
 
 div#contents {
