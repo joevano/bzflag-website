@@ -41,9 +41,6 @@ class BzflagController < ApplicationController
       @total_players += b.current_players_count
       @total_running_servers += 1 if b.server_status_message && b.server_status_message.message.text.capitalize == 'Running'
     end
-
-    @recent_bans = LogMessage.recent_ban_days
-    @recent_reports = LogMessage.recent_report_days
   end
 
   def help
