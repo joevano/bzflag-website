@@ -54,6 +54,7 @@ class BzflagController < ApplicationController
   end
 
   def bans
+    @recent_bans = LogMessage.recent_ban_days
   end
 
   def recordings
