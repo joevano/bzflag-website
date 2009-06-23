@@ -37,7 +37,7 @@
   background:   #fff;
 }
 
-#server-list table {
+#server-list table, table.logs {
   border: 1px solid #999;
   border-collapse: separate;
   width: 100%;
@@ -53,7 +53,7 @@ table#recent_bans {
   width: 100%;
 }
 
-#recent_bans th, #recent_reports th {
+#recent_bans th, #recent_reports th, table.logs th {
   background-color: #ccc;
   margin: 0pt;
   padding: 0pt;
