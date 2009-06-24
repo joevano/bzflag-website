@@ -58,4 +58,12 @@ module BzflagHelper
     end
     str.rstrip
   end
+
+  def pluralStr(count, string)
+    if count.to_i == 1
+      "%d %s" % [count, string]
+    else
+      "%d %s" % [count, string.pluralize]
+    end
+  end
 end
