@@ -18,4 +18,44 @@
 #-------------------------------------------------------------------------------
 
 module BzflagHelper
+
+  def banTimeStr(endtime)
+    if endtime == 0
+      return 'Forever'
+    end
+
+    now = Time.now.to_i
+    duration = endtime - now
+    seconds = 1
+    minutes = (60 * seconds).to_i
+    hours = (60 * minutes).to_i
+    days = (24 * hours).to_i
+    weeks = (days * 7).to_i
+    years = (days * 365).to_i
+    str = ""
+    if duration < 0
+      str += "Expired"
+    end
+    if duration > years
+      str += pluralStr(duration / years, 'year') + ' '
+      duration %= years
+    end
+    if duration > weeks
+      str += pluralStr(duration / weeks, 'week') + ' '
+      duration %= weeks
+    end
+    if duration > days
+      str += pluralStr(duration / days, 'day') + ' '
+      duration %= days
+    end
+    if duration > hours
+      str += pluralStr(duration / hours, 'hour') + ' '
+      duration %= hours
+    end
+    if duration > minutes
+      str += pluralStr(duration / minutes, 'minute') + ' '
+      duration %= minutes
+    end
+    str.rstrip
+  end
 end
