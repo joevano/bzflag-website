@@ -16,6 +16,7 @@
 # License along with this website project; if not, write to the Free Software
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 #-------------------------------------------------------------------------------
+require "banfile"
 
 class BzflagController < ApplicationController
   before_filter :authorize_admin_menu_perm, :except => [ :index ]
@@ -55,6 +56,7 @@ class BzflagController < ApplicationController
 
   def bans
     @recent_bans = LogMessage.recent_ban_days
+    @bans = Ban.new("public/masterban.txt").bans
   end
 
   def recordings

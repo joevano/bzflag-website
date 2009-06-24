@@ -47,13 +47,13 @@ table caption { text-align: left;
 		font-weight: bold; 
 }
 
-table#recent_bans {
+table.bans {
   border: 1px solid #999;
   border-collapse: separate;
   width: 100%;
 }
 
-#recent_bans th, #recent_reports th, table.logs th {
+.bans th, #recent_reports th, table.logs th {
   background-color: #ccc;
   margin: 0pt;
   padding: 0pt;
@@ -70,7 +70,7 @@ table#recent_reports td {
   border: 0;
 }
 
-table#recent_bans td {
+table.bans td {
   border: 0;
 }
 

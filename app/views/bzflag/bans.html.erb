@@ -20,7 +20,7 @@
  -%>
 <h1>Bans</h1>
 <h2>Recent Bans</h2>
-<table id="recent_bans">
+<table class="bans">
 <caption>Bans In The Last <%= @recent_ban_days %> Days</caption>
 <tr>
   <th>#</th>
@@ -40,5 +40,40 @@
   </tr>
 <% end -%>
 </table>
-<h2>Bans</h2>
-<p>Bans go here.</p>
+<h2>Active Bans</h2>
+<table class="bans">
+<caption>Current banlist</caption>
+<tr>
+  <th>#</th>
+  <th>Type</th>
+  <th>Ban</th>
+  <th>By</th>
+  <th>Expires in</th>
+  <th>Reason</th>
+  <th>Action</th>
+</tr>
+<% @bans.each_index do |i| %>
+  <% ban = @bans[i] %>
+  <tr class="cmd">
+  <td><%= i+1 %></td>
+  <% if ban.instance_of?(IPBanEntry) -%>
+     <td>IP</td>
+     <td><%= ban.ip %></td>
+  <% elsif ban.instance_of?(IDBanEntry) -%>
+     <td>BZID</td>
+     <td><%= ban.id %></td>
+  <% elsif ban.instance_of?(HostBanEntry) -%>
+     <td>Host</td>
+     <td><%= ban.host %></td>
+  <% else -%>
+     <td>Unknown</td>
+     <td></td>
+  <% end -%>
+  <td><%= ban.banner %></td>
+  <td><%= banTimeStr(ban.endtime.to_i) %></td>
+  <td><%= h(ban.reason) %></td>
+  <td></td>
+  </tr>
+<% end -%>
+</table>
+
