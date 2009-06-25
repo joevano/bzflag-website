@@ -33,7 +33,7 @@
 <%= @page_title || "BZFlag Servers" %>
 </div>
 <div id="columns">
-<div id="side">
+<div id="navigation">
 <ul>
 <li><% if @user.id %><%= link_to "Logout", :controller => 'login', :action => 'logout' %><% else %><%= link_to "Login", :controller => 'login', :action => 'login' %><% end %></li>
 <li><%= link_to "Servers", :controller => 'bzflag', :action => 'index' %>
