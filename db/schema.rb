@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20090617211003) do
+ActiveRecord::Schema.define(:version => 20090624193243) do
 
   create_table "bz_servers", :force => true do |t|
     t.datetime "created_at"
@@ -31,7 +31,7 @@ ActiveRecord::Schema.define(:version => 20090617211003) do
     t.string   "name"
   end
 
-  add_index "callsigns", ["name"], :name => "index_callsigns_on_name"
+  add_index "callsigns", ["name"], :name => "index_callsigns_on_name", :unique => true
 
   create_table "current_players", :force => true do |t|
     t.integer  "slot_index"
@@ -49,6 +49,8 @@ ActiveRecord::Schema.define(:version => 20090617211003) do
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  add_index "emails", ["email"], :name => "index_emails_on_email", :unique => true
 
   create_table "groups", :force => true do |t|
     t.string   "name"
@@ -75,7 +77,7 @@ ActiveRecord::Schema.define(:version => 20090617211003) do
     t.datetime "last_part_at"
   end
 
-  add_index "ips", ["ip"], :name => "index_ips_on_ip"
+  add_index "ips", ["ip"], :name => "index_ips_on_ip", :unique => true
 
   create_table "log_messages", :force => true do |t|
     t.integer  "log_type_id"
@@ -100,13 +102,15 @@ ActiveRecord::Schema.define(:version => 20090617211003) do
     t.datetime "updated_at"
   end
 
+  add_index "log_types", ["token"], :name => "index_log_types_on_token", :unique => true
+
   create_table "messages", :force => true do |t|
     t.string   "text"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
-  add_index "messages", ["text"], :name => "index_messages_on_text"
+  add_index "messages", ["text"], :name => "index_messages_on_text", :unique => true
 
   create_table "permissions", :force => true do |t|
     t.datetime "created_at"
@@ -143,6 +147,8 @@ ActiveRecord::Schema.define(:version => 20090617211003) do
     t.string   "hostname"
     t.string   "owner"
   end
+
+  add_index "server_hosts", ["hostname"], :name => "index_server_hosts_on_hostname", :unique => true
 
   create_table "sessions", :force => true do |t|
     t.string   "session_id"
