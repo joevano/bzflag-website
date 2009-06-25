@@ -35,20 +35,20 @@
 <div id="columns">
 <div id="navigation">
 <ul>
-<li><% if @user.id %><%= link_to "Logout", :controller => 'login', :action => 'logout' %><% else %><%= link_to "Login", :controller => 'login', :action => 'login' %><% end %></li>
 <li><%= link_to "Servers", :controller => 'bzflag', :action => 'index' %>
 </li>
 <li><%= link_to "Player Info", :controller => 'search', :action => 'players' %></li>
-<li class="group"><%= link_to "Reports", :controller => 'bzflag', :action => 'reports' %></li>
-<li class="group"><%= link_to "Bans", :controller => 'bzflag', :action => 'bans' %></li>
+<li><%= link_to "Reports", :controller => 'bzflag', :action => 'reports' %></li>
+<li><%= link_to "Bans", :controller => 'bzflag', :action => 'bans' %></li>
 <li><%= link_to "Recordings", :controller => 'bzflag', :action => 'recordings' %></li>
 <li><%= link_to "Mailing List", :controller => 'mailing_list', :action => 'threads' %></li>
 <li><%= link_to "Help", :controller => 'help', :action => 'index' %></li>
 <li><%= link_to "Configuration", :controller => 'config', :action => 'index' %></li>
-<li class="group"><%= link_to "Forum", "http://my.bzflag.org/bb" %></li>
-<li class="group"><%= link_to "Wiki", "http://my.bzflag.org/w" %></li>
+<li><%= link_to "Forum", "http://my.bzflag.org/bb" %></li>
+<li><%= link_to "Wiki", "http://my.bzflag.org/w" %></li>
 <li><%= link_to "Source Code", "http://git.norang.ca/?p=bzflag-website;a=summary" %></li>
 <li><%= link_to "Admins", AppConfig.admins_link %></li>
+<li><% if @user.id %><%= link_to "Logout", :controller => 'login', :action => 'logout' %><% else %><%= link_to "Login", :controller => 'login', :action => 'login' %><% end %></li>
 </ul>
 </div>
 <div id="main">
