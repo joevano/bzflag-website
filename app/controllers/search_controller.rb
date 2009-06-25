@@ -75,7 +75,7 @@ class SearchController < ApplicationController
                                                      :conditions => "log_messages.id >= #{next_page} and log_type_id in (1,2,3,4,5,6,7,8,9,10,11,12,13)", 
                                                      :order => "log_messages.id",
                                                      :include => [ "message", "callsign", "to_callsign" ],
-                                                     :limit => 100)
+                                                     :limit => 500)
         if @log_messages.empty?
             flash.now[:notice] = "Displaying most recent records"
         end
@@ -84,7 +84,7 @@ class SearchController < ApplicationController
                                                      :conditions => "log_messages.id <= #{prev_page} and log_type_id in (1,2,3,4,5,6,7,8,9,10,11,12,13)", 
                                                      :order =>  "log_messages.id desc",
                                                      :include => [ "message", "callsign", "to_callsign" ],
-                                                     :limit => 100).reverse
+                                                     :limit => 500).reverse
     end
 
     if @log_messages.empty?
@@ -92,7 +92,7 @@ class SearchController < ApplicationController
                                                      :conditions => "log_type_id in (1,2,3,4,5,6,7,8,9,10,11,12,13)", 
                                                      :order => "log_messages.id desc",
                                                      :include => [ "message", "callsign", "to_callsign" ],
-                                                     :limit => 100).reverse
+                                                     :limit => 500).reverse
     end
 
     @player_join_log_type_id = LogType.find_by_token("PLAYER-JOIN").id
