@@ -28,10 +28,17 @@ class Callsign < ActiveRecord::Base
 
   validates_presence_of :name
 
+  @@callsigns = Hash.new
+
   def self.locate(name)
-    if name == '' || name =~ /^\s+$/
+    if name =~ /^\s*$/
       name = 'UNKNOWN'
     end
-    Callsign.find_or_create_by_name(name)
+
+    if !@@callsigns[name]
+      @@callsigns.store(name, Callsign.find_or_create_by_name(name))
+    end
+
+    @@callsigns[name]
   end
 end

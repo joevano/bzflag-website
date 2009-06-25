@@ -21,7 +21,11 @@ require 'test_helper'
 
 class CallsignTest < ActiveSupport::TestCase
   # Replace this with your real tests.
-  def test_truth
-    assert true
+  def test_locate
+    cs1 = Callsign.locate('joevano')
+    cs2 = Callsign.find_by_name('joevano')
+    assert_not_nil(cs1)
+    assert_equal(cs1.name, 'joevano')
+    assert_equal(cs1.id, cs2.id)
   end
 end

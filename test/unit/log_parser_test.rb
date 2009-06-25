@@ -19,6 +19,7 @@
 
 require 'test_helper'
 require 'log_parser'
+require 'test_callsign_helper.rb'
 
 class LogParserTest < ActiveSupport::TestCase
   fixtures :server_hosts, :bz_servers, :callsigns, :log_types
@@ -27,6 +28,7 @@ class LogParserTest < ActiveSupport::TestCase
     @server_host = ServerHost.find(1)
     @bz_server = BzServer.find(1)
     @logger = LogParser.new
+    Callsign.clear_cache
   end
 
   def test_get_callsign
