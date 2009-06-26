@@ -20,7 +20,7 @@
  -%>
 <h1>Logs</h1>
 <h2><%= @bz_server.server_host.hostname%>:<%=@bz_server.port%> - <%= @bz_server.map_name %></h2>
-<% if @log_messages -%>
+<% if @log_messages[0] -%>
     <%= link_to "Prev", :action => :logs, :id => @bz_server.id, :prev_page => @log_messages[0].id - 1 %>
     <%= link_to "Next", :action => :logs, :id => @bz_server.id, :next_page => @log_messages[-1].id + 1 %>
 <% end -%>
@@ -113,7 +113,7 @@
 </tr>
 <% end -%>
 </table>
-<% if @log_messages -%>
+<% if @log_messages[0] -%>
     <%= link_to "Prev", :action => :logs, :id => @bz_server.id, :prev_page => @log_messages[0].id - 1 %>
     <%= link_to "Next", :action => :logs, :id => @bz_server.id, :next_page => @log_messages[-1].id + 1 %>
 <% end -%>
