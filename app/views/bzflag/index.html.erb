@@ -51,7 +51,7 @@ Servers</p>
 </td>
 </tr>
 </table>
-<table id="server-list">
+<table class="server-list">
 <tr>
 <th>Host</th>
 <th>Port</th>
@@ -139,3 +139,47 @@ Servers</p>
 </tr>
 <% end -%>
 </table>
+<% if @logs_perm -%>
+<h2>Recent Reports</h2>
+<table class="reports">
+<caption>Reports In The Last <%= @recent_report_days %> Days</caption>
+<tr>
+  <th>#</th>
+  <th>Date</th>
+  <th>Server</th>
+  <th>By</th>
+  <th>Detail</th>
+</tr>
+<% @recent_reports.each_index do |i| %>
+  <% rpt = @recent_reports[i] %>
+  <tr class="rpt">
+    <td><%= i + 1 %> </td>
+    <td><%= display_date(rpt.logged_at) %></td>
+    <td><%= rpt.bz_server.server_host.hostname + ':' + rpt.bz_server.port.to_s %></td>
+    <td><%= rpt.callsign.name %></td>
+    <td><%= rpt.message.text %></td>
+  </tr>
+<% end -%>
+</table>
+<h2>Recent Bans</h2>
+<table class="bans">
+<caption>Bans In The Last <%= @recent_ban_days %> Days</caption>
+<tr>
+  <th>#</th>
+  <th>Date</th>
+  <th>Server</th>
+  <th>By</th>
+  <th>Detail</th>
+</tr>
+<% @recent_bans.each_index do |i| %>
+  <% ban = @recent_bans[i] %>
+  <tr class="cmd">
+    <td><%= link_to (i + 1).to_s, :controller => "search", :action => "logs", :id => ban.bz_server_id, :next_page => ban.id %></td>
+    <td><%= display_date(ban.logged_at) %></td>
+    <td><%= ban.bz_server.server_host.hostname + ':' + ban.bz_server.port.to_s %></td>
+    <td><%= ban.callsign.name %></td>
+    <td><%= ban.message.text %></td>
+  </tr>
+<% end -%>
+</table>
+<% end -%>

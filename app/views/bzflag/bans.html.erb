@@ -19,28 +19,6 @@
  #-------------------------------------------------------------------------------
  -%>
 <h1>Bans</h1>
-<h2>Recent Bans</h2>
-<table class="bans">
-<caption>Bans In The Last <%= @recent_ban_days %> Days</caption>
-<tr>
-  <th>#</th>
-  <th>Date</th>
-  <th>Server</th>
-  <th>By</th>
-  <th>Detail</th>
-</tr>
-<% @recent_bans.each_index do |i| %>
-  <% ban = @recent_bans[i] %>
-  <tr class="cmd">
-    <td><%= link_to (i + 1).to_s, :controller => "search", :action => "logs", :id => ban.bz_server_id, :next_page => ban.id %></td>
-    <td><%= display_date(ban.logged_at) %></td>
-    <td><%= ban.bz_server.server_host.hostname + ':' + ban.bz_server.port.to_s %></td>
-    <td><%= ban.callsign.name %></td>
-    <td><%= ban.message.text %></td>
-  </tr>
-<% end -%>
-</table>
-<h2>Active Bans</h2>
 <table class="bans">
 <caption>Current banlist</caption>
 <tr>

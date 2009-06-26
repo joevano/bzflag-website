@@ -12,32 +12,32 @@
 
 /* Styles for admin/list */
 
-#server-list .list-title {
+.server-list .list-title {
   color:        #244;
   font-weight:  bold;
   font-size:    larger;
 }
 
-#server-list .list-image {
+.server-list .list-image {
   width:        60px;
   height:       70px;
 }
 
-#server-list .list-actions {
+.server-list .list-actions {
   font-size:    x-small;
   text-align:   right;
   padding-left: 1em;
 }
 
-#server-list .list-line-even {
+.server-list .list-line-even {
   background:   #eee;
 }
 
-#server-list .list-line-odd {
+.server-list .list-line-odd {
   background:   #fff;
 }
 
-#server-list table, table.logs {
+.server-list table, table.logs {
   border: 1px solid #999;
   border-collapse: separate;
   width: 100%;
@@ -53,20 +53,20 @@ table.bans {
   width: 100%;
 }
 
-.bans th, #recent_reports th, table.logs th {
+.bans th, .reports th, table.logs th {
   background-color: #ccc;
   margin: 0pt;
   padding: 0pt;
   text-align: left;
 }
 
-table#recent_reports {
+table.reports {
   border: 1px solid #999;
   border-collapse: separate;
   width: 100%;
 }
 
-table#recent_reports td {
+table.reports td {
   border: 0;
 }
 
@@ -94,25 +94,25 @@ table.legend td {
   padding: 1px;
 }
 
-table#server-list {
+table.server-list {
   border: 1px solid #999;
   border-collapse: separate;
   width: 100%;
 }
 
-#server-list th {
+.server-list th {
   background-color: #ccc;
   margin: 0pt;
   padding: 0pt;
   text-align: left;
 }
 
-#server-list table caption {
+.server-list table caption {
   font-weight: bold;
   text-align: left;
 }
 
-#server-list td, #server-list th {
+.server-list td, .server-list th {
   border: 0;
 }
 
@@ -130,27 +130,27 @@ table#server-list {
         background-color: #9cf;
 }
 
-#server-list .serverDisabled {
+.server-list .serverDisabled {
         color: #000099;
 }
 
-#server-list .serverDead {
+.server-list .serverDead {
         background-color: #ff0000;
 }
 
-#server-list .serverRestarting {
+.server-list .serverRestarting {
         color: #990000;
 }
 
-#server-list .serverRunning {
+.server-list .serverRunning {
         color: #009900;
 }
 
-#server-list .serverStopped {
+.server-list .serverStopped {
         color: #990000;
 }
 
-#server-list .serverPending {
+.server-list .serverPending {
         color: #990000;
 }
 
