@@ -23,7 +23,8 @@ class Callsign < ActiveRecord::Base
   has_many :teams, :through => :player_connections, :uniq => true
   has_many :log_messages
 
-  named_scope :callsign_like, lambda {|callsign| { :conditions => ['name like ?', callsign] }}
+  named_scope :callsign_like,
+              lambda {|callsign| { :conditions => ['name like ?', callsign] }}
 
   validates_presence_of :name
 
