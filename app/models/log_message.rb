@@ -28,20 +28,17 @@ class LogMessage < ActiveRecord::Base
   has_one :last_filtered_log_server, :class_name => "BzServer", :foreign_key => "last_filtered_message_id"
   has_one :server_status_server, :class_name => "BzServer", :foreign_key => "server_status_message_id"
 
-  @recent_ban_days = 3
-  @recent_report_days = 3
-
-  def self.recent_ban_days
+  def self.recent_bans
     find(:all,
-         :conditions => "log_type_id = #{LogType.find_by_token("MSG-COMMAND").id} and logged_at > '#{db_date(@recent_ban_days.days.ago)}' and (text like 'ban %' or text like 'unban %' or text like 'hostban %' or text like 'hostunban %' or text like 'idban %' or text like 'idunban %' or text like 'poll ban %')",
+         :conditions => "log_type_id = #{LogType.find_by_token("MSG-COMMAND").id} and logged_at > '#{db_date(AppConfig.num_recent_ban_days.days.ago)}' and (text like 'ban %' or text like 'unban %' or text like 'hostban %' or text like 'hostunban %' or text like 'idban %' or text like 'idunban %' or text like 'poll ban %')",
          :order => "logged_at desc",
          :joins => :message,
          :include => "message")
   end
 
-  def self.recent_report_days
+  def self.recent_reports
     find(:all,
-         :conditions => "log_type_id = #{LogType.find_by_token("MSG-REPORT").id} and logged_at > '#{db_date(@recent_report_days.days.ago)}'",
+         :conditions => "log_type_id = #{LogType.find_by_token("MSG-REPORT").id} and logged_at > '#{db_date(AppConfig.num_recent_report_days.days.ago)}'",
          :order => "logged_at desc")
   end
   

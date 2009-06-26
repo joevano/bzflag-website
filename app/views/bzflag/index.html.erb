@@ -142,7 +142,7 @@ Servers</p>
 <% if @logs_perm -%>
 <h2>Recent Reports</h2>
 <table class="reports">
-<caption>Reports In The Last <%= @recent_report_days %> Days</caption>
+<caption>Reports In The Last <%= AppConfig.num_recent_report_days %> Days</caption>
 <tr>
   <th>#</th>
   <th>Date</th>
@@ -163,7 +163,7 @@ Servers</p>
 </table>
 <h2>Recent Bans</h2>
 <table class="bans">
-<caption>Bans In The Last <%= @recent_ban_days %> Days</caption>
+<caption>Bans In The Last <%= AppConfig.num_recent_ban_days %> Days</caption>
 <tr>
   <th>#</th>
   <th>Date</th>

@@ -21,6 +21,8 @@ common:
   root_url: websitevhost.yourdomain.com
   auth_srv: my.bzflag.org
   admins_link: http://my.bzflag.org/bb/groupcp.php
+  num_recent_ban_days: 3
+  num_recent_report_days: 3
 
 production:
 
