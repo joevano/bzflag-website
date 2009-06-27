@@ -23,7 +23,7 @@ class GroupPermissionId < ActiveRecord::Migration
   end
 
   def self.down
-    add_column :groups, :access_level_id
+    add_column :groups, :access_level_id, :integer
     remove_column :groups, :permission_id, :integer
   end
 end
