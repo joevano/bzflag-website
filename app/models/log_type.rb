@@ -22,7 +22,7 @@ class LogType < ActiveRecord::Base
   has_many :log_messages
 
   def self.ids(tokens)
-    t = tokens.collect do |l| 
+    t = tokens.collect do |l|
       lt = LogType.find_by_token(l)
       lt and lt.id
     end

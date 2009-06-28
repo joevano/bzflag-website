@@ -45,8 +45,8 @@
 <th>Detail</th>
 <th>Action</th>
 </tr>
-<% 
-@log_messages.each do |lm| 
+<%
+@log_messages.each do |lm|
     from = lm.callsign && lm.callsign.name || ""
     to = lm.to_callsign && lm.to_callsign.name || ""
     detail = lm.message && lm.message.text || ""
