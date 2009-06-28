@@ -58,7 +58,12 @@ class BzflagController < ApplicationController
   end
 
   def bans
-    @bans = Ban.new("public/masterban.txt").bans
+    begin
+      @bans = Ban.new("public/masterban.txt").bans
+    rescue
+      flash.now[:notice] = "Can't find banfile"
+      @bans = []
+    end
   end
 
   def recordings
