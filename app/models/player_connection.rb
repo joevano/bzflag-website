@@ -23,6 +23,13 @@ class PlayerConnection < ActiveRecord::Base
   belongs_to :callsign
   belongs_to :ip
   belongs_to :team
+  has_many :log_messages
+  has_one :player_join_connection,
+          :class_name => "log_messages",
+          :conditions => "log_type_id = #{LogType.find_by_token('PLAYER-JOIN')}"
+  has_one :player_part_connection,
+          :class_name => "log_messages",
+          :conditions => "log_type_id = #{LogType.find_by_token('PLAYER-PART')}"
 
   named_scope  :get_player_join_min_max,
                :select => "callsign_id,
