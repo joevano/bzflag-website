@@ -38,7 +38,7 @@ class LogMessage < ActiveRecord::Base
   def self.recent_bans
     find(:all,
          :conditions => "log_type_id = #{LogType.find_by_token("MSG-COMMAND").id} and
-                         logged_at > '#{db_date(AppConfig.num_recent_ban_days.days.ago)}' and
+                         logged_at > '#{AppConfig.num_recent_ban_days.days.ago.to_s(:db)}' and
                          (text like 'ban %' or
                           text like 'unban %' or
                           text like 'hostban %' or
@@ -54,7 +54,7 @@ class LogMessage < ActiveRecord::Base
   def self.recent_reports
     find(:all,
          :conditions => "log_type_id = #{LogType.find_by_token("MSG-REPORT").id} and
-                         logged_at > '#{db_date(AppConfig.num_recent_report_days.days.ago)}'",
+                         logged_at > '#{AppConfig.num_recent_report_days.days.ago.to_s(:db)}'",
          :order => "logged_at desc")
   end
 end

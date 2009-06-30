@@ -72,7 +72,9 @@
 
     when @player_part_log_type_id
         css_class = "playerjoin"
-        to = "##{lm.player_connection && lm.player_connection.slot} removed"
+        to = ""
+        to = "##{lm.player_connection.slot} " if lm.player_connection
+        to = "removed"
 
     when @player_auth_log_type_id
         css_class = "playerjoin"
