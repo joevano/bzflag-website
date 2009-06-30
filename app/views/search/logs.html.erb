@@ -55,11 +55,24 @@
 
     when @player_join_log_type_id
         css_class = "playerjoin"
-        to = "#SLOT joins"
+        if lm.player_connection
+          to = "##{lm.player_connection.slot} joins"
+          detail = ""
+          if lm.player_connection.bzid
+            detail += "BZid:#{lm.player_connection.bzid} "
+          end
+          detail += "#{lm.player_connection.team.name} "
+          detail += "IP:#{lm.player_connection.ip.ip} "
+          detail += "VERIFIED " if lm.player_connection.is_verified
+          detail += "GLOBALUSER " if lm.player_connection.is_globaluser
+          detail += "ADMIN " if lm.player_connection.is_admin
+          detail += "OPERATOR " if lm.player_connection.is_operator
+          detail.rstrip
+        end
 
     when @player_part_log_type_id
         css_class = "playerjoin"
-        to = "#SLOT removed"
+        to = "##{lm.player_connection && lm.player_connection.slot} removed"
 
     when @player_auth_log_type_id
         css_class = "playerjoin"
@@ -86,6 +99,7 @@
 
     when @msg_team_log_type_id
         css_class = "team"
+        to = lm.team.name
 
     when @msg_report_log_type_id
         css_class = "rpt"

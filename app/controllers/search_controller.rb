@@ -74,7 +74,7 @@ class SearchController < ApplicationController
         @log_messages = @bz_server.log_messages.find(:all,
                                                      :conditions => "log_messages.id >= #{next_page} and log_type_id in (1,2,3,4,5,6,7,8,9,10,11,12,13)", 
                                                      :order => "log_messages.id",
-                                                     :include => [ "message", "callsign", "to_callsign" ],
+                                                     :include => [ "message", "callsign", "to_callsign", "player_connection"],
                                                      :limit => 500)
         if @log_messages.empty?
             flash.now[:notice] = "Displaying most recent records"
@@ -83,7 +83,7 @@ class SearchController < ApplicationController
         @log_messages = @bz_server.log_messages.find(:all,
                                                      :conditions => "log_messages.id <= #{prev_page} and log_type_id in (1,2,3,4,5,6,7,8,9,10,11,12,13)", 
                                                      :order =>  "log_messages.id desc",
-                                                     :include => [ "message", "callsign", "to_callsign" ],
+                                                     :include => [ "message", "callsign", "to_callsign", "player_connection"],
                                                      :limit => 500).reverse
     end
 
@@ -91,7 +91,7 @@ class SearchController < ApplicationController
         @log_messages = @bz_server.log_messages.find(:all,
                                                      :conditions => "log_type_id in (1,2,3,4,5,6,7,8,9,10,11,12,13)", 
                                                      :order => "log_messages.id desc",
-                                                     :include => [ "message", "callsign", "to_callsign" ],
+                                                     :include => [ "message", "callsign", "to_callsign", "player_connection"],
                                                      :limit => 500).reverse
     end
 

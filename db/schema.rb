@@ -9,7 +9,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20090628220347) do
+ActiveRecord::Schema.define(:version => 20090629133544) do
 
   create_table "bz_servers", :force => true do |t|
     t.datetime "created_at"
@@ -90,11 +90,13 @@ ActiveRecord::Schema.define(:version => 20090628220347) do
     t.integer  "team_id"
     t.integer  "message_id"
     t.integer  "bz_server_id"
+    t.integer  "player_connection_id"
   end
 
   add_index "log_messages", ["bz_server_id", "id", "log_type_id", "logged_at"], :name => "index_log_messages"
   add_index "log_messages", ["id"], :name => "index_log_messages_by_id"
   add_index "log_messages", ["log_type_id", "logged_at"], :name => "index_log_messages_log_type_logged_at"
+  add_index "log_messages", ["player_connection_id", "log_type_id"], :name => "index_log_messages_on_player_connection_id_and_log_type_id"
 
   create_table "log_types", :force => true do |t|
     t.string   "token"
@@ -137,6 +139,7 @@ ActiveRecord::Schema.define(:version => 20090628220347) do
     t.boolean  "is_operator"
   end
 
+  add_index "player_connections", ["bz_server_id", "callsign_id", "join_at"], :name => "index_player_connections_join_at"
   add_index "player_connections", ["bz_server_id", "part_at", "callsign_id"], :name => "index_player_connections"
   add_index "player_connections", ["callsign_id"], :name => "index_player_connections_on_callsign_id"
   add_index "player_connections", ["ip_id", "callsign_id", "is_verified", "is_admin", "is_globaluser", "is_operator", "join_at"], :name => "index_player_connections_search"
