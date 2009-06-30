@@ -252,6 +252,9 @@ class LogParser
                                     :team => team,
                                     :slot => slot)
 
+      lm.player_connection_id = pc.id
+      lm.save!
+
     when 'PLAYER-PART'
       lm.callsign, detail = get_callsign(detail)
 
@@ -265,12 +268,18 @@ class LogParser
 
       lm.save!
 
-      pc = PlayerConnection.find(:first, :conditions => "bz_server_id = #{bz_server.id} and part_at is null and callsign_id = #{lm.callsign.id}", :include => :ip)
+      pc = PlayerConnection.find(:first,
+                                 :conditions => "bz_server_id = #{bz_server.id} and
+                                                 part_at is null and
+                                                 callsign_id = #{lm.callsign.id}",
+                                 :include => :ip)
       if pc
         pc.part_at = date
         pc.ip.last_part_at = date
         pc.ip.save!
         pc.save!
+        lm.player_connection_id = pc.id
+        lm.save!
       end
 
     when 'PLAYER-AUTH'

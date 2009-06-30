@@ -199,6 +199,7 @@ class LogParserTest < ActiveSupport::TestCase
     assert_not_nil(lm)
     assert_not_nil(lm.logged_at)
     assert_equal(pc.join_at, lm.logged_at)
+    assert_equal(pc.id, lm.player_connection_id)
     lt = LogType.find_by_token("PLAYER-JOIN")
     assert_not_nil(lt)
     assert_equal(lt.id, lm.log_type_id)
@@ -250,6 +251,7 @@ class LogParserTest < ActiveSupport::TestCase
     assert_not_nil(lm)
     assert_not_nil(lm.logged_at)
     assert_equal(pc.join_at, lm.logged_at)
+    assert_equal(pc.id, lm.player_connection_id)
     lt = LogType.find_by_token("PLAYER-JOIN")
     assert_not_nil(lt)
     assert_equal(lt.id, lm.log_type_id)
@@ -286,6 +288,7 @@ class LogParserTest < ActiveSupport::TestCase
     assert_not_nil(lm)
     assert_not_nil(lm.logged_at)
     assert_equal(pc.join_at, lm.logged_at)
+    assert_equal(pc.id, lm.player_connection_id)
     lt = LogType.find_by_token("PLAYER-JOIN")
     assert_not_nil(lt)
     assert_equal(lt.id, lm.log_type_id)
@@ -327,6 +330,7 @@ class LogParserTest < ActiveSupport::TestCase
     assert_equal(@bz_server.id, lm.bz_server_id)
     pc.reload
     assert_equal('2007-12-29T00:02:14Z', pc.part_at.strftime('%Y-%m-%dT%H:%M:%SZ'))
+    assert_equal(pc.id, lm.player_connection_id)
     ip.reload
     assert_equal(pc.part_at, ip.last_part_at)
   end
