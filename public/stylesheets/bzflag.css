@@ -8,6 +8,11 @@
   background-color: #f0f0f0;
   font: bold smaller sans-serif;
 }
+
+#notice p {
+  padding: 0;
+  margin: 0;
+}
 /* END:notice */
 
 /* Styles for admin/list */

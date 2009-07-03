@@ -48,8 +48,8 @@ class ApplicationController < ActionController::Base
     @configuration_menu_perm = permissions.index(cfg_menu_p)
     if cfg_menu_p.groups.count == 0
       @configuration_menu_perm = true
-      flash[:notice] = "<strong>Configuration Menu unrestricted - anyone can edit permissions</strong>"
-      flash[:notice] += "<br>Add the 'Configuration Menu' to at least one group"
+      flash[:notice] = "<p><strong>Configuration Menu unrestricted - anyone can edit permissions</strong></p>"
+      flash[:notice] += "<p>Add the 'Configuration Menu' to at least one group</p>"
     end
     @ban_perm = permissions.index(Permission.find_by_name("ban"))
     @logs_perm = permissions.index(Permission.find_by_name("logs"))
