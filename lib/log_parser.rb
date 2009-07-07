@@ -222,7 +222,7 @@ class LogParser
       lm.bzid = bzid
       lm.team = team
 
-      return if @last_log_time and @last_log_time = lm.logged_at and bz_server.log_messages.find_by_logged_at_and_log_type_id_and_callsign_id_and_bzid_and_team_id(lm.logged_at, lm.log_type_id, lm.callsign_id, lm.bzid, lm.team_id)
+      return if @last_log_time and @last_log_time == lm.logged_at and bz_server.log_messages.find_by_logged_at_and_log_type_id_and_callsign_id_and_bzid_and_team_id(lm.logged_at, lm.log_type_id, lm.callsign_id, lm.bzid, lm.team_id)
 
       lm.save!
 
@@ -264,7 +264,7 @@ class LogParser
       lm.message = get_message(detail)
 
       # Skip it if we've already recorded it
-      return if @last_log_time and @last_log_time = lm.logged_at and bz_server.log_messages.find_by_logged_at_and_log_type_id_and_callsign_id_and_bzid_and_message_id(lm.logged_at, lm.log_type_id, lm.callsign_id, lm.bzid, lm.message_id)
+      return if @last_log_time and @last_log_time == lm.logged_at and bz_server.log_messages.find_by_logged_at_and_log_type_id_and_callsign_id_and_bzid_and_message_id(lm.logged_at, lm.log_type_id, lm.callsign_id, lm.bzid, lm.message_id)
 
       lm.save!
 
@@ -286,7 +286,7 @@ class LogParser
       lm.callsign, detail = get_callsign(detail)
 
       # Skip it if we've already recorded it
-      return if @last_log_time and @last_log_time = lm.logged_at and bz_server.log_messages.find_by_logged_at_and_log_type_id_and_callsign_id(lm.logged_at, lm.log_type_id, lm.callsign_id)
+      return if @last_log_time and @last_log_time == lm.logged_at and bz_server.log_messages.find_by_logged_at_and_log_type_id_and_callsign_id(lm.logged_at, lm.log_type_id, lm.callsign_id)
 
       lm.save!
 
@@ -310,7 +310,7 @@ class LogParser
       lm.message = get_message(detail)
 
       # Skip it if we've already recorded it
-      return if @last_log_time and @last_log_time = lm.logged_at and bz_server.log_messages.find_by_logged_at_and_log_type_id_and_callsign_id_and_message_id(lm.logged_at, lm.log_type_id, lm.callsign_id, lm.message_id)
+      return if @last_log_time and @last_log_time == lm.logged_at and bz_server.log_messages.find_by_logged_at_and_log_type_id_and_callsign_id_and_message_id(lm.logged_at, lm.log_type_id, lm.callsign_id, lm.message_id)
 
       lm.save!
 
@@ -321,7 +321,7 @@ class LogParser
       lm.message = get_message(detail)
 
       # Skip it if we've already recorded it
-      return if @last_log_time and @last_log_time = lm.logged_at and bz_server.log_messages.find_by_logged_at_and_log_type_id_and_callsign_id_and_message_id(lm.logged_at, lm.log_type_id, lm.callsign_id, lm.message_id)
+      return if @last_log_time and @last_log_time == lm.logged_at and bz_server.log_messages.find_by_logged_at_and_log_type_id_and_callsign_id_and_message_id(lm.logged_at, lm.log_type_id, lm.callsign_id, lm.message_id)
 
       lm.save!
 
@@ -333,7 +333,7 @@ class LogParser
       lm.message = get_message(detail)
 
       # Skip it if we've already recorded it
-      return if @last_log_time and @last_log_time = lm.logged_at and bz_server.log_messages.find_by_logged_at_and_log_type_id_and_callsign_id_and_message_id(lm.logged_at, lm.log_type_id, lm.callsign_id, lm.message_id)
+      return if @last_log_time and @last_log_time == lm.logged_at and bz_server.log_messages.find_by_logged_at_and_log_type_id_and_callsign_id_and_message_id(lm.logged_at, lm.log_type_id, lm.callsign_id, lm.message_id)
       lm.save!
 
     when 'MSG-BROADCAST', 'MSG-ADMIN'
@@ -341,7 +341,7 @@ class LogParser
       lm.message = get_message(detail)
 
       # Skip it if we've already recorded it
-      return if @last_log_time and @last_log_time = lm.logged_at and bz_server.log_messages.find_by_logged_at_and_log_type_id_and_callsign_id_and_message_id(lm.logged_at, lm.log_type_id, lm.callsign_id, lm.message_id)
+      return if @last_log_time and @last_log_time == lm.logged_at and bz_server.log_messages.find_by_logged_at_and_log_type_id_and_callsign_id_and_message_id(lm.logged_at, lm.log_type_id, lm.callsign_id, lm.message_id)
       lm.save!
 
       bz_server.last_chat_message = lm if lm.callsign.name != "SERVER"
@@ -352,7 +352,7 @@ class LogParser
       lm.message = get_message(detail)
 
       # Skip it if we've already recorded it
-      return if @last_log_time and @last_log_time = lm.logged_at and bz_server.log_messages.find_by_logged_at_and_log_type_id_and_callsign_id_and_message_id(lm.logged_at, lm.log_type_id, lm.callsign_id, lm.message_id)
+      return if @last_log_time and @last_log_time == lm.logged_at and bz_server.log_messages.find_by_logged_at_and_log_type_id_and_callsign_id_and_message_id(lm.logged_at, lm.log_type_id, lm.callsign_id, lm.message_id)
       lm.save!
 
       bz_server.last_filtered_message = lm
@@ -364,7 +364,7 @@ class LogParser
       lm.message = get_message(detail)
 
       # Skip it if we've already recorded it
-      return if @last_log_time and @last_log_time = lm.logged_at and bz_server.log_messages.find_by_logged_at_and_log_type_id_and_callsign_id_and_to_callsign_id_and_message_id(lm.logged_at, lm.log_type_id, lm.callsign_id, lm.to_callsign_id, lm.message_id)
+      return if @last_log_time and @last_log_time == lm.logged_at and bz_server.log_messages.find_by_logged_at_and_log_type_id_and_callsign_id_and_to_callsign_id_and_message_id(lm.logged_at, lm.log_type_id, lm.callsign_id, lm.to_callsign_id, lm.message_id)
       lm.save!
 
       bz_server.last_chat_message = lm
@@ -376,7 +376,7 @@ class LogParser
       lm.message = get_message(detail)
 
       # Skip it if we've already recorded it
-      return if @last_log_time and @last_log_time = lm.logged_at and bz_server.log_messages.find_by_logged_at_and_log_type_id_and_callsign_id_and_team_id_and_message_id(lm.logged_at, lm.log_type_id, lm.callsign_id, lm.team_id, lm.message_id)
+      return if @last_log_time and @last_log_time == lm.logged_at and bz_server.log_messages.find_by_logged_at_and_log_type_id_and_callsign_id_and_team_id_and_message_id(lm.logged_at, lm.log_type_id, lm.callsign_id, lm.team_id, lm.message_id)
       lm.save!
 
       bz_server.last_chat_message = lm
