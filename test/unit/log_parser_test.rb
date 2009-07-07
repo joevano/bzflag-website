@@ -21,6 +21,17 @@ require 'test_helper'
 require 'log_parser'
 require 'test_callsign_helper.rb'
 
+# Extend class to allow for clearing of the cache between tests
+class LogParser
+  attr_accessor :last_log_time
+
+  def clear_logger_caches
+    @date = Hash.new
+    @last_log_time = Hash.new
+  end
+end
+
+
 class LogParserTest < ActiveSupport::TestCase
   fixtures :server_hosts, :bz_servers, :callsigns, :log_types
 
@@ -29,6 +40,7 @@ class LogParserTest < ActiveSupport::TestCase
     @bz_server = BzServer.find(1)
     @logger = LogParser.new
     Callsign.clear_cache
+    @logger.clear_logger_caches
   end
 
   def test_get_callsign
@@ -780,8 +792,8 @@ class LogParserTest < ActiveSupport::TestCase
     @logger.process_line(@server_host, @bz_server, line)
     line = '2007-12-29T00:00:05Z PLAYER-JOIN 7:widget4 #4 RED  IP:1.2.4.7'
     @logger.process_line(@server_host, @bz_server, line)
-    @logger.last_log_time=@bz_server.log_messages.find(:first, :order => "logged_at desc").logged_at
-    assert_equal(Time.gm(*ParseDate.parsedate('2007-12-29T00:00:05Z')), @logger.last_log_time)
+    @logger.last_log_time[@logger.build_server_name(@bz_server, @server_host)]=@bz_server.log_messages.find(:first, :order => "logged_at desc").logged_at
+    assert_equal(Time.gm(*ParseDate.parsedate('2007-12-29T00:00:05Z')), @logger.last_log_time[@logger.build_server_name(@bz_server, @server_host)])
     # skips this one
     line = '2007-12-29T00:00:03Z PLAYER-JOIN 7:widget1 #1 RED  IP:1.2.4.7'
     @logger.process_line(@server_host, @bz_server, line)
@@ -806,8 +818,8 @@ class LogParserTest < ActiveSupport::TestCase
   def test_skip_existing_player_part_logs
     line = '2007-12-29T00:02:14Z PLAYER-PART 11:Roger Sm1th #11 BZid:33331 left'
     @logger.process_line(@server_host, @bz_server, line)
-    @logger.last_log_time=@bz_server.log_messages.find(:first, :order => "logged_at desc").logged_at
-    assert_equal(Time.gm(*ParseDate.parsedate('2007-12-29T00:02:14Z')), @logger.last_log_time)
+    @logger.last_log_time[@logger.build_server_name(@bz_server, @server_host)]=@bz_server.log_messages.find(:first, :order => "logged_at desc").logged_at
+    assert_equal(Time.gm(*ParseDate.parsedate('2007-12-29T00:02:14Z')), @logger.last_log_time[@logger.build_server_name(@bz_server, @server_host)])
     # skips this one
     line = '2007-12-29T00:02:14Z PLAYER-PART 11:Roger Sm1th #11 BZid:33331 left'
     @logger.process_line(@server_host, @bz_server, line)
@@ -823,8 +835,8 @@ class LogParserTest < ActiveSupport::TestCase
   def test_skip_existing_player_auth_logs
     line = '2007-12-01T07:01:20Z PLAYER-AUTH 6:WhoDat  IP:10.13.181.223 VERIFIED'
     @logger.process_line(@server_host, @bz_server, line)
-    @logger.last_log_time=@bz_server.log_messages.find(:first, :order => "logged_at desc").logged_at
-    assert_equal(Time.gm(*ParseDate.parsedate('2007-12-01T07:01:20Z')), @logger.last_log_time)
+    @logger.last_log_time[@logger.build_server_name(@bz_server, @server_host)]=@bz_server.log_messages.find(:first, :order => "logged_at desc").logged_at
+    assert_equal(Time.gm(*ParseDate.parsedate('2007-12-01T07:01:20Z')), @logger.last_log_time[@logger.build_server_name(@bz_server, @server_host)])
     # skips this one
     line = '2007-12-01T07:01:20Z PLAYER-AUTH 6:WhoDat  IP:10.13.181.223 VERIFIED'
     @logger.process_line(@server_host, @bz_server, line)
@@ -840,8 +852,8 @@ class LogParserTest < ActiveSupport::TestCase
   def test_skip_existing_server_status_logs
     line = '2007-12-28T01:22:05Z SERVER-STATUS Restart Pending'
     @logger.process_line(@server_host, @bz_server, line)
-    @logger.last_log_time=@bz_server.log_messages.find(:first, :order => "logged_at desc").logged_at
-    assert_equal(Time.gm(*ParseDate.parsedate('2007-12-28T01:22:05Z')), @logger.last_log_time)
+    @logger.last_log_time[@logger.build_server_name(@bz_server, @server_host)]=@bz_server.log_messages.find(:first, :order => "logged_at desc").logged_at
+    assert_equal(Time.gm(*ParseDate.parsedate('2007-12-28T01:22:05Z')), @logger.last_log_time[@logger.build_server_name(@bz_server, @server_host)])
     assert_nil(@bz_server.last_chat_message_id)
     # skips this one
     line = '2007-12-28T01:22:05Z SERVER-STATUS Restart Pending'
@@ -858,8 +870,8 @@ class LogParserTest < ActiveSupport::TestCase
   def test_skip_existing_msg_report_logs
     line = '2007-12-29T00:58:41Z MSG-REPORT 5:WQR42 This is the coolest website project ever!'
     @logger.process_line(@server_host, @bz_server, line)
-    @logger.last_log_time=@bz_server.log_messages.find(:first, :order => "logged_at desc").logged_at
-    assert_equal(Time.gm(*ParseDate.parsedate('2007-12-29T00:58:41Z')), @logger.last_log_time)
+    @logger.last_log_time[@logger.build_server_name(@bz_server, @server_host)]=@bz_server.log_messages.find(:first, :order => "logged_at desc").logged_at
+    assert_equal(Time.gm(*ParseDate.parsedate('2007-12-29T00:58:41Z')), @logger.last_log_time[@logger.build_server_name(@bz_server, @server_host)])
     # skips this one
     line = '2007-12-29T00:58:41Z MSG-REPORT 5:WQR42 This is the coolest website project ever!'
     @logger.process_line(@server_host, @bz_server, line)
@@ -875,8 +887,8 @@ class LogParserTest < ActiveSupport::TestCase
   def test_skip_existing_msg_broadcast_logs
     line = '2007-12-29T00:02:12Z MSG-BROADCAST 9:onetwosix random message'
     @logger.process_line(@server_host, @bz_server, line)
-    @logger.last_log_time=@bz_server.log_messages.find(:first, :order => "logged_at desc").logged_at
-    assert_equal(Time.gm(*ParseDate.parsedate('2007-12-29T00:02:12Z')), @logger.last_log_time)
+    @logger.last_log_time[@logger.build_server_name(@bz_server, @server_host)]=@bz_server.log_messages.find(:first, :order => "logged_at desc").logged_at
+    assert_equal(Time.gm(*ParseDate.parsedate('2007-12-29T00:02:12Z')), @logger.last_log_time[@logger.build_server_name(@bz_server, @server_host)])
     # skips this one
     line = '2007-12-29T00:02:12Z MSG-BROADCAST 9:onetwosix random message'
     @logger.process_line(@server_host, @bz_server, line)
@@ -892,8 +904,8 @@ class LogParserTest < ActiveSupport::TestCase
   def test_skip_existing_msg_filtered_logs
     line = '2007-12-29T00:28:46Z MSG-FILTERED 7:badguy2 whata $*^'
     @logger.process_line(@server_host, @bz_server, line)
-    @logger.last_log_time=@bz_server.log_messages.find(:first, :order => "logged_at desc").logged_at
-    assert_equal(Time.gm(*ParseDate.parsedate('2007-12-29T00:28:46Z')), @logger.last_log_time)
+    @logger.last_log_time[@logger.build_server_name(@bz_server, @server_host)]=@bz_server.log_messages.find(:first, :order => "logged_at desc").logged_at
+    assert_equal(Time.gm(*ParseDate.parsedate('2007-12-29T00:28:46Z')), @logger.last_log_time[@logger.build_server_name(@bz_server, @server_host)])
     # skips this one
     line = '2007-12-29T00:28:46Z MSG-FILTERED 7:badguy2 whata $*^'
     @logger.process_line(@server_host, @bz_server, line)
@@ -909,8 +921,8 @@ class LogParserTest < ActiveSupport::TestCase
   def test_skip_existing_msg_direct_logs
     line = '2007-12-29T01:25:18Z MSG-DIRECT 10:DirectMsgs 6:Fred55 ok'
     @logger.process_line(@server_host, @bz_server, line)
-    @logger.last_log_time=@bz_server.log_messages.find(:first, :order => "logged_at desc").logged_at
-    assert_equal(Time.gm(*ParseDate.parsedate('2007-12-29T01:25:18Z')), @logger.last_log_time)
+    @logger.last_log_time[@logger.build_server_name(@bz_server, @server_host)]=@bz_server.log_messages.find(:first, :order => "logged_at desc").logged_at
+    assert_equal(Time.gm(*ParseDate.parsedate('2007-12-29T01:25:18Z')), @logger.last_log_time[@logger.build_server_name(@bz_server, @server_host)])
     # skips this one
     line = '2007-12-29T01:25:18Z MSG-DIRECT 10:DirectMsgs 6:Fred55 ok'
     @logger.process_line(@server_host, @bz_server, line)
@@ -926,8 +938,8 @@ class LogParserTest < ActiveSupport::TestCase
   def test_skip_existing_msg_team_logs
     line = '2007-12-29T00:00:44Z MSG-TEAM 9:xxyyzzaab GREEN gah'
     @logger.process_line(@server_host, @bz_server, line)
-    @logger.last_log_time=@bz_server.log_messages.find(:first, :order => "logged_at desc").logged_at
-    assert_equal(Time.gm(*ParseDate.parsedate('2007-12-29T00:00:44Z')), @logger.last_log_time)
+    @logger.last_log_time[@logger.build_server_name(@bz_server, @server_host)]=@bz_server.log_messages.find(:first, :order => "logged_at desc").logged_at
+    assert_equal(Time.gm(*ParseDate.parsedate('2007-12-29T00:00:44Z')), @logger.last_log_time[@logger.build_server_name(@bz_server, @server_host)])
     # skips this one
     line = '2007-12-29T00:00:44Z MSG-TEAM 9:xxyyzzaab GREEN gah'
     @logger.process_line(@server_host, @bz_server, line)

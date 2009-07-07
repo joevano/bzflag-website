@@ -25,12 +25,37 @@ require 'time'
 require 'parsedate'
 
 class LogParser
-  attr_accessor :last_log_time
-
   # Display format of command line usage
   def usage
     puts "usage: parse_bzfs_log.rb HOST:PORT"
     exit 1
+  end
+
+  def process_socketrequest(record)
+    @bzserver = Hash.new if !@bzserver
+    @bzhost = Hash.new if !@bzhost
+
+    hostname, port, line = record.split('|',3)
+
+    if !@bzhost[hostname]
+      host = ServerHost.find_by_hostname(hostname) unless @bzhost[hostname]
+      if host
+        @bzhost[hostname] = host
+        if !@bzserver["#{hostname}:#{port}"]
+          serv = BzServer.find_by_server_host_id_and_port(@bzhost[hostname].id, port)
+          if serv
+            @bzserver["#{hostname}:#{port}"] = serv
+          else
+            return 1
+          end
+        end
+      else
+        return 1
+      end
+    end
+
+    process_line(@bzhost[hostname], @bzserver["#{hostname}:#{port}"], line)
+    return 0
   end
 
   def generate_log_type_hash()
@@ -128,6 +153,10 @@ class LogParser
     return v, callsign, email, data
   end
 
+  def build_server_name(bz_server, server_host)
+    server_host.hostname.rstrip + ":" + bz_server.port.to_s
+  end
+
   # Process a line from the log file
   #
   def process_line(server_host, bz_server, line)
@@ -137,29 +166,34 @@ class LogParser
     # 2007-12-16 11:09:42:
     # or missing in which case we use the last date we have available
 
+    server = build_server_name(bz_server, server_host)
+
     # Generate @logtype hash if it hasn't been already
     if !@log_type
       generate_log_type_hash()
     end
 
-    if !@last_log_time
+    @date = Hash.new unless @date
+    @last_log_time = Hash.new unless @last_log_time
+
+    if @last_log_time[server].nil?
       lm = bz_server.log_messages.find(:first, :order => "logged_at desc")
-      @last_log_time = lm.logged_at if lm
+      @last_log_time[server] = lm.logged_at if lm
     end
 
     if line =~ /^(\d\d\d\d-\d\d-\d\d[T ]\d\d:\d\d:\d\dZ?):?\s+(.*)$/
       date = Time.gm(*ParseDate.parsedate($1))
       detail = $2
     else
-      date = @date
+      date = @date[server]
       detail = line
     end
     # Save the date/time in case the next log line has no time -- we'll just reuse this one
-    @date = date
+    @date[server] = date
 
     # If the last_log_time is set then we're updating logs and we should skip all of the logs
     # until the date is greater than or equal to the last_log_time
-    if @last_log_time and @last_log_time > @date
+    if @last_log_time[server] and @last_log_time[server] > @date[server]
       return
     end
 
@@ -222,7 +256,7 @@ class LogParser
       lm.bzid = bzid
       lm.team = team
 
-      return if @last_log_time and @last_log_time == lm.logged_at and bz_server.log_messages.find_by_logged_at_and_log_type_id_and_callsign_id_and_bzid_and_team_id(lm.logged_at, lm.log_type_id, lm.callsign_id, lm.bzid, lm.team_id)
+      return if @last_log_time[server] and @last_log_time[server] == lm.logged_at and bz_server.log_messages.find_by_logged_at_and_log_type_id_and_callsign_id_and_bzid_and_team_id(lm.logged_at, lm.log_type_id, lm.callsign_id, lm.bzid, lm.team_id)
 
       lm.save!
 
@@ -264,7 +298,7 @@ class LogParser
       lm.message = get_message(detail)
 
       # Skip it if we've already recorded it
-      return if @last_log_time and @last_log_time == lm.logged_at and bz_server.log_messages.find_by_logged_at_and_log_type_id_and_callsign_id_and_bzid_and_message_id(lm.logged_at, lm.log_type_id, lm.callsign_id, lm.bzid, lm.message_id)
+      return if @last_log_time[server] and @last_log_time[server] == lm.logged_at and bz_server.log_messages.find_by_logged_at_and_log_type_id_and_callsign_id_and_bzid_and_message_id(lm.logged_at, lm.log_type_id, lm.callsign_id, lm.bzid, lm.message_id)
 
       lm.save!
 
@@ -286,7 +320,7 @@ class LogParser
       lm.callsign, detail = get_callsign(detail)
 
       # Skip it if we've already recorded it
-      return if @last_log_time and @last_log_time == lm.logged_at and bz_server.log_messages.find_by_logged_at_and_log_type_id_and_callsign_id(lm.logged_at, lm.log_type_id, lm.callsign_id)
+      return if @last_log_time[server] and @last_log_time[server] == lm.logged_at and bz_server.log_messages.find_by_logged_at_and_log_type_id_and_callsign_id(lm.logged_at, lm.log_type_id, lm.callsign_id)
 
       lm.save!
 
@@ -310,7 +344,7 @@ class LogParser
       lm.message = get_message(detail)
 
       # Skip it if we've already recorded it
-      return if @last_log_time and @last_log_time == lm.logged_at and bz_server.log_messages.find_by_logged_at_and_log_type_id_and_callsign_id_and_message_id(lm.logged_at, lm.log_type_id, lm.callsign_id, lm.message_id)
+      return if @last_log_time[server] and @last_log_time[server] == lm.logged_at and bz_server.log_messages.find_by_logged_at_and_log_type_id_and_callsign_id_and_message_id(lm.logged_at, lm.log_type_id, lm.callsign_id, lm.message_id)
 
       lm.save!
 
@@ -321,7 +355,7 @@ class LogParser
       lm.message = get_message(detail)
 
       # Skip it if we've already recorded it
-      return if @last_log_time and @last_log_time == lm.logged_at and bz_server.log_messages.find_by_logged_at_and_log_type_id_and_callsign_id_and_message_id(lm.logged_at, lm.log_type_id, lm.callsign_id, lm.message_id)
+      return if @last_log_time[server] and @last_log_time[server] == lm.logged_at and bz_server.log_messages.find_by_logged_at_and_log_type_id_and_callsign_id_and_message_id(lm.logged_at, lm.log_type_id, lm.callsign_id, lm.message_id)
 
       lm.save!
 
@@ -333,7 +367,7 @@ class LogParser
       lm.message = get_message(detail)
 
       # Skip it if we've already recorded it
-      return if @last_log_time and @last_log_time == lm.logged_at and bz_server.log_messages.find_by_logged_at_and_log_type_id_and_callsign_id_and_message_id(lm.logged_at, lm.log_type_id, lm.callsign_id, lm.message_id)
+      return if @last_log_time[server] and @last_log_time[server] == lm.logged_at and bz_server.log_messages.find_by_logged_at_and_log_type_id_and_callsign_id_and_message_id(lm.logged_at, lm.log_type_id, lm.callsign_id, lm.message_id)
       lm.save!
 
     when 'MSG-BROADCAST', 'MSG-ADMIN'
@@ -341,7 +375,7 @@ class LogParser
       lm.message = get_message(detail)
 
       # Skip it if we've already recorded it
-      return if @last_log_time and @last_log_time == lm.logged_at and bz_server.log_messages.find_by_logged_at_and_log_type_id_and_callsign_id_and_message_id(lm.logged_at, lm.log_type_id, lm.callsign_id, lm.message_id)
+      return if @last_log_time[server] and @last_log_time[server] == lm.logged_at and bz_server.log_messages.find_by_logged_at_and_log_type_id_and_callsign_id_and_message_id(lm.logged_at, lm.log_type_id, lm.callsign_id, lm.message_id)
       lm.save!
 
       bz_server.last_chat_message = lm if lm.callsign.name != "SERVER"
@@ -352,7 +386,7 @@ class LogParser
       lm.message = get_message(detail)
 
       # Skip it if we've already recorded it
-      return if @last_log_time and @last_log_time == lm.logged_at and bz_server.log_messages.find_by_logged_at_and_log_type_id_and_callsign_id_and_message_id(lm.logged_at, lm.log_type_id, lm.callsign_id, lm.message_id)
+      return if @last_log_time[server] and @last_log_time[server] == lm.logged_at and bz_server.log_messages.find_by_logged_at_and_log_type_id_and_callsign_id_and_message_id(lm.logged_at, lm.log_type_id, lm.callsign_id, lm.message_id)
       lm.save!
 
       bz_server.last_filtered_message = lm
@@ -364,7 +398,7 @@ class LogParser
       lm.message = get_message(detail)
 
       # Skip it if we've already recorded it
-      return if @last_log_time and @last_log_time == lm.logged_at and bz_server.log_messages.find_by_logged_at_and_log_type_id_and_callsign_id_and_to_callsign_id_and_message_id(lm.logged_at, lm.log_type_id, lm.callsign_id, lm.to_callsign_id, lm.message_id)
+      return if @last_log_time[server] and @last_log_time[server] == lm.logged_at and bz_server.log_messages.find_by_logged_at_and_log_type_id_and_callsign_id_and_to_callsign_id_and_message_id(lm.logged_at, lm.log_type_id, lm.callsign_id, lm.to_callsign_id, lm.message_id)
       lm.save!
 
       bz_server.last_chat_message = lm
@@ -376,7 +410,7 @@ class LogParser
       lm.message = get_message(detail)
 
       # Skip it if we've already recorded it
-      return if @last_log_time and @last_log_time == lm.logged_at and bz_server.log_messages.find_by_logged_at_and_log_type_id_and_callsign_id_and_team_id_and_message_id(lm.logged_at, lm.log_type_id, lm.callsign_id, lm.team_id, lm.message_id)
+      return if @last_log_time[server] and @last_log_time[server] == lm.logged_at and bz_server.log_messages.find_by_logged_at_and_log_type_id_and_callsign_id_and_team_id_and_message_id(lm.logged_at, lm.log_type_id, lm.callsign_id, lm.team_id, lm.message_id)
       lm.save!
 
       bz_server.last_chat_message = lm
