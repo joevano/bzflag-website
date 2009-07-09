@@ -20,10 +20,26 @@
  -%>
 <h1>Logs</h1>
 <h2><%= @bz_server.server_host.hostname%>:<%=@bz_server.port%> - <%= @bz_server.map_name %></h2>
-<% if @log_messages[0] -%>
-    <%= link_to "Prev", :action => :logs, :id => @bz_server.id, :prev_page => @log_messages[0].id - 1 %>
-    <%= link_to "Next", :action => :logs, :id => @bz_server.id, :next_page => @log_messages[-1].id + 1 %>
-<% end -%>
+
+<% form_for :log_search, :html => { :method => :get} do |form| %>
+<p>Show:
+<%= form.check_box(:msg_player) %> Player Join/Part
+<%= form.check_box(:msg_broadcast) %> Player Chat
+<%= form.check_box(:msg_team) %> Team Chat
+<%= form.check_box(:msg_private) %> Private Chat
+<%= form.check_box(:msg_admin) %> Admin Chat
+<%= form.check_box(:msg_filtered) %> Filtered Chat
+<%= form.check_box(:msg_report) %> Report
+<%= form.check_box(:msg_server) %> Server
+<%= form.check_box(:msg_command) %> Command
+<%= hidden_field_tag(:id, @bz_server.id)%>
+<%= hidden_field_tag(:prev_page, @log_messages[0].id - 1) unless @log_messages.empty? %>
+<%= hidden_field_tag(:next_page, @log_messages[-1].id + 1) unless @log_messages.empty? %>
+
+</p>
+<%= submit_tag "Refresh", :name => "submit" %>
+<%= submit_tag "Previous", :name => "submit", :disabled => @log_messages.empty? %>
+<%= submit_tag "Next", :name => "submit", :disabled => @log_messages.empty? %>
 <table class="legend">
 <tr>
 <td class="playerjoin">Player Join/Part</td>
@@ -131,7 +147,7 @@
 </tr>
 <% end -%>
 </table>
-<% if @log_messages[0] -%>
-    <%= link_to "Prev", :action => :logs, :id => @bz_server.id, :prev_page => @log_messages[0].id - 1 %>
-    <%= link_to "Next", :action => :logs, :id => @bz_server.id, :next_page => @log_messages[-1].id + 1 %>
+<%= submit_tag "Refresh", :name => "submit" %>
+<%= submit_tag "Previous", :name => "submit", :disabled => @log_messages.empty? %>
+<%= submit_tag "Next", :name => "submit", :disabled => @log_messages.empty? %>
 <% end -%>

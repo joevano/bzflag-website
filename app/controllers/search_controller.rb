@@ -65,49 +65,77 @@ class SearchController < ApplicationController
   end
 
   def logs
+    @log_search = LogSearch.new
+
+    if params && params[:log_search]
+      @log_search.msg_player = params[:log_search][:msg_player].to_i
+      @log_search.msg_server = params[:log_search][:msg_server].to_i
+      @log_search.msg_broadcast = params[:log_search][:msg_broadcast].to_i
+      @log_search.msg_filtered = params[:log_search][:msg_filtered].to_i
+      @log_search.msg_private = params[:log_search][:msg_private].to_i
+      @log_search.msg_team = params[:log_search][:msg_team].to_i
+      @log_search.msg_report = params[:log_search][:msg_report].to_i
+      @log_search.msg_command = params[:log_search][:msg_command].to_i
+      @log_search.msg_admin = params[:log_search][:msg_admin].to_i
+    else
+      @log_search.msg_player = 1
+      @log_search.msg_server = 1
+      @log_search.msg_broadcast = 1
+      @log_search.msg_filtered = 1
+      @log_search.msg_private = 1
+      @log_search.msg_team = 1
+      @log_search.msg_report = 1
+      @log_search.msg_command = 1
+      @log_search.msg_admin = 1
+    end
+
     @bz_server = BzServer.find(params[:id])
     next_page = params[:next_page]
     prev_page = params[:prev_page]
 
     @log_messages = []
-    if next_page
+    additional_conditions = ""
+    case params[:submit]
+      when "Previous"
+        additional_conditions = "log_messages.id <= #{prev_page} "
+      when "Next"
+        additional_conditions =  "log_messages.id >= #{next_page}"
         @log_messages = @bz_server.log_messages.find(:all,
-                                                     :conditions => "log_messages.id >= #{next_page} and log_type_id in (1,2,3,4,5,6,7,8,9,10,11,12,13)", 
-                                                     :order => "log_messages.id",
-                                                     :include => [ "message", "callsign", "to_callsign", "player_connection"],
-                                                     :limit => 500)
-        if @log_messages.empty?
-            flash.now[:notice] = "Displaying most recent records"
-        end
-    elsif prev_page
-        @log_messages = @bz_server.log_messages.find(:all,
-                                                     :conditions => "log_messages.id <= #{prev_page} and log_type_id in (1,2,3,4,5,6,7,8,9,10,11,12,13)", 
-                                                     :order =>  "log_messages.id desc",
-                                                     :include => [ "message", "callsign", "to_callsign", "player_connection"],
-                                                     :limit => 500).reverse
-    end
-
-    if @log_messages.empty?
-        @log_messages = @bz_server.log_messages.find(:all,
-                                                     :conditions => "log_type_id in (1,2,3,4,5,6,7,8,9,10,11,12,13)", 
+                                                     :conditions => LogSearch.and_conditions(@log_search.conditions, additional_conditions),
                                                      :order => "log_messages.id desc",
                                                      :include => [ "message", "callsign", "to_callsign", "player_connection"],
                                                      :limit => 500).reverse
+        if @log_messages.empty?
+          flash.now[:notice] = "Displaying most recent records"
+          additional_conditions =""
+        end
+      when "Refresh"
+        additional_conditions = "log_messages.id < #{next_page}" unless next_page.nil?
     end
 
-    @player_join_log_type_id = LogType.find_by_token("PLAYER-JOIN").id
-    @player_part_log_type_id = LogType.find_by_token("PLAYER-PART").id
-    @player_auth_log_type_id = LogType.find_by_token("PLAYER-AUTH").id
-    @server_status_log_type_id = LogType.find_by_token("SERVER-STATUS").id
-    @msg_broadcast_log_type_id = LogType.find_by_token("MSG-BROADCAST").id
-    @msg_filtered_log_type_id = LogType.find_by_token("MSG-FILTERED").id
-    @msg_direct_log_type_id = LogType.find_by_token("MSG-DIRECT").id
-    @msg_team_log_type_id = LogType.find_by_token("MSG-TEAM").id
-    @msg_report_log_type_id = LogType.find_by_token("MSG-REPORT").id
-    @msg_command_log_type_id = LogType.find_by_token("MSG-COMMAND").id
-    @msg_admin_log_type_id = LogType.find_by_token("MSG-ADMIN").id
-    @server_mapname_log_type_id = LogType.find_by_token("SERVER-MAPNAME").id
-    @server_status_log_type_id = LogType.find_by_token("SERVER-STATUS").id
+    if @log_messages.empty?
+      @log_messages = @bz_server.log_messages.find(:all,
+                                                   :conditions => LogSearch.and_conditions(@log_search.conditions, additional_conditions),
+                                                   :order => "log_messages.id desc",
+                                                   :include => [ "message", "callsign", "to_callsign", "player_connection"],
+                                                   :limit => 500).reverse
+    end
+
+    flash.now[:notice] = "No records available for your criteria" if @log_messages.empty?
+
+    @player_join_log_type_id = LogType.get_id("PLAYER-JOIN")
+    @player_part_log_type_id = LogType.get_id("PLAYER-PART")
+    @player_auth_log_type_id = LogType.get_id("PLAYER-AUTH")
+    @server_status_log_type_id = LogType.get_id("SERVER-STATUS")
+    @msg_broadcast_log_type_id = LogType.get_id("MSG-BROADCAST")
+    @msg_filtered_log_type_id = LogType.get_id("MSG-FILTERED")
+    @msg_direct_log_type_id = LogType.get_id("MSG-DIRECT")
+    @msg_team_log_type_id = LogType.get_id("MSG-TEAM")
+    @msg_report_log_type_id = LogType.get_id("MSG-REPORT")
+    @msg_command_log_type_id = LogType.get_id("MSG-COMMAND")
+    @msg_admin_log_type_id = LogType.get_id("MSG-ADMIN")
+    @server_mapname_log_type_id = LogType.get_id("SERVER-MAPNAME")
+    @server_status_log_type_id = LogType.get_id("SERVER-STATUS")
 
     @server_callsign_id = Callsign.find_by_name("SERVER").id
   end
