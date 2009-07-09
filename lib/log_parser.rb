@@ -137,11 +137,6 @@ class LogParser
     # 2007-12-16 11:09:42:
     # or missing in which case we use the last date we have available
 
-    # Generate @logtype hash if it hasn't been already
-    if !@log_type
-      generate_log_type_hash()
-    end
-
     if !@last_log_time
       lm = bz_server.log_messages.find(:first, :order => "logged_at desc")
       @last_log_time = lm.logged_at if lm
@@ -171,7 +166,7 @@ class LogParser
       return
     end
 
-    log_type_id = @log_type[log_type]
+    log_type_id = LogType.get_id(log_type)
     lm = LogMessage.new(:bz_server => bz_server, :logged_at => date, :log_type_id => log_type_id)
 
     case log_type

@@ -21,11 +21,22 @@ class LogType < ActiveRecord::Base
   validates_uniqueness_of :token
   has_many :log_messages
 
+  @@log_types = Hash.new
+
   def self.ids(tokens)
     t = tokens.collect do |l|
       lt = LogType.find_by_token(l)
       lt and lt.id
     end
     t.join(",")
+  end
+
+  def self.get_id(type)
+    if !@@log_types[type]
+      lt = find_by_token(type)
+      @@log_types[type] = lt.id unless !lt
+    end
+
+    @@log_types[type]
   end
 end
